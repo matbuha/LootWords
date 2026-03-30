@@ -1,6 +1,31 @@
 import { BOX_TAP_COUNT } from "../data/config.js";
 import { renderDetailCard, renderEmptyState } from "./ui-kit.js";
 
+function renderRewardCardShowcase(card, { isNew = false } = {}) {
+  return `
+    <div class="reward-reveal__card reward-reveal__card--showcase" data-rarity="${card.rarity}">
+      <div class="reward-reveal__stage" data-rarity="${card.rarity}">
+        <div class="reward-reveal__flash-disk" aria-hidden="true"></div>
+        <div class="reward-reveal__trail" aria-hidden="true"></div>
+        <div class="reward-reveal__burst" aria-hidden="true">
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+        <div class="reward-reveal__launch">
+          <div class="reward-reveal__spin">
+            ${renderDetailCard(card, { locked: false, isNew })}
+          </div>
+          <div class="reward-reveal__shadow" aria-hidden="true"></div>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
 function getPhaseCopy(rewardState, rewardBoxes, activeCardCount) {
   if (rewardState.reveal?.type === "blocked" || activeCardCount === 0) {
     return {
@@ -108,18 +133,8 @@ export function renderRewardScreen(container, { rewardState, rewardCard, rewardB
     `;
   } else if (rewardState.reveal?.type === "card" && rewardCard) {
     revealMarkup = `
-      <div class="reward-reveal__card reward-reveal__card--showcase">
-        <div class="reward-reveal__burst" aria-hidden="true">
-          <span></span>
-          <span></span>
-          <span></span>
-          <span></span>
-          <span></span>
-          <span></span>
-        </div>
-        ${renderDetailCard(rewardCard, { locked: false, isNew: true })}
-      </div>
-      <div class="celebration-card celebration-card--reward">
+      ${renderRewardCardShowcase(rewardCard, { isNew: true })}
+      <div class="celebration-card celebration-card--reward celebration-card--reward-info" data-rarity="${rewardCard.rarity}">
         <span class="card-fanfare">New card unlocked</span>
         <p class="section-copy">
           <strong>${rewardCard.word}</strong> just joined your collection. Jump to Learn to say it out loud, or open the album to see it in the full inventory.
@@ -136,10 +151,8 @@ export function renderRewardScreen(container, { rewardState, rewardCard, rewardB
     `;
   } else if (rewardState.reveal?.type === "duplicate" && rewardCard) {
     revealMarkup = `
-      <div class="reward-reveal__card reward-reveal__card--showcase">
-        ${renderDetailCard(rewardCard, { locked: false })}
-      </div>
-      <div class="celebration-card celebration-card--reward">
+      ${renderRewardCardShowcase(rewardCard)}
+      <div class="celebration-card celebration-card--reward celebration-card--reward-info" data-rarity="${rewardCard.rarity}">
         <span class="small-label">Duplicate reward</span>
         <h3 class="section-title">You pulled ${rewardCard.word} again</h3>
         <p class="section-copy">Because duplicate rewards are enabled, this extra copy turned into ${rewardState.reveal.amount} bonus stars.</p>
@@ -198,7 +211,19 @@ export function renderRewardScreen(container, { rewardState, rewardCard, rewardB
               data-reward-box="true"
               aria-label="Reward box"
             >
-              <div class="reward-box ${boxStateClass}">
+              <div class="reward-box ${boxStateClass}" data-tension="${rewardState.clicks}">
+                <div class="reward-box__impact" aria-hidden="true"></div>
+                <div class="reward-box__pressure-rings" aria-hidden="true">
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                </div>
+                <div class="reward-box__embers" aria-hidden="true">
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                </div>
                 <div class="reward-box__shine"></div>
                 <div class="reward-box__glow"></div>
                 <div class="reward-box__aura"></div>
@@ -239,7 +264,7 @@ export function renderRewardScreen(container, { rewardState, rewardCard, rewardB
           </div>
         </div>
 
-        <div class="reward-reveal">
+        <div class="reward-reveal reward-reveal--${revealPhase}">
           <div>
             <span class="small-label">Loot spotlight</span>
             <h3 class="section-title">Make the reward feel special</h3>

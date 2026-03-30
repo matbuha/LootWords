@@ -94,7 +94,7 @@ export function renderLearnScreen(container, { unlockedCards, selectedCard, prog
       <div class="collection-dashboard">
         <article class="stat-card stat-card--glow">
           <span>Review deck</span>
-          <strong>${unlockedCards.length}</strong>
+          <strong data-count-to="${unlockedCards.length}" data-count-key="learn-review-deck">${unlockedCards.length}</strong>
           <small>${learnFilters.category === "all" ? "All unlocked cards" : CATEGORY_META[learnFilters.category]?.label}</small>
         </article>
         <article class="stat-card">

@@ -58,7 +58,7 @@ export function renderHomeScreen(container, { progress, actions, newestCard }) {
 
   container.innerHTML = `
     <div class="screen-stack">
-      <section class="hero-panel hero-panel--home">
+      <section class="hero-panel hero-panel--home ${progress.rewardBoxes > 0 ? "hero-panel--stash-ready" : ""}">
         <div class="hero-copy">
           <span class="eyebrow">Treasure room online</span>
           <h1 class="headline">Quick loot runs, bigger streaks, and one more reward box waiting after every win.</h1>
@@ -87,17 +87,17 @@ export function renderHomeScreen(container, { progress, actions, newestCard }) {
             </div>
             <div class="stat-card">
               <span>Reward stash</span>
-              <strong>${progress.rewardBoxes}</strong>
+              <strong data-count-to="${progress.rewardBoxes}" data-count-key="home-reward-boxes">${progress.rewardBoxes}</strong>
               <small>${stashLabel}</small>
             </div>
             <div class="stat-card">
               <span>Current streak</span>
-              <strong>${progress.currentStreak}</strong>
+              <strong data-count-to="${progress.currentStreak}" data-count-key="home-current-streak">${progress.currentStreak}</strong>
               <small>Best ${progress.bestStreak}</small>
             </div>
             <div class="stat-card">
               <span>Boxes earned</span>
-              <strong>${progress.rewardBoxesEarned}</strong>
+              <strong data-count-to="${progress.rewardBoxesEarned}" data-count-key="home-boxes-earned">${progress.rewardBoxesEarned}</strong>
               <small>${playSummary.winsUntilMilestone} wins to next milestone</small>
             </div>
           </div>
@@ -183,7 +183,7 @@ export function renderHomeScreen(container, { progress, actions, newestCard }) {
                     <strong>${entry.label}</strong>
                     <span>${entry.unlocked}/${entry.total} unlocked</span>
                     <div class="progress-bar">
-                      <div class="progress-bar__fill" style="width:${entry.percent}%"></div>
+                      <div class="progress-bar__fill" data-progress-fill="${(entry.percent / 100).toFixed(3)}" style="--progress-target:${(entry.percent / 100).toFixed(3)}"></div>
                     </div>
                   </article>
                 `,

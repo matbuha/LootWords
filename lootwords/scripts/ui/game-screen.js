@@ -128,7 +128,7 @@ export function renderGameScreen(container, { route, cards, result, progress, ac
         <div class="session-strip">
           <article class="session-chip session-chip--glow">
             <span>Current streak</span>
-            <strong>${progress.currentStreak}</strong>
+            <strong data-count-to="${progress.currentStreak}" data-count-key="game-current-streak">${progress.currentStreak}</strong>
             <small>Best ${progress.bestStreak}</small>
           </article>
           <article class="session-chip">
@@ -138,7 +138,7 @@ export function renderGameScreen(container, { route, cards, result, progress, ac
           </article>
           <article class="session-chip">
             <span>Next milestone</span>
-            <strong>${playSummary.nextMilestoneTarget} wins</strong>
+            <strong data-count-to="${playSummary.nextMilestoneTarget}" data-count-key="game-next-milestone">${playSummary.nextMilestoneTarget}</strong>
             <small>${playSummary.winsUntilMilestone} win${playSummary.winsUntilMilestone === 1 ? "" : "s"} to go</small>
           </article>
           <article class="session-chip">

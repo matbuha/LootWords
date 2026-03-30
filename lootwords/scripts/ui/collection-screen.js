@@ -26,12 +26,12 @@ export function renderCollectionScreen(container, { cards, filters, progress, ac
         </article>
         <article class="stat-card">
           <span>Fresh finds</span>
-          <strong>${progress.recentCardIds.length}</strong>
+          <strong data-count-to="${progress.recentCardIds.length}" data-count-key="collection-recent">${progress.recentCardIds.length}</strong>
           <small>Newest cards marked with a ribbon</small>
         </article>
         <article class="stat-card">
           <span>Total points</span>
-          <strong>${formatPoints(progress.totalPoints)}</strong>
+          <strong data-count-to="${progress.totalPoints}" data-count-key="collection-total-points" data-count-format="points">${formatPoints(progress.totalPoints)}</strong>
           <small>Memory-value collection score</small>
         </article>
         <article class="stat-card">
@@ -49,7 +49,7 @@ export function renderCollectionScreen(container, { cards, filters, progress, ac
                 <strong>${PACK_META[entry.id].icon} ${PACK_META[entry.id].label}</strong>
                 <span>${entry.unlocked}/${entry.total} unlocked</span>
                 <div class="progress-bar">
-                  <div class="progress-bar__fill" style="width:${entry.percent}%"></div>
+                  <div class="progress-bar__fill" data-progress-fill="${(entry.percent / 100).toFixed(3)}" style="--progress-target:${(entry.percent / 100).toFixed(3)}"></div>
                 </div>
               </article>
             `,
