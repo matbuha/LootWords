@@ -6,6 +6,8 @@ Latest prompt: Improve the card content system, educational structure, and long-
 
 Current prompt: Upgrade LootWords with a modular audio and emotional feedback system so music, sound effects, mute controls, staged reward audio, and event-based feedback all work safely in the browser with missing-asset fallbacks.
 
+Latest prompt: Expand replayability and progression by adding more lightweight mini-games, a cleaner game registry, smoother play selection, and stronger long-term reward hooks without breaking the collectible loop.
+
 ## Progress Checklist
 
 ### Phase 1: Foundation
@@ -210,6 +212,48 @@ Current prompt: Upgrade LootWords with a modular audio and emotional feedback sy
 - [x] Refactor rough audio code
 - [x] Document where future assets should go
 
+## Replayability and Progression Checklist
+
+### Phase A: Mini-Game Architecture
+- [x] Create or improve game registry system
+- [x] Make mini-games modular and cleanly pluggable
+- [x] Improve game screen integration
+- [x] Verify mini-games can be entered and exited cleanly
+
+### Phase B: Additional Mini-Games
+- [x] Implement at least 1 new lightweight mini-game
+- [x] Implement a second new mini-game if quality allows
+- [x] Add win/fail/reset behavior
+- [x] Integrate reward flow for new mini-games
+- [x] Verify replayability and stability
+
+### Phase C: Play Flow Improvements
+- [x] Improve mini-game selection UX
+- [x] Add random game or recommended game flow
+- [x] Improve transition from Home to Play
+- [x] Improve replay/next-round flow
+- [x] Verify overall session flow feels smoother
+
+### Phase D: Progression Upgrade
+- [x] Add stronger visible progression stats
+- [x] Add milestones or simple achievement moments
+- [x] Add first-time completion handling if useful
+- [x] Improve motivation after repeated wins
+- [x] Verify progression feels rewarding
+
+### Phase E: Future-Proofing
+- [x] Prepare structure for future learning-based mini-games
+- [x] Ensure current mini-games do not block future card integration
+- [x] Document how to add new mini-games later
+- [x] Refactor duplicated game logic if needed
+
+### Phase F: QA
+- [x] Test all mini-games for repeat play
+- [x] Test reward integration across games
+- [x] Test progression persistence
+- [x] Test navigation and cleanup
+- [x] Refactor rough code and update docs
+
 ## Work Log
 
 - 2026-03-30: Read the repo baseline and loaded the local frontend/game workflow skills.
@@ -261,6 +305,37 @@ Current prompt: Upgrade LootWords with a modular audio and emotional feedback sy
   - reward opening still required exactly three taps and reached the reveal state cleanly
   - loss state still triggered without breaking the play screen
   - a controlled Legendary reveal test activated the `legendary`, `new-card`, and `milestone` feedback path together
+- 2026-03-30: Added replayability/progression architecture:
+  - `game-registry.js` now registers every mini-game in one place and powers play-screen mounting.
+  - `game-session-manager.js` now centralizes per-game stats, recommended/random game selection, milestone targets, and first-win bonus summaries.
+  - Added two new mini-games:
+    - `flash-find`: preview a target card, then tap the matching card from the spread before memory fades.
+    - `loot-pop`: tap the active glowing pad quickly to build combo and hit the goal before time runs out.
+- 2026-03-30: Expanded profile persistence with replay-focused fields:
+  - `rewardBoxesEarned`
+  - `currentStreak`
+  - `bestStreak`
+  - `firstWinGameIds`
+  - `gameStats`
+  - `lastPlayedGameId`
+- 2026-03-30: Upgraded reward progression rules:
+  - every win still grants 1 reward box
+  - the first win in a new mini-game grants +1 bonus reward box
+  - every 5 total wins grants +20 bonus stars
+  - losses now persist so streak resets are real instead of visual-only
+- 2026-03-30: Rebuilt the home/play flow around replayability:
+  - Home now shows recommended and random quick-play entry points, replay motivation stats, and the full game shelf.
+  - Play now shows per-game stats, streak/milestone chips, and overlay actions for replay, random next game, and reward handoff.
+- 2026-03-30: Re-verified in-browser after the replayability pass:
+  - all four mini-games mounted cleanly through the registry
+  - Flash Find won cleanly and granted 2 reward boxes on its first win
+  - reward room still required exactly 3 taps and revealed a new `backpack` card
+  - Loot Pop won cleanly and granted 2 reward boxes on its first win
+  - replaying Loot Pop from the result overlay cleared the overlay and a forced timeout loss reset the streak to 0
+  - Treasure Match still won cleanly after the registry migration, confirming no regression in an older game
+  - recommended and random play buttons routed to valid game entries
+  - progression totals, streak reset, and per-game play counts persisted after reload
+  - browser console remained clean
 
 ## Notes
 
@@ -271,3 +346,8 @@ Current prompt: Upgrade LootWords with a modular audio and emotional feedback sy
   - `starter-daily`: home, clothes, school, kitchen, bathroom
   - `starter-world`: animals, food, nature, city, people/jobs
   - `starter-adventure`: vehicles, toys, fantasy, sports
+- Replayability now uses a registry-driven game layer with four active mini-games:
+  - `memory-match`
+  - `picture-match`
+  - `flash-find`
+  - `loot-pop`

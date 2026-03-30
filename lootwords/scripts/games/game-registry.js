@@ -1,0 +1,39 @@
+import { GAME_CONFIG } from "../data/config.js";
+import { mountFlashFindGame } from "./quick-select-game.js";
+import { mountMatchGame } from "./match-game.js";
+import { mountMemoryGame } from "./memory-game.js";
+import { mountReactionGame } from "./reaction-game.js";
+
+const GAME_MOUNTS = {
+  "memory-match": mountMemoryGame,
+  "picture-match": mountMatchGame,
+  "flash-find": mountFlashFindGame,
+  "loot-pop": mountReactionGame,
+};
+
+export function getGameEntries() {
+  return Object.values(GAME_CONFIG).map((game) => ({
+    ...game,
+    mount: GAME_MOUNTS[game.id],
+  }));
+}
+
+export function getGameDefinition(gameId) {
+  return (
+    getGameEntries().find((game) => game.id === gameId) ??
+    getGameEntries().find((game) => game.id === "memory-match")
+  );
+}
+
+export function getGameIds() {
+  return getGameEntries().map((game) => game.id);
+}
+
+export function getRandomGameId({ excludeGameId = null } = {}) {
+  const candidates = getGameIds().filter((gameId) => gameId !== excludeGameId);
+  if (!candidates.length) {
+    return excludeGameId ?? "memory-match";
+  }
+
+  return candidates[Math.floor(Math.random() * candidates.length)];
+}

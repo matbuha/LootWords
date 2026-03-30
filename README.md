@@ -9,6 +9,20 @@ LootWords is a browser-based, reward-first word-learning game for children. The 
 - Home, reward, collection, learn, and play screens now share a more tactile game UI with faster route transitions and richer win states.
 - Audio remains optional and safe: the app now uses a modular audio manager, feedback manager, and persisted settings layer, while the current build falls back to lightweight synthesized cues if files are missing.
 
+## Replayability and progression pass
+
+- The play loop now runs through a shared game registry, so mini-games are mounted and selected from one extensible source instead of hardcoded screen branches.
+- Two new lightweight mini-games were added:
+  - `Flash Find`: a quick visual-memory round that flashes a target card, then asks the player to tap the same card from a spread.
+  - `Loot Pop`: a fast reaction round that asks the player to tap the active glowing pad before it expires.
+- Home now supports recommended play, random play, and a fuller game shelf with per-game stats and first-win bonus visibility.
+- Play now shows session streak, milestone progress, per-game win counts, and better replay actions after each result.
+- Progression is stronger and persisted:
+  - every win still awards 1 reward box
+  - the first win in a new mini-game grants +1 bonus reward box
+  - every 5 total wins grants +20 bonus stars
+  - losses now persist and reset the live streak
+
 ## Audio and feedback pass
 
 - Audio now initializes only after valid user interaction, so the game stays compliant with browser autoplay restrictions.
@@ -87,8 +101,10 @@ Then open:
 - `lootwords/scripts/core/feedback-manager.js`: event-to-feedback mapping for sounds and route-level visual pulses.
 - `lootwords/scripts/core/settings-manager.js`: normalized audio settings and persistence helpers.
 - `lootwords/scripts/core/event-bus.js`: lightweight pub/sub for future event-driven systems.
+- `lootwords/scripts/core/game-session-manager.js`: per-game stat normalization, recommended/random game logic, and progression milestone helpers.
 - `lootwords/scripts/core/`: state, rarity, progression, rewards, and supporting gameplay systems.
-- `lootwords/scripts/games/`: Memory Match and Treasure Match mini-games.
+- `lootwords/scripts/games/game-registry.js`: single registration point for playable mini-games.
+- `lootwords/scripts/games/`: Memory Match, Treasure Match, Flash Find, and Loot Pop.
 - `lootwords/scripts/ui/`: screen rendering for home, collection, reward, learn, and game hosting.
 
 ## Completed checklist
@@ -172,6 +188,7 @@ Then open:
 - Random points are generated once and persisted per card.
 - Rarity is derived from points and displayed across cards and summaries.
 - Memory Match and Treasure Match both award one reward box on victory.
+- Flash Find and Loot Pop also award reward boxes cleanly and use the same reward pipeline.
 - Reward boxes require exactly three taps and reveal a new card or a 50-star fallback when every card is already unlocked.
 - Unlocked cards persist across reloads and appear in collection and learn views.
 - Collection filters update and persist in localStorage.
@@ -185,6 +202,8 @@ Then open:
 - The reward screen keeps its reveal copy after the final box is opened, instead of dropping back to an empty-state tone.
 - Learn review supports next/previous stepping through the unlocked deck.
 - Collection now groups cards by category and surfaces starter-pack progress.
+- Recommended and random play actions route to valid mini-games.
+- Per-game wins, losses, streaks, total plays, and reward-box totals persist after reload.
 - Browser verification completed with zero console errors.
 
 ## Optional improvements
@@ -194,3 +213,4 @@ Then open:
 - Add per-screen music mixing, more layered stingers, and optional ambience on top of the current synthesized placeholders.
 - Add progression layers such as streaks, achievements, and themed packs.
 - Add a dedicated quiz mode that reuses only unlocked cards.
+- Add future learning games that use the same registry: strongest-card comparison, category sorting, point-memory, rarity identification, and image-to-word review rounds.

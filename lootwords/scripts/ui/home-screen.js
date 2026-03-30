@@ -1,11 +1,52 @@
-import { GAME_CONFIG } from "../data/config.js";
 import { renderCard, renderEmptyState } from "./ui-kit.js";
+
+function renderGamePickup(game, actionsLabel) {
+  return `
+    <article class="game-pick-card">
+      <div class="game-pick-card__top">
+        <span class="game-pick-card__icon" aria-hidden="true">${game.icon}</span>
+        <span class="small-label">${game.lengthLabel}</span>
+      </div>
+      <strong>${game.label}</strong>
+      <p>${game.description}</p>
+      <div class="game-pick-card__meta">
+        <span>${game.energyLabel}</span>
+        <span>${game.stats.wins}/${game.stats.plays} wins</span>
+      </div>
+      <button class="secondary-button" type="button" data-route="play" data-game="${game.id}">${actionsLabel}</button>
+    </article>
+  `;
+}
+
+function renderGameChoice(game) {
+  return `
+    <button class="game-choice game-choice--home game-choice--rich" type="button" data-route="play" data-game="${game.id}">
+      <div class="game-choice__topline">
+        <span class="game-choice__icon" aria-hidden="true">${game.icon}</span>
+        <span class="small-label">${game.lengthLabel}</span>
+      </div>
+      <strong>${game.label}</strong>
+      <span>${game.description}</span>
+      <div class="game-choice__meta">
+        <span>${game.energyLabel}</span>
+        <span>${game.stats.wins}/${game.stats.plays} wins</span>
+      </div>
+      <div class="game-choice__footer">
+        <span class="small-label">${game.rewardText}</span>
+        <span class="game-choice__bonus">${game.isFirstWinAvailable ? "First win bonus ready" : "Loot ready"}</span>
+      </div>
+    </button>
+  `;
+}
 
 export function renderHomeScreen(container, { progress, actions, newestCard }) {
   const stashLabel =
     progress.rewardBoxes > 0
       ? `${progress.rewardBoxes} reward ${progress.rewardBoxes === 1 ? "box" : "boxes"} ready`
       : "Win a mini-game to earn your next box";
+  const playSummary = progress.playSummary;
+  const recommendedGame = playSummary.recommendedGame;
+  const randomGame = playSummary.randomGame;
 
   const newestMarkup = newestCard
     ? renderCard(newestCard, { locked: false, isNew: true })
@@ -19,14 +60,18 @@ export function renderHomeScreen(container, { progress, actions, newestCard }) {
       <section class="hero-panel hero-panel--home">
         <div class="hero-copy">
           <span class="eyebrow">Treasure room online</span>
-          <h1 class="headline">Play short games. Crack open loot. Keep the words you win.</h1>
+          <h1 class="headline">Quick loot runs, bigger streaks, and one more reward box waiting after every win.</h1>
           <p class="body-copy">
-            LootWords turns every victory into a collectible noun card, so the learning material feels earned instead of assigned.
+            Jump into a mini-game, earn a box, and keep growing a collectible English word album that feels earned.
           </p>
           <div class="hero-actions">
-            <button class="primary-button" type="button" data-route="play" data-game="memory-match">Start a loot run</button>
-            <button class="secondary-button" type="button" data-route="reward">${progress.rewardBoxes > 0 ? "Open my box" : "See reward room"}</button>
-            <button class="ghost-button" type="button" data-route="collection">Open album</button>
+            <button class="primary-button" type="button" data-play-recommended="home">
+              ${recommendedGame ? `Recommended: ${recommendedGame.label}` : "Start a loot run"}
+            </button>
+            <button class="secondary-button" type="button" data-play-random="home">
+              ${randomGame ? `Random: ${randomGame.label}` : "Random game"}
+            </button>
+            <button class="ghost-button" type="button" data-route="reward">${progress.rewardBoxes > 0 ? "Open my box" : "See reward room"}</button>
           </div>
           <div class="hero-stats">
             <div class="stat-card stat-card--glow">
@@ -40,14 +85,14 @@ export function renderHomeScreen(container, { progress, actions, newestCard }) {
               <small>${stashLabel}</small>
             </div>
             <div class="stat-card">
-              <span>Total wins</span>
-              <strong>${progress.totalWins}</strong>
-              <small>${progress.recentCardIds.length} fresh cards</small>
+              <span>Current streak</span>
+              <strong>${progress.currentStreak}</strong>
+              <small>Best ${progress.bestStreak}</small>
             </div>
             <div class="stat-card">
-              <span>Bonus stars</span>
-              <strong>${progress.bonusStars}</strong>
-              <small>Overflow reward bank</small>
+              <span>Boxes earned</span>
+              <strong>${progress.rewardBoxesEarned}</strong>
+              <small>${playSummary.winsUntilMilestone} wins to next milestone</small>
             </div>
           </div>
         </div>
@@ -58,14 +103,14 @@ export function renderHomeScreen(container, { progress, actions, newestCard }) {
             <div class="vault-orbit vault-orbit--two"></div>
             <div class="showcase-card">
               <div class="showcase-card__top">
-                <span>Reward Card</span>
-                <span>Legend Tier</span>
+                <span>Next milestone</span>
+                <span>${playSummary.nextMilestoneTarget} wins</span>
               </div>
               <div class="showcase-card__emoji" aria-hidden="true">🏆</div>
-              <div class="showcase-card__word">Loot Rush</div>
+              <div class="showcase-card__word">${playSummary.favoriteGame?.label ?? "Find your favorite"}</div>
               <div class="showcase-card__bottom">
-                <span>Earned, not given</span>
-                <span>1000 pts</span>
+                <span>${playSummary.gamesTried}/${playSummary.gameProgress.length} games tried</span>
+                <span>${progress.totalWins} wins</span>
               </div>
             </div>
             <div class="vault-box-mini" aria-hidden="true">
@@ -77,26 +122,41 @@ export function renderHomeScreen(container, { progress, actions, newestCard }) {
         </div>
       </section>
 
+      <section class="two-column two-column--play-picks">
+        <div class="section-panel">
+          <div class="screen-header">
+            <div>
+              <span class="small-label">Play next</span>
+              <h2 class="section-title">Quick picks for this session</h2>
+            </div>
+            <p class="screen-note">The first win in a new game grants an extra reward box.</p>
+          </div>
+          <div class="game-pick-grid">
+            ${recommendedGame ? renderGamePickup(recommendedGame, "Play recommended") : ""}
+            ${randomGame ? renderGamePickup(randomGame, "Try random") : ""}
+          </div>
+        </div>
+        <div class="section-panel section-panel--spotlight">
+          <div class="screen-header">
+            <div>
+              <span class="small-label">Latest reveal</span>
+              <h2 class="section-title">Newest card</h2>
+            </div>
+          </div>
+          ${newestMarkup}
+        </div>
+      </section>
+
       <section class="section-panel section-panel--compact">
         <div class="screen-header">
           <div>
-            <span class="small-label">Play next</span>
-            <h2 class="section-title">Choose a quick loot run</h2>
+            <span class="small-label">Game shelf</span>
+            <h2 class="section-title">Choose any loot run</h2>
           </div>
-          <p class="screen-note">Fast rounds, strong feedback, one reward box per win.</p>
+          <p class="screen-note">Fast rounds, different rhythms, and cleaner routes to more rewards.</p>
         </div>
-        <div class="game-switcher">
-          ${Object.values(GAME_CONFIG)
-            .map(
-              (game) => `
-                <button class="game-choice game-choice--home" type="button" data-route="play" data-game="${game.id}">
-                  <strong>${game.label}</strong>
-                  <span>${game.description}</span>
-                  <span class="small-label">${game.rewardText}</span>
-                </button>
-              `,
-            )
-            .join("")}
+        <div class="game-switcher game-switcher--grid">
+          ${playSummary.gameProgress.map((game) => renderGameChoice(game)).join("")}
         </div>
       </section>
 
@@ -125,14 +185,31 @@ export function renderHomeScreen(container, { progress, actions, newestCard }) {
               .join("")}
           </div>
         </div>
-        <div class="section-panel section-panel--spotlight">
+        <div class="section-panel">
           <div class="screen-header">
             <div>
-              <span class="small-label">Latest reveal</span>
-              <h2 class="section-title">Newest card</h2>
+              <span class="small-label">Replay loop</span>
+              <h2 class="section-title">Why play one more round?</h2>
             </div>
           </div>
-          ${newestMarkup}
+          <div class="session-loop">
+            <article class="progress-chip">
+              <strong>Reward boxes earned</strong>
+              <span>${progress.rewardBoxesEarned} total</span>
+            </article>
+            <article class="progress-chip">
+              <strong>Games won at least once</strong>
+              <span>${playSummary.gamesWon}/${playSummary.gameProgress.length}</span>
+            </article>
+            <article class="progress-chip">
+              <strong>Bonus stars</strong>
+              <span>${progress.bonusStars} saved</span>
+            </article>
+            <article class="progress-chip">
+              <strong>Next milestone prize</strong>
+              <span>+${playSummary.milestoneBonusStars} stars at ${playSummary.nextMilestoneTarget} wins</span>
+            </article>
+          </div>
         </div>
       </section>
     </div>
@@ -144,6 +221,18 @@ export function renderHomeScreen(container, { progress, actions, newestCard }) {
     });
   });
 
+  container.querySelectorAll("[data-play-random]").forEach((button) => {
+    button.addEventListener("click", () => {
+      actions.playRandomGame(button.dataset.playRandom);
+    });
+  });
+
+  container.querySelectorAll("[data-play-recommended]").forEach((button) => {
+    button.addEventListener("click", () => {
+      actions.playRecommendedGame(button.dataset.playRecommended);
+    });
+  });
+
   return {
     destroy() {},
     getDebugState() {
@@ -151,6 +240,8 @@ export function renderHomeScreen(container, { progress, actions, newestCard }) {
         screen: "home",
         rewardBoxes: progress.rewardBoxes,
         totalUnlocked: progress.totalUnlocked,
+        recommendedGame: recommendedGame?.id ?? null,
+        randomGame: randomGame?.id ?? null,
       };
     },
   };

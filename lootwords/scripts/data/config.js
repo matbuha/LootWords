@@ -9,7 +9,7 @@ import {
 
 export const APP_NAME = "LootWords";
 export const STORAGE_KEY = "lootwords-profile";
-export const STORAGE_VERSION = 3;
+export const STORAGE_VERSION = 5;
 
 export { CATEGORY_META, CATEGORY_ORDER, DIFFICULTY_META, LEGACY_CATEGORY_ALIASES, PACK_META, PACK_ORDER };
 
@@ -90,6 +90,12 @@ export const GAME_CONFIG = {
     id: "memory-match",
     label: "Memory Match",
     shortLabel: "Memory",
+    icon: "🧠",
+    lengthLabel: "45 sec",
+    energyLabel: "Calm focus",
+    minimumCardPool: 6,
+    usesCardPool: true,
+    supportsLearningModes: ["pair-match", "visual-memory"],
     description: "Flip treasure tiles and find every matching pair before the timer runs out.",
     rewardText: "Win one reward box",
   },
@@ -97,10 +103,46 @@ export const GAME_CONFIG = {
     id: "picture-match",
     label: "Treasure Match",
     shortLabel: "Match",
+    icon: "🎯",
+    lengthLabel: "35 sec",
+    energyLabel: "Fast picks",
+    minimumCardPool: 4,
+    usesCardPool: true,
+    supportsLearningModes: ["target-match", "image-recognition"],
     description: "Spot the target card from the choices before you run out of hearts.",
     rewardText: "Win one reward box",
   },
+  "flash-find": {
+    id: "flash-find",
+    label: "Flash Find",
+    shortLabel: "Flash",
+    icon: "⚡",
+    lengthLabel: "30 sec",
+    energyLabel: "Quick memory",
+    minimumCardPool: 6,
+    usesCardPool: true,
+    supportsLearningModes: ["flash-memory", "word-recall", "future-point-memory"],
+    description: "Watch the target card, then tap the same loot card before the preview fades from memory.",
+    rewardText: "Win one reward box",
+  },
+  "loot-pop": {
+    id: "loot-pop",
+    label: "Loot Pop",
+    shortLabel: "Pop",
+    icon: "💥",
+    lengthLabel: "16 sec",
+    energyLabel: "Fast taps",
+    minimumCardPool: 0,
+    usesCardPool: false,
+    supportsLearningModes: ["reaction-training", "future-rarity-burst"],
+    description: "Tap the glowing loot sparks fast and keep the combo going before the timer runs out.",
+    rewardText: "Win one reward box",
+  },
 };
+
+export const FIRST_WIN_BONUS_BOXES = 1;
+export const WIN_MILESTONE_STEP = 5;
+export const WIN_MILESTONE_BONUS_STARS = 20;
 
 export const AUDIO_SFX = {
   click: "click",

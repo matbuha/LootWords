@@ -2354,3 +2354,319 @@ body.is-feedback-legendary .route-glow::after {
 .collection-section__meta {
   justify-content: flex-end;
 }
+
+.section-panel--play-hub {
+  position: relative;
+  overflow: hidden;
+}
+
+.section-panel--play-hub::before {
+  content: "";
+  position: absolute;
+  inset: -7rem auto auto -5rem;
+  width: 16rem;
+  height: 16rem;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(83, 196, 255, 0.14), transparent 72%);
+  pointer-events: none;
+}
+
+.session-strip,
+.play-quick-row,
+.game-pick-grid,
+.session-loop,
+.arena-summary,
+.arena-summary__stats,
+.game-choice__topline,
+.game-choice__meta,
+.game-choice__footer,
+.game-pick-card__top,
+.game-pick-card__meta {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.session-strip,
+.game-pick-grid,
+.session-loop {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+}
+
+.session-strip {
+  margin-bottom: 18px;
+}
+
+.session-chip,
+.game-pick-card,
+.arena-summary {
+  padding: 18px;
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.04)),
+    rgba(255, 255, 255, 0.04);
+}
+
+.session-chip {
+  display: grid;
+  gap: 6px;
+}
+
+.session-chip--glow {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.14),
+    0 0 0 1px rgba(255, 214, 112, 0.12),
+    0 22px 34px rgba(15, 11, 38, 0.28);
+}
+
+.session-chip span,
+.game-pick-card p,
+.game-pick-card__meta,
+.arena-summary .screen-note,
+.game-choice__meta,
+.game-choice__footer {
+  color: var(--text-muted);
+}
+
+.session-chip strong,
+.game-pick-card strong,
+.arena-summary h3 {
+  color: var(--text-strong);
+}
+
+.play-quick-row {
+  margin-bottom: 18px;
+}
+
+.game-switcher--grid {
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.game-choice--rich {
+  display: grid;
+  gap: 12px;
+  min-height: 208px;
+  padding: 18px;
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.04)),
+    rgba(255, 255, 255, 0.04);
+}
+
+.game-choice__topline,
+.game-pick-card__top {
+  justify-content: space-between;
+}
+
+.game-choice__icon,
+.game-pick-card__icon {
+  display: inline-grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 16px;
+  font-size: 1.35rem;
+  background: rgba(255, 255, 255, 0.1);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.game-choice__meta,
+.game-choice__footer,
+.game-pick-card__meta {
+  justify-content: space-between;
+}
+
+.game-choice__bonus {
+  color: rgba(255, 222, 136, 0.88);
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.game-pick-grid {
+  margin-top: 4px;
+}
+
+.game-pick-card {
+  display: grid;
+  gap: 12px;
+  align-content: start;
+}
+
+.game-pick-card p {
+  margin: 0;
+  line-height: 1.55;
+}
+
+.two-column--play-picks {
+  align-items: stretch;
+}
+
+.session-loop {
+  margin-top: 6px;
+}
+
+.arena-summary {
+  margin-bottom: 18px;
+  justify-content: space-between;
+}
+
+.arena-summary__stats {
+  justify-content: flex-end;
+}
+
+.victory-chip-row--rewards {
+  margin-top: 2px;
+}
+
+.victory-chip--reward {
+  background: linear-gradient(180deg, rgba(255, 209, 102, 0.16), rgba(255, 255, 255, 0.08));
+  border-color: rgba(255, 221, 140, 0.28);
+}
+
+.victory-chip--bonus {
+  background: linear-gradient(180deg, rgba(98, 255, 225, 0.14), rgba(255, 255, 255, 0.08));
+  border-color: rgba(116, 255, 231, 0.2);
+}
+
+.flash-find-stage,
+.reaction-stage {
+  display: grid;
+  gap: 18px;
+}
+
+.flash-find-stage__spotlight {
+  display: grid;
+  justify-items: center;
+  min-height: 188px;
+  transition: opacity 180ms ease, transform 180ms ease;
+}
+
+.flash-find-stage__spotlight.is-hidden {
+  opacity: 0.28;
+  transform: scale(0.96);
+}
+
+.flash-find-stage__spotlight.is-preview .target-card--spotlight {
+  box-shadow:
+    0 0 0 1px rgba(255, 222, 136, 0.2),
+    0 20px 34px rgba(15, 11, 38, 0.28),
+    0 0 28px rgba(255, 211, 112, 0.18);
+}
+
+.flash-find-stage__prompt {
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+  text-align: center;
+}
+
+.flash-options {
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+}
+
+.flash-option {
+  min-height: 152px;
+}
+
+.flash-option .tile-card {
+  display: grid;
+  gap: 8px;
+  justify-items: center;
+  padding: 16px 12px;
+}
+
+.flash-option .tile-card__icon {
+  font-size: 2rem;
+}
+
+.reaction-stage__summary {
+  display: grid;
+  justify-items: center;
+}
+
+.reaction-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.reaction-pad {
+  min-height: 110px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 26px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03)),
+    rgba(255, 255, 255, 0.04);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 18px 28px rgba(8, 7, 21, 0.16);
+  color: inherit;
+  cursor: pointer;
+  transition:
+    transform 140ms ease,
+    border-color 140ms ease,
+    box-shadow 140ms ease,
+    background 140ms ease;
+}
+
+.reaction-pad:hover {
+  transform: translateY(-2px);
+}
+
+.reaction-pad.is-active {
+  border-color: rgba(255, 220, 138, 0.28);
+  background:
+    radial-gradient(circle at center, rgba(255, 226, 152, 0.28), transparent 62%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0.05)),
+    rgba(255, 255, 255, 0.05);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    0 22px 34px rgba(12, 10, 32, 0.28),
+    0 0 26px rgba(255, 220, 138, 0.18);
+}
+
+.reaction-pad.is-pulsing {
+  animation: rewardTapPulse 420ms ease;
+}
+
+.reaction-pad__core {
+  display: inline-grid;
+  place-items: center;
+  width: 100%;
+  min-height: 108px;
+  font-size: 2rem;
+}
+
+@media (max-width: 980px) {
+  .arena-summary {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 760px) {
+  .reaction-grid {
+    gap: 10px;
+  }
+
+  .reaction-pad {
+    min-height: 92px;
+  }
+}
+
+@media (max-width: 540px) {
+  .game-choice--rich,
+  .game-pick-card,
+  .session-chip {
+    padding: 16px;
+    border-radius: 20px;
+  }
+
+  .reaction-pad {
+    border-radius: 22px;
+  }
+}

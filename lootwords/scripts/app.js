@@ -1,6 +1,5 @@
 import {
   APP_NAME,
-  AUDIO_SFX,
   BOX_TAP_COUNT,
   FEEDBACK_EVENTS,
   GAME_CONFIG,
@@ -13,9 +12,11 @@ import { createAudioManager } from "./core/audio-manager.js";
 import { createEventBus } from "./core/event-bus.js";
 import { createFeedbackManager } from "./core/feedback-manager.js";
 import { getReviewDeck, summarizeProgress } from "./core/progression.js";
-import { openRewardBox, recordGameWin } from "./core/rewards.js";
+import { getRecommendedGameId } from "./core/game-session-manager.js";
+import { openRewardBox, recordGameLoss, recordGameWin } from "./core/rewards.js";
 import { createStore } from "./core/state.js";
 import { updateAudioSettings } from "./core/settings-manager.js";
+import { getRandomGameId } from "./games/game-registry.js";
 import { createRouter, buildRoute } from "./router.js";
 import { loadProfile, saveProfile } from "./storage.js";
 import { renderCollectionScreen } from "./ui/collection-screen.js";
@@ -67,7 +68,7 @@ function clearRewardRevealTimeout() {
 function deriveState() {
   const state = store.getState();
   const cards = hydrateCards(state.profile);
-  const progress = summarizeProgress(cards, state.profile);
+  const progress = summarizeProgress(cards, state.profile, state.route.game);
   const reviewDeck = getReviewDeck(cards, state.profile.learnFilters);
 
   return {
@@ -124,6 +125,19 @@ function patchAudioSettings(partialAudio) {
 
 const actions = {
   navigate,
+  playRandomGame(currentGameId = null) {
+    const nextGameId = getRandomGameId({
+      excludeGameId: currentGameId ?? store.getState().route.game,
+    });
+    navigate(ROUTES.play, { game: nextGameId });
+  },
+  playRecommendedGame(currentGameId = null) {
+    const nextGameId = getRecommendedGameId(
+      store.getState().profile,
+      currentGameId ?? store.getState().route.game,
+    );
+    navigate(ROUTES.play, { game: nextGameId });
+  },
   toggleMute() {
     const { settings } = store.getState().profile;
     const wasMuted = settings.audio.muted;
@@ -349,25 +363,49 @@ const actions = {
   },
   finishGame(result) {
     if (result.status === "won") {
-      commitState((currentState) => ({
-        ...currentState,
-        profile: recordGameWin(currentState.profile, result.gameId),
-        session: {
-          ...currentState.session,
-          gameResult: result,
-        },
-      }));
+      let winSummary = null;
+
+      commitState((currentState) => {
+        const { profile, summary } = recordGameWin(currentState.profile, result.gameId);
+        winSummary = summary;
+
+        return {
+          ...currentState,
+          profile,
+          session: {
+            ...currentState.session,
+            gameResult: {
+              ...result,
+              summary,
+            },
+          },
+        };
+      });
       feedback.trigger(FEEDBACK_EVENTS.gameWin);
+
+      if (winSummary?.reachedMilestone) {
+        feedback.trigger(FEEDBACK_EVENTS.progressMilestone, {
+          audioOptions: { delayMs: 140 },
+        });
+      }
       return;
     }
 
-    commitState((currentState) => ({
-      ...currentState,
-      session: {
-        ...currentState.session,
-        gameResult: result,
-      },
-    }));
+    commitState((currentState) => {
+      const { profile, summary } = recordGameLoss(currentState.profile, result.gameId);
+
+      return {
+        ...currentState,
+        profile,
+        session: {
+          ...currentState.session,
+          gameResult: {
+            ...result,
+            summary,
+          },
+        },
+      };
+    });
     feedback.trigger(FEEDBACK_EVENTS.gameLose);
   },
   clearGameResult() {
@@ -535,7 +573,10 @@ router = createRouter((route) => {
       ...currentState.session,
       navMotion,
       modalCardId: route.path === ROUTES.collection ? currentState.session.modalCardId : null,
-      gameResult: route.path === ROUTES.play ? currentState.session.gameResult : null,
+      gameResult:
+        route.path === ROUTES.play && currentState.session.gameResult?.gameId === nextGame
+          ? currentState.session.gameResult
+          : null,
       reward: route.path === ROUTES.reward ? currentState.session.reward : createRewardSession(),
     },
   }));
@@ -560,9 +601,12 @@ window.render_game_to_text = () => {
     route: state.route.path,
     routeGame: state.route.game,
     rewardBoxes: state.profile.rewardBoxes,
+    rewardBoxesEarned: state.profile.rewardBoxesEarned,
     totalUnlocked: progress.totalUnlocked,
     totalCards: progress.totalCards,
     totalWins: state.profile.totalWins,
+    currentStreak: state.profile.currentStreak,
+    bestStreak: state.profile.bestStreak,
     audio: {
       muted: state.profile.settings.audio.muted,
       musicEnabled: state.profile.settings.audio.musicEnabled,
@@ -573,6 +617,15 @@ window.render_game_to_text = () => {
       clicks: state.session.reward.clicks,
       phase: state.session.reward.phase,
       reveal: state.session.reward.reveal,
+    },
+    playSummary: {
+      totalPlays: progress.playSummary.totalPlays,
+      gamesTried: progress.playSummary.gamesTried,
+      gamesWon: progress.playSummary.gamesWon,
+      nextMilestoneTarget: progress.playSummary.nextMilestoneTarget,
+      winsUntilMilestone: progress.playSummary.winsUntilMilestone,
+      recommendedGame: progress.playSummary.recommendedGame?.id ?? null,
+      randomGame: progress.playSummary.randomGame?.id ?? null,
     },
     activeScreen: activeScreen?.getDebugState?.() ?? null,
     unlockedPreview: cards.filter((card) => card.unlocked).slice(0, 6).map((card) => card.word),

@@ -11,6 +11,7 @@ import {
   STORAGE_VERSION,
 } from "./data/config.js";
 import { CARD_LIBRARY } from "./data/cards.js";
+import { normalizeGameStatsMap, createEmptyGameStatsMap } from "./core/game-session-manager.js";
 import { createDefaultSettings, normalizeSettings } from "./core/settings-manager.js";
 
 function clampPoints(value) {
@@ -26,6 +27,19 @@ function createCompletedRounds() {
     accumulator[gameId] = 0;
     return accumulator;
   }, {});
+}
+
+function createFirstWinGameIds(gameStats = {}, rawFirstWins = []) {
+  const derivedWins = Object.keys(gameStats).filter((gameId) => gameStats[gameId].wins > 0);
+  const allowed = new Set(Object.keys(GAME_CONFIG));
+
+  return Array.from(new Set([...(Array.isArray(rawFirstWins) ? rawFirstWins : []), ...derivedWins])).filter(
+    (gameId) => allowed.has(gameId),
+  );
+}
+
+function normalizeGameId(value, fallback = "memory-match") {
+  return value && Object.hasOwn(GAME_CONFIG, value) ? value : fallback;
 }
 
 function createInitialPoints(existing = {}) {
@@ -56,9 +70,15 @@ export function createInitialProfile() {
     unlockedCardIds: [],
     discoveredAtByCardId: {},
     rewardBoxes: 0,
+    rewardBoxesEarned: 0,
     totalWins: 0,
     bonusStars: 0,
+    currentStreak: 0,
+    bestStreak: 0,
+    firstWinGameIds: [],
     completedRounds: createCompletedRounds(),
+    gameStats: createEmptyGameStatsMap(),
+    lastPlayedGameId: "memory-match",
     collectionFilters: { ...DEFAULT_COLLECTION_FILTERS },
     learnFilters: { ...DEFAULT_LEARN_FILTERS },
     settings: createDefaultSettings(),
@@ -68,6 +88,8 @@ export function createInitialProfile() {
 export function normalizeProfile(rawProfile) {
   const fallback = createInitialProfile();
   const raw = rawProfile && typeof rawProfile === "object" ? rawProfile : {};
+  const normalizedGameStats = normalizeGameStatsMap(raw.gameStats, raw.completedRounds);
+  const firstWinGameIds = createFirstWinGameIds(normalizedGameStats, raw.firstWinGameIds);
 
   const unlockedIds = Array.isArray(raw.unlockedCardIds)
     ? raw.unlockedCardIds.filter((cardId) => CARD_LIBRARY.some((card) => card.id === cardId))
@@ -80,7 +102,6 @@ export function normalizeProfile(rawProfile) {
     return accumulator;
   }, {});
 
-  const completedRounds = { ...createCompletedRounds(), ...(raw.completedRounds ?? {}) };
   const collectionFilters = {
     ...DEFAULT_COLLECTION_FILTERS,
     ...(raw.collectionFilters ?? {}),
@@ -98,12 +119,25 @@ export function normalizeProfile(rawProfile) {
     unlockedCardIds: Array.from(new Set(unlockedIds)),
     discoveredAtByCardId,
     rewardBoxes: Math.max(0, Number.parseInt(raw.rewardBoxes, 10) || 0),
+    rewardBoxesEarned: Math.max(
+      0,
+      Number.parseInt(raw.rewardBoxesEarned, 10) || Number.parseInt(raw.totalWins, 10) || 0,
+    ),
     totalWins: Math.max(0, Number.parseInt(raw.totalWins, 10) || 0),
     bonusStars: Math.max(0, Number.parseInt(raw.bonusStars, 10) || 0),
+    currentStreak: Math.max(0, Number.parseInt(raw.currentStreak, 10) || 0),
+    bestStreak: Math.max(
+      0,
+      Number.parseInt(raw.bestStreak, 10) || 0,
+      Number.parseInt(raw.currentStreak, 10) || 0,
+    ),
+    firstWinGameIds,
     completedRounds: Object.keys(createCompletedRounds()).reduce((accumulator, gameId) => {
-      accumulator[gameId] = Math.max(0, Number.parseInt(completedRounds[gameId], 10) || 0);
+      accumulator[gameId] = normalizedGameStats[gameId].wins;
       return accumulator;
     }, {}),
+    gameStats: normalizedGameStats,
+    lastPlayedGameId: normalizeGameId(raw.lastPlayedGameId),
     collectionFilters: {
       category: normalizeCategoryFilter(collectionFilters.category),
       rarity: normalizeRarityFilter(collectionFilters.rarity),

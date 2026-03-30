@@ -8,6 +8,7 @@ import {
   RECENT_CARD_LIMIT,
 } from "../data/config.js";
 import { buildCategorySections, sortCards } from "./card-utils.js";
+import { buildGameSessionSummary } from "./game-session-manager.js";
 
 function sortByDiscoveredAt(left, right) {
   const leftTime = left.discoveredAt ? new Date(left.discoveredAt).getTime() : 0;
@@ -15,13 +16,14 @@ function sortByDiscoveredAt(left, right) {
   return rightTime - leftTime;
 }
 
-export function summarizeProgress(cards, profile) {
+export function summarizeProgress(cards, profile, currentGameId = null) {
   const unlockedCards = cards.filter((card) => card.unlocked);
   const totalPoints = unlockedCards.reduce((sum, card) => sum + card.points, 0);
   const recentCards = [...unlockedCards]
     .filter((card) => card.discoveredAt)
     .sort(sortByDiscoveredAt)
     .slice(0, RECENT_CARD_LIMIT);
+  const playSummary = buildGameSessionSummary(profile, currentGameId);
 
   const categoryCounts = CATEGORY_ORDER.map((categoryId) => {
     const categoryCards = cards.filter((card) => card.category === categoryId);
@@ -71,8 +73,11 @@ export function summarizeProgress(cards, profile) {
     totalPoints,
     completionPercent: cards.length ? Math.round((unlockedCards.length / cards.length) * 100) : 0,
     rewardBoxes: profile.rewardBoxes,
+    rewardBoxesEarned: profile.rewardBoxesEarned,
     totalWins: profile.totalWins,
     bonusStars: profile.bonusStars,
+    currentStreak: profile.currentStreak,
+    bestStreak: profile.bestStreak,
     categoryCounts,
     rarityCounts,
     packCounts,
@@ -83,6 +88,7 @@ export function summarizeProgress(cards, profile) {
     weakestCards,
     strongestCard: strongestCards[0] ?? null,
     weakestCard: weakestCards[0] ?? null,
+    playSummary,
   };
 }
 
