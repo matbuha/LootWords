@@ -1,33 +1,6 @@
-# LootWords
+Original prompt: Build LootWords as a browser-based children's word-learning game in plain HTML, CSS, and JavaScript, with two internal mini-games, reward boxes that open in exactly three taps, collectible noun cards with persisted random points and rarity, localStorage persistence, modular architecture, and a phase-by-phase checklist that stays updated.
 
-LootWords is a browser-based, reward-first word-learning game for children. The player clears short mini-games, earns reward boxes, opens them in exactly three taps, and collects noun cards that double as the vocabulary material.
-
-## Run locally
-
-From `C:\Users\ariel\Projects\LootWords`:
-
-```powershell
-python -m http.server 8123 --bind 127.0.0.1
-```
-
-Then open:
-
-- `http://127.0.0.1:8123/lootwords/`
-
-## Architecture
-
-- `lootwords/index.html`: static shell and module entry.
-- `lootwords/styles/main.css`: global theme, layout, responsive rules, and game/reward animations.
-- `lootwords/scripts/app.js`: app bootstrap, shared shell, state actions, persistence wiring, and debug hooks.
-- `lootwords/scripts/router.js`: hash-based screen routing.
-- `lootwords/scripts/storage.js`: profile initialization, normalization, and localStorage persistence.
-- `lootwords/scripts/data/cards.js`: 70-card visual noun dataset with placeholder icon art.
-- `lootwords/scripts/data/config.js`: categories, routes, rarity labels, game config, and shared constants.
-- `lootwords/scripts/core/`: state, rarity, progression, rewards, and audio placeholder logic.
-- `lootwords/scripts/games/`: Memory Match and Treasure Match mini-games.
-- `lootwords/scripts/ui/`: screen rendering for home, collection, reward, learn, and game hosting.
-
-## Completed checklist
+## Progress Checklist
 
 ### Phase 1: Foundation
 - [x] Create project folder structure
@@ -102,21 +75,22 @@ Then open:
 - [x] Refactor messy code
 - [x] Add README with run instructions and architecture notes
 
-## Verified behavior
+## Work Log
 
-- Home, play, reward, collection, and learn screens all route cleanly.
-- Random points are generated once and persisted per card.
-- Rarity is derived from points and displayed across cards and summaries.
-- Memory Match and Treasure Match both award one reward box on victory.
-- Reward boxes require exactly three taps and reveal a new card or a 50-star fallback when every card is already unlocked.
-- Unlocked cards persist across reloads and appear in collection and learn views.
-- Collection filters update and persist in localStorage.
-- Placeholder audio cues exist for clicks, reward taps, reward reveal, and victories.
-- Browser verification completed with zero console errors.
+- 2026-03-30: Read the repo baseline and loaded the local frontend/game workflow skills.
+- 2026-03-30: Created the requested directory structure under `lootwords/`.
+- 2026-03-30: Implemented the SPA shell, route handling, localStorage profile normalization, and modular screen/game architecture.
+- 2026-03-30: Added a 70-card noun dataset with persisted point values, rarity tiers, reward logic, and placeholder art based on icon glyphs.
+- 2026-03-30: Built Memory Match and Treasure Match, then connected wins to reward-box inventory and progression.
+- 2026-03-30: Verified in-browser flows with Playwright:
+  - Memory Match win -> reward box earned -> 3-tap reward reveal -> collection + learn + reload persistence.
+  - Treasure Match win -> reward box earned.
+  - Second reward reveal unlocked a different card, confirming duplicate prevention.
+  - Collection filters persisted.
+  - "All cards collected" fallback converted a reward box into 50 bonus stars.
+  - Final browser refresh completed with zero console errors.
 
-## Optional improvements
+## Notes
 
-- Replace icon placeholders with custom generated art in `lootwords/assets/images/cards/`.
-- Add sound asset packs and optional background music on top of the current synthesized placeholders.
-- Add progression layers such as streaks, achievements, and themed packs.
-- Add a dedicated quiz mode that reuses only unlocked cards.
+- MVP card art uses embedded icon-based placeholders so the app is playable before custom images are added.
+- The browser verification used a local static server at `http://127.0.0.1:8123/lootwords/`.
