@@ -1269,6 +1269,19 @@ body.is-feedback-legendary .route-glow::after {
     rgba(255, 255, 255, 0.07);
 }
 
+.parent-entry-button {
+  min-height: 44px;
+  padding: 0 14px;
+  border-radius: 16px;
+  font-size: 0.88rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  background:
+    linear-gradient(180deg, rgba(125, 214, 255, 0.16), rgba(125, 214, 255, 0.06)),
+    rgba(255, 255, 255, 0.07);
+  border-color: rgba(125, 214, 255, 0.28);
+}
+
 .nav-link {
   border: 1px solid transparent;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
@@ -2353,6 +2366,325 @@ body.is-feedback-legendary .route-glow::after {
 
 .collection-section__meta {
   justify-content: flex-end;
+}
+
+.route-glow--parent {
+  background:
+    radial-gradient(circle at top left, rgba(112, 189, 255, 0.16), transparent 36%),
+    radial-gradient(circle at bottom right, rgba(90, 247, 211, 0.1), transparent 38%);
+}
+
+.app-shell--parent .shell-main {
+  padding-bottom: 28px;
+}
+
+.shell-topbar--parent,
+.parent-panel,
+.parent-nav,
+.parent-section,
+.parent-side-panel,
+.parent-stat-card,
+.parent-row-card,
+.parent-status,
+.parent-warning,
+.parent-gate,
+.parent-table-wrap {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.035)),
+    rgba(13, 17, 38, 0.8);
+  border: 1px solid rgba(168, 194, 255, 0.08);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    0 18px 34px rgba(6, 9, 22, 0.22);
+}
+
+.shell-topbar--parent {
+  border-radius: 24px;
+}
+
+.brand-lockup--parent {
+  pointer-events: none;
+}
+
+.topbar-status--parent {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.parent-layout,
+.parent-form-grid,
+.parent-two-column {
+  display: grid;
+  gap: 18px;
+}
+
+.parent-layout {
+  grid-template-columns: minmax(220px, 260px) minmax(0, 1fr);
+  align-items: start;
+}
+
+.parent-nav,
+.parent-section,
+.parent-side-panel,
+.parent-gate {
+  padding: 22px;
+  border-radius: 24px;
+}
+
+.parent-nav {
+  position: sticky;
+  top: 18px;
+  display: grid;
+  gap: 16px;
+}
+
+.parent-nav__tabs,
+.parent-list,
+.parent-checkbox-list,
+.parent-copy-block {
+  display: grid;
+  gap: 12px;
+}
+
+.parent-nav__button,
+.parent-toggle,
+.parent-danger-button,
+.parent-link-button {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-strong);
+  cursor: pointer;
+  transition:
+    transform 140ms ease,
+    border-color 140ms ease,
+    background 140ms ease;
+}
+
+.parent-nav__button,
+.parent-danger-button {
+  padding: 12px 14px;
+  text-align: left;
+}
+
+.parent-nav__button.is-active {
+  background: linear-gradient(180deg, rgba(112, 189, 255, 0.16), rgba(255, 255, 255, 0.05));
+  border-color: rgba(112, 189, 255, 0.24);
+}
+
+.parent-link-button {
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+
+.parent-word {
+  color: var(--text-strong);
+  font-weight: 700;
+}
+
+.parent-stat-grid {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  margin-bottom: 18px;
+}
+
+.parent-stat-card {
+  padding: 16px 18px;
+  border-radius: 20px;
+}
+
+.parent-stat-card span,
+.parent-row-card__copy span,
+.parent-row-card__copy small,
+.parent-help,
+.parent-copy-block p,
+.parent-status p,
+.parent-warning {
+  color: var(--text-muted);
+}
+
+.parent-stat-card strong,
+.parent-row-card__copy strong,
+.parent-status strong {
+  color: var(--text-strong);
+}
+
+.parent-toolbar {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  margin-bottom: 18px;
+}
+
+.parent-field {
+  display: grid;
+  gap: 8px;
+}
+
+.parent-field--grow {
+  grid-column: span 2;
+}
+
+.parent-input,
+.parent-select,
+.parent-textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(8, 11, 27, 0.72);
+  color: var(--text-strong);
+}
+
+.parent-textarea {
+  min-height: 280px;
+  resize: vertical;
+}
+
+.parent-form-grid {
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  margin-bottom: 18px;
+}
+
+.parent-checkbox {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  color: var(--text-muted);
+}
+
+.parent-checkbox input {
+  margin-top: 4px;
+}
+
+.parent-two-column {
+  grid-template-columns: minmax(0, 1.2fr) minmax(280px, 0.8fr);
+}
+
+.parent-table-wrap {
+  overflow: auto;
+  border-radius: 22px;
+}
+
+.parent-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.parent-table th,
+.parent-table td {
+  padding: 12px 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  text-align: left;
+  color: var(--text-soft);
+}
+
+.parent-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: rgba(12, 16, 36, 0.96);
+  color: var(--text-muted);
+}
+
+.parent-table tbody tr.is-selected {
+  background: rgba(112, 189, 255, 0.08);
+}
+
+.parent-row-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 16px 18px;
+  border-radius: 20px;
+}
+
+.parent-row-card__copy {
+  display: grid;
+  gap: 4px;
+}
+
+.parent-toggle {
+  min-width: 96px;
+  padding: 10px 14px;
+}
+
+.parent-toggle.is-on {
+  background: linear-gradient(180deg, rgba(90, 247, 211, 0.14), rgba(255, 255, 255, 0.04));
+  border-color: rgba(90, 247, 211, 0.22);
+}
+
+.parent-toggle.is-off,
+.parent-danger-button {
+  background: linear-gradient(180deg, rgba(255, 124, 124, 0.12), rgba(255, 255, 255, 0.04));
+  border-color: rgba(255, 124, 124, 0.2);
+}
+
+.parent-status,
+.parent-warning {
+  padding: 16px 18px;
+  border-radius: 18px;
+  margin-bottom: 18px;
+}
+
+.parent-status.is-success {
+  border-color: rgba(90, 247, 211, 0.22);
+}
+
+.parent-status.is-warning,
+.parent-warning {
+  border-color: rgba(255, 216, 115, 0.24);
+}
+
+.parent-status.is-error {
+  border-color: rgba(255, 124, 124, 0.24);
+}
+
+.parent-status ul {
+  margin: 10px 0 0 18px;
+  color: var(--text-soft);
+}
+
+.cta-stack--parent {
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.parent-empty-inline {
+  padding: 16px 4px;
+  color: var(--text-muted);
+}
+
+@media (max-width: 980px) {
+  .parent-layout,
+  .parent-two-column {
+    grid-template-columns: 1fr;
+  }
+
+  .parent-nav {
+    position: static;
+  }
+}
+
+@media (max-width: 760px) {
+  .parent-field--grow {
+    grid-column: span 1;
+  }
+
+  .parent-toolbar,
+  .parent-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .parent-row-card {
+    flex-direction: column;
+    align-items: stretch;
+  }
 }
 
 .section-panel--play-hub {

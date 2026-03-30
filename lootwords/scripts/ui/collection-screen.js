@@ -6,6 +6,7 @@ export function renderCollectionScreen(container, { cards, filters, progress, ac
   const collectionSections = getCollectionSections(cards, filters);
   const recentCardIds = new Set(progress.recentCardIds);
   const categoryCountById = new Map(progress.categoryCounts.map((entry) => [entry.id, entry]));
+  const categoryOptions = progress.categoryCounts;
 
   container.innerHTML = `
     <section class="collection-panel">
@@ -74,10 +75,10 @@ export function renderCollectionScreen(container, { cards, filters, progress, ac
           <span class="small-label">Category</span>
           <select class="filter-select" data-filter-key="category">
             <option value="all">All categories</option>
-            ${Object.entries(CATEGORY_META)
+            ${categoryOptions
               .map(
-                ([categoryId, meta]) => `
-                  <option value="${categoryId}" ${filters.category === categoryId ? "selected" : ""}>${meta.label}</option>
+                (entry) => `
+                  <option value="${entry.id}" ${filters.category === entry.id ? "selected" : ""}>${entry.label}</option>
                 `,
               )
               .join("")}
@@ -152,8 +153,10 @@ export function renderCollectionScreen(container, { cards, filters, progress, ac
             </div>
           `
           : renderEmptyState(
-              "No cards match this filter",
-              "Try another category or rarity to see more of the collection.",
+              progress.totalCards === 0 ? "No active collection cards" : "No cards match this filter",
+              progress.totalCards === 0
+                ? "A parent has turned off every active category or card. Ask them to re-enable content in Parent Mode."
+                : "Try another category or rarity to see more of the collection.",
             )
       }
     </section>

@@ -1,6 +1,6 @@
 import { renderCard, renderEmptyState } from "./ui-kit.js";
 
-function renderGamePickup(game, actionsLabel) {
+function renderGamePickup(game, actionsLabel, disabled = false) {
   return `
     <article class="game-pick-card">
       <div class="game-pick-card__top">
@@ -13,14 +13,14 @@ function renderGamePickup(game, actionsLabel) {
         <span>${game.energyLabel}</span>
         <span>${game.stats.wins}/${game.stats.plays} wins</span>
       </div>
-      <button class="secondary-button" type="button" data-route="play" data-game="${game.id}">${actionsLabel}</button>
+      <button class="secondary-button" type="button" data-route="play" data-game="${game.id}" ${disabled ? "disabled" : ""}>${actionsLabel}</button>
     </article>
   `;
 }
 
-function renderGameChoice(game) {
+function renderGameChoice(game, disabled = false) {
   return `
-    <button class="game-choice game-choice--home game-choice--rich" type="button" data-route="play" data-game="${game.id}">
+    <button class="game-choice game-choice--home game-choice--rich" type="button" data-route="play" data-game="${game.id}" ${disabled ? "disabled" : ""}>
       <div class="game-choice__topline">
         <span class="game-choice__icon" aria-hidden="true">${game.icon}</span>
         <span class="small-label">${game.lengthLabel}</span>
@@ -40,6 +40,7 @@ function renderGameChoice(game) {
 }
 
 export function renderHomeScreen(container, { progress, actions, newestCard }) {
+  const noActiveContent = progress.totalCards === 0;
   const stashLabel =
     progress.rewardBoxes > 0
       ? `${progress.rewardBoxes} reward ${progress.rewardBoxes === 1 ? "box" : "boxes"} ready`
@@ -65,14 +66,19 @@ export function renderHomeScreen(container, { progress, actions, newestCard }) {
             Jump into a mini-game, earn a box, and keep growing a collectible English word album that feels earned.
           </p>
           <div class="hero-actions">
-            <button class="primary-button" type="button" data-play-recommended="home">
+            <button class="primary-button" type="button" data-play-recommended="home" ${noActiveContent ? "disabled" : ""}>
               ${recommendedGame ? `Recommended: ${recommendedGame.label}` : "Start a loot run"}
             </button>
-            <button class="secondary-button" type="button" data-play-random="home">
+            <button class="secondary-button" type="button" data-play-random="home" ${noActiveContent ? "disabled" : ""}>
               ${randomGame ? `Random: ${randomGame.label}` : "Random game"}
             </button>
             <button class="ghost-button" type="button" data-route="reward">${progress.rewardBoxes > 0 ? "Open my box" : "See reward room"}</button>
           </div>
+          ${
+            noActiveContent
+              ? `<div class="parent-warning">No active cards are available right now. A parent can turn categories or cards back on in Parent Mode.</div>`
+              : ""
+          }
           <div class="hero-stats">
             <div class="stat-card stat-card--glow">
               <span>Collection progress</span>
@@ -132,8 +138,8 @@ export function renderHomeScreen(container, { progress, actions, newestCard }) {
             <p class="screen-note">The first win in a new game grants an extra reward box.</p>
           </div>
           <div class="game-pick-grid">
-            ${recommendedGame ? renderGamePickup(recommendedGame, "Play recommended") : ""}
-            ${randomGame ? renderGamePickup(randomGame, "Try random") : ""}
+            ${recommendedGame ? renderGamePickup(recommendedGame, "Play recommended", noActiveContent) : ""}
+            ${randomGame ? renderGamePickup(randomGame, "Try random", noActiveContent) : ""}
           </div>
         </div>
         <div class="section-panel section-panel--spotlight">
@@ -156,7 +162,7 @@ export function renderHomeScreen(container, { progress, actions, newestCard }) {
           <p class="screen-note">Fast rounds, different rhythms, and cleaner routes to more rewards.</p>
         </div>
         <div class="game-switcher game-switcher--grid">
-          ${playSummary.gameProgress.map((game) => renderGameChoice(game)).join("")}
+          ${playSummary.gameProgress.map((game) => renderGameChoice(game, noActiveContent)).join("")}
         </div>
       </section>
 

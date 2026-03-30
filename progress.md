@@ -8,6 +8,8 @@ Current prompt: Upgrade LootWords with a modular audio and emotional feedback sy
 
 Latest prompt: Expand replayability and progression by adding more lightweight mini-games, a cleaner game registry, smoother play selection, and stronger long-term reward hooks without breaking the collectible loop.
 
+Latest prompt: Add a dedicated Parent Mode and content-management layer so a parent can safely manage content availability, categories, rewards, progression settings, progress visibility, resets, and import/export without breaking the child-facing game flow.
+
 ## Progress Checklist
 
 ### Phase 1: Foundation
@@ -254,6 +256,51 @@ Latest prompt: Expand replayability and progression by adding more lightweight m
 - [x] Test navigation and cleanup
 - [x] Refactor rough code and update docs
 
+## Parent Mode and Content Management Checklist
+
+### Phase A: Parent Mode Foundation
+- [x] Create parent-mode routing/entry
+- [x] Build parent dashboard shell
+- [x] Keep parent mode separated from child mode
+- [x] Verify app remains stable
+
+### Phase B: Content and Categories
+- [x] Build card list/content manager
+- [x] Add search/filter support
+- [x] Build category enable/disable controls
+- [x] Ensure reward pool respects active categories
+- [x] Ensure learn/collection flow respects category settings
+- [x] Verify category toggles work safely
+
+### Phase C: Progress and Reward Controls
+- [x] Add child progress summary panel
+- [x] Add reward/progression configuration controls
+- [x] Persist parent settings in localStorage
+- [x] Verify settings affect gameplay safely
+
+### Phase D: Reset and Import/Export
+- [x] Add reset tools with confirmations
+- [x] Add export state to JSON
+- [x] Add import state from JSON
+- [x] Validate imported data before applying
+- [x] Verify import/export/reset flows work safely
+
+### Phase E: Validation and Edge Cases
+- [x] Add content validation layer
+- [x] Handle empty pool and disabled category edge cases
+- [x] Handle invalid import payloads safely
+- [x] Prevent corrupted state application
+- [x] Verify app remains usable after edge-case operations
+
+### Phase F: QA and Cleanup
+- [x] Test child mode after parent changes
+- [x] Test reward generation after category changes
+- [x] Test progress accuracy
+- [x] Test reset flows
+- [x] Test import/export roundtrip
+- [x] Refactor rough admin code
+- [x] Update documentation
+
 ## Work Log
 
 - 2026-03-30: Read the repo baseline and loaded the local frontend/game workflow skills.
@@ -336,6 +383,28 @@ Latest prompt: Expand replayability and progression by adding more lightweight m
   - recommended and random play buttons routed to valid game entries
   - progression totals, streak reset, and per-game play counts persisted after reload
   - browser console remained clean
+- 2026-03-30: Added Parent Mode architecture:
+  - dedicated `#/parent` route and separate admin shell
+  - topbar Parent entry that opens a gate instead of exposing controls directly in the child flow
+  - parent dashboard sections for content, categories, rewards/progression, child progress, import/export, reset tools, and settings
+- 2026-03-30: Added parent-side state and validation helpers:
+  - `parent-mode.js` normalizes category/card availability and reward settings
+  - `content-validator.js` validates imported payloads, category ids, card ids, and numeric progress fields
+  - `reset-manager.js` and `import-export-manager.js` centralize destructive/admin data operations
+- 2026-03-30: Wired child mode to respect parent settings:
+  - category toggles now remove disabled categories from rewards, collection, learn, and play
+  - child filters automatically fall back to `all` when a saved category becomes inactive
+  - reward opening now blocks safely when no active cards are available
+- 2026-03-30: Re-verified in-browser after the Parent Mode pass:
+  - parent gate opened from the topbar Parent entry and kept admin UI out of the main child navigation
+  - disabling the `home` category removed those cards from collection and learn while keeping unlocked cards shelved safely
+  - disabling all categories produced stable child-facing empty states and a blocked reward box instead of broken reward logic
+  - resetting settings restored active categories and usable child-mode screens
+  - changing `rewardBoxesPerWin` to `2` and winning Loot Pop granted `+3` boxes total on the first win path, confirming live reward tuning
+  - reward opening still revealed a new card after the parent-mode changes
+  - invalid import payloads are now blocked instead of normalizing into a blank profile
+  - exported profiles no longer keep stray unknown fields after normalization
+  - browser console remained clean
 
 ## Notes
 
@@ -351,3 +420,10 @@ Latest prompt: Expand replayability and progression by adding more lightweight m
   - `picture-match`
   - `flash-find`
   - `loot-pop`
+- Parent Mode now uses a dedicated admin layer with these main modules:
+  - `lootwords/scripts/core/parent-mode.js`
+  - `lootwords/scripts/core/content-validator.js`
+  - `lootwords/scripts/core/import-export-manager.js`
+  - `lootwords/scripts/core/reset-manager.js`
+  - `lootwords/scripts/ui/parent-screen.js`
+  - `lootwords/scripts/ui/parent-sections/`

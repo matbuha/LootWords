@@ -9,7 +9,7 @@ import {
 
 export const APP_NAME = "LootWords";
 export const STORAGE_KEY = "lootwords-profile";
-export const STORAGE_VERSION = 5;
+export const STORAGE_VERSION = 6;
 
 export { CATEGORY_META, CATEGORY_ORDER, DIFFICULTY_META, LEGACY_CATEGORY_ALIASES, PACK_META, PACK_ORDER };
 
@@ -19,6 +19,7 @@ export const ROUTES = {
   reward: "reward",
   collection: "collection",
   learn: "learn",
+  parent: "parent",
 };
 
 export const ROUTE_SEQUENCE = [
@@ -27,6 +28,7 @@ export const ROUTE_SEQUENCE = [
   ROUTES.reward,
   ROUTES.collection,
   ROUTES.learn,
+  ROUTES.parent,
 ];
 
 export const DEFAULT_ROUTE = {
@@ -215,6 +217,7 @@ export const AUDIO_ROUTE_TRACKS = {
   [ROUTES.learn]: AUDIO_TRACKS.menu,
   [ROUTES.play]: AUDIO_TRACKS.gameplay,
   [ROUTES.reward]: AUDIO_TRACKS.reward,
+  [ROUTES.parent]: AUDIO_TRACKS.menu,
 };
 
 export const AUDIO_DEFAULT_SETTINGS = {

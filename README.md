@@ -74,6 +74,34 @@ LootWords is a browser-based, reward-first word-learning game for children. The 
 
 These pack ids are already part of every card, so future parent-controlled pack selection and seasonal content can build on the existing model instead of replacing it.
 
+## Parent Mode
+
+- The child-facing flow now has a dedicated parent/admin layer behind a separate `Parent` entry in the top bar and a simple phrase gate (`LOOT` in the current MVP).
+- Parent Mode uses a neutral dashboard shell instead of the child-facing reward UI and is split into practical sections:
+  - Content
+  - Categories
+  - Rewards & Progression
+  - Child Progress
+  - Import / Export
+  - Reset Tools
+  - Settings
+- Parents can now:
+  - search and filter the full card library
+  - toggle individual cards on or off for child mode
+  - enable or disable whole categories
+  - tune reward settings such as boxes per win, fallback behavior, and milestone toggles
+  - inspect child progress by category, rarity, and mini-game
+  - export or import the saved browser profile as JSON
+  - run confirmed reset actions for progress, collection, rewards, or settings
+
+## Parent-mode safety rules
+
+- Parent settings persist in localStorage as part of the main profile, so child mode and admin mode always read from the same normalized source of truth.
+- Disabled categories and cards are removed from reward generation, collection browsing, learn review, and game card pools without deleting unlocked history.
+- If no active cards remain, the child UI now falls back to safe empty states instead of breaking reward or collection flows.
+- Import validation now rejects malformed payloads before state is applied.
+- Profile normalization now strips unknown fields instead of silently preserving them across future exports.
+
 ## Run locally
 
 From `C:\Users\ariel\Projects\LootWords`:
@@ -102,10 +130,16 @@ Then open:
 - `lootwords/scripts/core/settings-manager.js`: normalized audio settings and persistence helpers.
 - `lootwords/scripts/core/event-bus.js`: lightweight pub/sub for future event-driven systems.
 - `lootwords/scripts/core/game-session-manager.js`: per-game stat normalization, recommended/random game logic, and progression milestone helpers.
+- `lootwords/scripts/core/parent-mode.js`: parent settings normalization, active-card filtering, and parent dashboard summaries.
+- `lootwords/scripts/core/content-validator.js`: validation for imported admin data and content-related state.
+- `lootwords/scripts/core/import-export-manager.js`: JSON export/import helpers for the browser profile.
+- `lootwords/scripts/core/reset-manager.js`: confirmed reset actions for child progress, collection, rewards, and settings.
 - `lootwords/scripts/core/`: state, rarity, progression, rewards, and supporting gameplay systems.
 - `lootwords/scripts/games/game-registry.js`: single registration point for playable mini-games.
 - `lootwords/scripts/games/`: Memory Match, Treasure Match, Flash Find, and Loot Pop.
-- `lootwords/scripts/ui/`: screen rendering for home, collection, reward, learn, and game hosting.
+- `lootwords/scripts/ui/parent-screen.js`: parent/admin dashboard shell and section routing.
+- `lootwords/scripts/ui/parent-sections/`: content, category, progression, progress, import/export, and reset admin panels.
+- `lootwords/scripts/ui/`: screen rendering for home, collection, reward, learn, play, and parent hosting.
 
 ## Completed checklist
 
@@ -204,6 +238,12 @@ Then open:
 - Collection now groups cards by category and surfaces starter-pack progress.
 - Recommended and random play actions route to valid mini-games.
 - Per-game wins, losses, streaks, total plays, and reward-box totals persist after reload.
+- Parent Mode opens through a separate gate and does not leak admin panels into the child navigation.
+- Category toggles remove inactive vocabulary cleanly from reward, collection, learn, and play flows.
+- With all categories disabled, child mode falls back to stable empty states and a blocked reward room instead of crashing or revealing invalid rewards.
+- Reset tools require a second confirmation before applying destructive changes.
+- Invalid import payloads are blocked and surfaced in the Parent Mode UI instead of being applied.
+- Export/import roundtrip works with the validated JSON format.
 - Browser verification completed with zero console errors.
 
 ## Optional improvements

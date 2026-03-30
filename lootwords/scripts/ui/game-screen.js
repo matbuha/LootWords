@@ -1,5 +1,6 @@
 import { getPlayablePool } from "../core/progression.js";
 import { getGameDefinition } from "../games/game-registry.js";
+import { renderEmptyState } from "./ui-kit.js";
 
 function formatVictoryLabel(key) {
   return key
@@ -111,6 +112,7 @@ export function renderGameScreen(container, { route, cards, result, progress, ac
   const recommendedGame = playSummary.recommendedGame;
   const randomGame = playSummary.randomGame;
   const favoriteLabel = playSummary.favoriteGame ? playSummary.favoriteGame.label : "Still picking a favorite";
+  const noActiveContent = progress.totalCards === 0;
 
   container.innerHTML = `
     <div class="game-layout">
@@ -147,10 +149,10 @@ export function renderGameScreen(container, { route, cards, result, progress, ac
         </div>
 
         <div class="play-quick-row">
-          <button class="primary-button" type="button" data-play-recommended="${gameId}">
+          <button class="primary-button" type="button" data-play-recommended="${gameId}" ${noActiveContent ? "disabled" : ""}>
             ${recommendedGame ? `Recommended: ${recommendedGame.shortLabel}` : "Play recommended"}
           </button>
-          <button class="secondary-button" type="button" data-play-random="${gameId}">
+          <button class="secondary-button" type="button" data-play-random="${gameId}" ${noActiveContent ? "disabled" : ""}>
             ${randomGame ? `Random: ${randomGame.shortLabel}` : "Random game"}
           </button>
           <button class="ghost-button" type="button" data-route="reward">
@@ -241,10 +243,16 @@ export function renderGameScreen(container, { route, cards, result, progress, ac
 
   const gameHost = container.querySelector("#game-host");
   const playableCards = gameMeta.usesCardPool ? getPlayablePool(cards, gameMeta.minimumCardPool) : cards;
+  const hasPlayableCardPool = !gameMeta.usesCardPool || playableCards.length > 0;
 
   let mountedGame = null;
 
-  if (!(result && result.gameId === gameId)) {
+  if (!hasPlayableCardPool) {
+    gameHost.innerHTML = renderEmptyState(
+      "No active word cards are available",
+      "A parent has turned off the current vocabulary pool. Parent Mode can re-enable categories or cards so this game can hand out word rewards again.",
+    );
+  } else if (!(result && result.gameId === gameId)) {
     mountedGame = gameMeta.mount(gameHost, {
       cards: playableCards,
       playSound,

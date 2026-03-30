@@ -12,6 +12,7 @@ import {
 } from "./data/config.js";
 import { CARD_LIBRARY } from "./data/cards.js";
 import { normalizeGameStatsMap, createEmptyGameStatsMap } from "./core/game-session-manager.js";
+import { createDefaultParentSettings, normalizeParentSettings } from "./core/parent-mode.js";
 import { createDefaultSettings, normalizeSettings } from "./core/settings-manager.js";
 
 function clampPoints(value) {
@@ -71,6 +72,7 @@ export function createInitialProfile() {
     discoveredAtByCardId: {},
     rewardBoxes: 0,
     rewardBoxesEarned: 0,
+    rewardBoxesOpened: 0,
     totalWins: 0,
     bonusStars: 0,
     currentStreak: 0,
@@ -79,6 +81,7 @@ export function createInitialProfile() {
     completedRounds: createCompletedRounds(),
     gameStats: createEmptyGameStatsMap(),
     lastPlayedGameId: "memory-match",
+    parentMode: createDefaultParentSettings(),
     collectionFilters: { ...DEFAULT_COLLECTION_FILTERS },
     learnFilters: { ...DEFAULT_LEARN_FILTERS },
     settings: createDefaultSettings(),
@@ -112,9 +115,11 @@ export function normalizeProfile(rawProfile) {
   };
 
   return {
-    ...fallback,
-    ...raw,
     version: STORAGE_VERSION,
+    initializedAt:
+      typeof raw.initializedAt === "string" && !Number.isNaN(Date.parse(raw.initializedAt))
+        ? raw.initializedAt
+        : fallback.initializedAt,
     pointsByCardId: createInitialPoints(raw.pointsByCardId),
     unlockedCardIds: Array.from(new Set(unlockedIds)),
     discoveredAtByCardId,
@@ -123,6 +128,7 @@ export function normalizeProfile(rawProfile) {
       0,
       Number.parseInt(raw.rewardBoxesEarned, 10) || Number.parseInt(raw.totalWins, 10) || 0,
     ),
+    rewardBoxesOpened: Math.max(0, Number.parseInt(raw.rewardBoxesOpened, 10) || 0),
     totalWins: Math.max(0, Number.parseInt(raw.totalWins, 10) || 0),
     bonusStars: Math.max(0, Number.parseInt(raw.bonusStars, 10) || 0),
     currentStreak: Math.max(0, Number.parseInt(raw.currentStreak, 10) || 0),
@@ -138,6 +144,7 @@ export function normalizeProfile(rawProfile) {
     }, {}),
     gameStats: normalizedGameStats,
     lastPlayedGameId: normalizeGameId(raw.lastPlayedGameId),
+    parentMode: normalizeParentSettings(raw.parentMode),
     collectionFilters: {
       category: normalizeCategoryFilter(collectionFilters.category),
       rarity: normalizeRarityFilter(collectionFilters.rarity),

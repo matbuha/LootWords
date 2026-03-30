@@ -6,6 +6,7 @@ import {
   WIN_MILESTONE_STEP,
 } from "../data/config.js";
 import { summarizeWinOutcome } from "./game-session-manager.js";
+import { getParentSettings } from "./parent-mode.js";
 
 function uniqueList(items) {
   return Array.from(new Set(items));
@@ -30,16 +31,22 @@ function updateGameStats(profile, gameId, partialStats) {
 }
 
 export function recordGameWin(profile, gameId) {
+  const parentSettings = getParentSettings(profile);
   const currentStats = getGameStats(profile, gameId);
   const nextStats = {
     plays: currentStats.plays + 1,
     wins: currentStats.wins + 1,
     losses: currentStats.losses,
   };
-  const isFirstWin = !profile.firstWinGameIds.includes(gameId);
-  const boxesAwarded = 1 + (isFirstWin ? FIRST_WIN_BONUS_BOXES : 0);
+  const isFirstWin =
+    parentSettings.rewards.firstWinBonusEnabled && !profile.firstWinGameIds.includes(gameId);
+  const boxesAwarded =
+    parentSettings.rewards.rewardBoxesPerWin + (isFirstWin ? FIRST_WIN_BONUS_BOXES : 0);
   const nextTotalWins = profile.totalWins + 1;
-  const reachedMilestone = nextTotalWins > 0 && nextTotalWins % WIN_MILESTONE_STEP === 0;
+  const reachedMilestone =
+    parentSettings.rewards.milestoneRewardsEnabled &&
+    nextTotalWins > 0 &&
+    nextTotalWins % WIN_MILESTONE_STEP === 0;
   const currentStreak = profile.currentStreak + 1;
   const nextProfile = {
     ...profile,
@@ -103,21 +110,81 @@ export function openRewardBox(profile, cards) {
     };
   }
 
+  const parentSettings = getParentSettings(profile);
+  if (!cards.length) {
+    return {
+      profile,
+      reward: {
+        type: "blocked",
+        title: "No active cards available",
+        detail: "A parent needs to turn on a category or card before rewards can reveal vocabulary again.",
+      },
+    };
+  }
+
   const lockedCards = cards.filter((card) => !card.unlocked);
   const baseProfile = {
     ...profile,
     rewardBoxes: profile.rewardBoxes - 1,
+    rewardBoxesOpened: profile.rewardBoxesOpened + 1,
   };
 
-  if (!lockedCards.length) {
+  if (parentSettings.rewards.duplicateRewardsEnabled) {
+    const rewardCard = cards[Math.floor(Math.random() * cards.length)];
+    const discoveredAt = new Date().toISOString();
+
+    if (!rewardCard.unlocked) {
+      return {
+        profile: {
+          ...baseProfile,
+          unlockedCardIds: uniqueList([...baseProfile.unlockedCardIds, rewardCard.id]),
+          discoveredAtByCardId: {
+            ...baseProfile.discoveredAtByCardId,
+            [rewardCard.id]: discoveredAt,
+          },
+        },
+        reward: {
+          type: "card",
+          cardId: rewardCard.id,
+          discoveredAt,
+        },
+      };
+    }
+
     return {
       profile: {
         ...baseProfile,
-        bonusStars: baseProfile.bonusStars + FALLBACK_STARS,
+        bonusStars: baseProfile.bonusStars + parentSettings.rewards.duplicateRewardStars,
+      },
+      reward: {
+        type: "duplicate",
+        cardId: rewardCard.id,
+        amount: parentSettings.rewards.duplicateRewardStars,
+      },
+    };
+  }
+
+  if (!lockedCards.length) {
+    if (parentSettings.rewards.fallbackRewardType === "message") {
+      return {
+        profile: baseProfile,
+        reward: {
+          type: "message",
+          title: "Every active card is already collected",
+          detail: "The current vocabulary pool is fully unlocked. A parent can turn on more categories or cards in Parent Mode.",
+        },
+      };
+    }
+
+    return {
+      profile: {
+        ...baseProfile,
+        bonusStars:
+          baseProfile.bonusStars + (parentSettings.rewards.fallbackStars ?? FALLBACK_STARS),
       },
       reward: {
         type: "stars",
-        amount: FALLBACK_STARS,
+        amount: parentSettings.rewards.fallbackStars ?? FALLBACK_STARS,
       },
     };
   }

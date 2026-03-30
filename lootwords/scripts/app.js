@@ -11,8 +11,24 @@ import { getCardById, hydrateCards } from "./data/cards.js";
 import { createAudioManager } from "./core/audio-manager.js";
 import { createEventBus } from "./core/event-bus.js";
 import { createFeedbackManager } from "./core/feedback-manager.js";
+import { importProfileFromJson, exportProfileToJson } from "./core/import-export-manager.js";
 import { getReviewDeck, summarizeProgress } from "./core/progression.js";
 import { getRecommendedGameId } from "./core/game-session-manager.js";
+import {
+  DEFAULT_PARENT_SECTION,
+  getChildModeCards,
+  normalizeParentSection,
+  PARENT_GATE_PHRASE,
+  PARENT_SECRET_CLICK_TARGET,
+  PARENT_SECRET_CLICK_WINDOW_MS,
+  summarizeParentMode,
+} from "./core/parent-mode.js";
+import {
+  resetAllChildProgress,
+  resetCollectionProgress,
+  resetRewardState,
+  resetSettingsState,
+} from "./core/reset-manager.js";
 import { openRewardBox, recordGameLoss, recordGameWin } from "./core/rewards.js";
 import { createStore } from "./core/state.js";
 import { updateAudioSettings } from "./core/settings-manager.js";
@@ -23,6 +39,7 @@ import { renderCollectionScreen } from "./ui/collection-screen.js";
 import { renderGameScreen } from "./ui/game-screen.js";
 import { renderHomeScreen } from "./ui/home-screen.js";
 import { renderLearnScreen } from "./ui/learn-screen.js";
+import { renderParentScreen } from "./ui/parent-screen.js";
 import { renderRewardScreen } from "./ui/reward-screen.js";
 
 const root = document.querySelector("#app");
@@ -36,6 +53,34 @@ function createRewardSession() {
   };
 }
 
+function createTransferState() {
+  return {
+    text: "",
+    status: null,
+  };
+}
+
+function createParentSession() {
+  return {
+    unlocked: false,
+    gateInput: "",
+    gateError: "",
+    secretClicks: 0,
+    secretWindowStartedAt: 0,
+    section: DEFAULT_PARENT_SECTION,
+    contentFilters: {
+      search: "",
+      category: "all",
+      rarity: "all",
+      unlocked: "all",
+      availability: "all",
+    },
+    selectedCardId: null,
+    transfer: createTransferState(),
+    pendingReset: null,
+  };
+}
+
 const store = createStore({
   profile: loadProfile(),
   route: { path: ROUTES.home, game: "memory-match" },
@@ -45,6 +90,7 @@ const store = createStore({
     modalCardId: null,
     learnSelectedCardId: null,
     navMotion: "same",
+    parent: createParentSession(),
   },
 });
 
@@ -67,20 +113,42 @@ function clearRewardRevealTimeout() {
 
 function deriveState() {
   const state = store.getState();
-  const cards = hydrateCards(state.profile);
+  const allCards = hydrateCards(state.profile);
+  const cards = getChildModeCards(allCards, state.profile);
+  const parentSummary = summarizeParentMode(allCards, state.profile);
   const progress = summarizeProgress(cards, state.profile, state.route.game);
-  const reviewDeck = getReviewDeck(cards, state.profile.learnFilters);
+  const activeCategoryIds = new Set(progress.categoryCounts.map((entry) => entry.id));
+  const collectionFilters =
+    state.profile.collectionFilters.category !== "all" &&
+    !activeCategoryIds.has(state.profile.collectionFilters.category)
+      ? {
+          ...state.profile.collectionFilters,
+          category: "all",
+        }
+      : state.profile.collectionFilters;
+  const learnFilters =
+    state.profile.learnFilters.category !== "all" && !activeCategoryIds.has(state.profile.learnFilters.category)
+      ? {
+          ...state.profile.learnFilters,
+          category: "all",
+        }
+      : state.profile.learnFilters;
+  const reviewDeck = getReviewDeck(cards, learnFilters);
 
   return {
     state,
+    allCards,
     cards,
+    parentSummary,
     progress,
+    collectionFilters,
+    learnFilters,
     reviewDeck,
     newestCard: progress.newestCard,
     modalCard: getCardById(cards, state.session.modalCardId),
     rewardCard:
-      state.session.reward.reveal?.type === "card"
-        ? getCardById(cards, state.session.reward.reveal.cardId)
+      state.session.reward.reveal?.type === "card" || state.session.reward.reveal?.type === "duplicate"
+        ? getCardById(allCards, state.session.reward.reveal.cardId)
         : null,
   };
 }
@@ -123,8 +191,392 @@ function patchAudioSettings(partialAudio) {
   });
 }
 
+function getResetDefinition(resetId) {
+  const definitions = {
+    "all-progress": {
+      id: "all-progress",
+      title: "Reset all child progress?",
+      detail: "This clears collection progress, wins, reward counters, streaks, and gameplay history. Parent settings stay intact.",
+      apply: resetAllChildProgress,
+    },
+    collection: {
+      id: "collection",
+      title: "Reset collection only?",
+      detail: "This clears unlocked cards and discovery timestamps, but keeps wins, rewards, and parent settings.",
+      apply: resetCollectionProgress,
+    },
+    rewards: {
+      id: "rewards",
+      title: "Reset reward stash?",
+      detail: "This clears the current reward boxes and bonus stars without touching collection progress.",
+      apply: resetRewardState,
+    },
+    settings: {
+      id: "settings",
+      title: "Reset settings to defaults?",
+      detail: "This resets audio, child filters, and Parent Mode configuration. Child progress stays saved.",
+      apply: resetSettingsState,
+    },
+  };
+
+  return definitions[resetId] ?? null;
+}
+
 const actions = {
   navigate,
+  armParentModeTrigger(event) {
+    const now = Date.now();
+    const { parent } = store.getState().session;
+    const withinWindow =
+      parent.secretWindowStartedAt > 0 && now - parent.secretWindowStartedAt <= PARENT_SECRET_CLICK_WINDOW_MS;
+    const nextClicks = withinWindow ? parent.secretClicks + 1 : 1;
+
+    if (nextClicks >= PARENT_SECRET_CLICK_TARGET) {
+      event?.preventDefault?.();
+      event?.stopPropagation?.();
+      commitState((currentState) => ({
+        ...currentState,
+        session: {
+          ...currentState.session,
+          parent: {
+            ...currentState.session.parent,
+            secretClicks: 0,
+            secretWindowStartedAt: 0,
+            gateInput: "",
+            gateError: "",
+            section: DEFAULT_PARENT_SECTION,
+          },
+        },
+      }));
+      navigate(ROUTES.parent, { section: DEFAULT_PARENT_SECTION });
+      return true;
+    }
+
+    store.setState((currentState) => ({
+      ...currentState,
+      session: {
+        ...currentState.session,
+        parent: {
+          ...currentState.session.parent,
+          secretClicks: nextClicks,
+          secretWindowStartedAt: withinWindow ? currentState.session.parent.secretWindowStartedAt : now,
+        },
+      },
+    }));
+    return false;
+  },
+  updateParentGateInput(value) {
+    store.setState((currentState) => ({
+      ...currentState,
+      session: {
+        ...currentState.session,
+        parent: {
+          ...currentState.session.parent,
+          gateInput: value,
+          gateError: "",
+        },
+      },
+    }));
+    renderApp();
+  },
+  submitParentGate() {
+    const gateInput = store.getState().session.parent.gateInput.trim().toUpperCase();
+    if (gateInput !== PARENT_GATE_PHRASE) {
+      store.setState((currentState) => ({
+        ...currentState,
+        session: {
+          ...currentState.session,
+          parent: {
+            ...currentState.session.parent,
+            gateError: "The parent phrase did not match. Try again.",
+          },
+        },
+      }));
+      renderApp();
+      return;
+    }
+
+    commitState((currentState) => ({
+      ...currentState,
+      session: {
+        ...currentState.session,
+        parent: {
+          ...currentState.session.parent,
+          unlocked: true,
+          gateInput: "",
+          gateError: "",
+          section: normalizeParentSection(currentState.route.section ?? DEFAULT_PARENT_SECTION),
+        },
+      },
+    }));
+  },
+  exitParentMode() {
+    commitState((currentState) => ({
+      ...currentState,
+      session: {
+        ...currentState.session,
+        parent: createParentSession(),
+      },
+    }));
+    navigate(ROUTES.home);
+  },
+  navigateParentSection(section) {
+    const normalizedSection = normalizeParentSection(section);
+    commitState((currentState) => ({
+      ...currentState,
+      session: {
+        ...currentState.session,
+        parent: {
+          ...currentState.session.parent,
+          section: normalizedSection,
+        },
+      },
+    }));
+    navigate(ROUTES.parent, { section: normalizedSection });
+  },
+  updateParentContentFilters(partialFilters) {
+    store.setState((currentState) => ({
+      ...currentState,
+      session: {
+        ...currentState.session,
+        parent: {
+          ...currentState.session.parent,
+          contentFilters: {
+            ...currentState.session.parent.contentFilters,
+            ...partialFilters,
+          },
+        },
+      },
+    }));
+    renderApp();
+  },
+  selectParentCard(cardId) {
+    store.setState((currentState) => ({
+      ...currentState,
+      session: {
+        ...currentState.session,
+        parent: {
+          ...currentState.session.parent,
+          selectedCardId: cardId,
+        },
+      },
+    }));
+    renderApp();
+  },
+  toggleParentCard(cardId) {
+    commitState((currentState) => {
+      const disabledIds = currentState.profile.parentMode.disabledCardIds.includes(cardId)
+        ? currentState.profile.parentMode.disabledCardIds.filter((id) => id !== cardId)
+        : [...currentState.profile.parentMode.disabledCardIds, cardId];
+
+      return {
+        ...currentState,
+        profile: {
+          ...currentState.profile,
+          parentMode: {
+            ...currentState.profile.parentMode,
+            disabledCardIds: disabledIds,
+          },
+        },
+      };
+    });
+  },
+  toggleParentCategory(categoryId) {
+    commitState((currentState) => ({
+      ...currentState,
+      profile: {
+        ...currentState.profile,
+        parentMode: {
+          ...currentState.profile.parentMode,
+          categoryStates: {
+            ...currentState.profile.parentMode.categoryStates,
+            [categoryId]: !currentState.profile.parentMode.categoryStates[categoryId],
+          },
+        },
+      },
+    }));
+  },
+  updateParentRewardSetting(key, value) {
+    const normalizedValue =
+      typeof value === "boolean" ? value : /^[0-9]+$/.test(String(value)) ? Number.parseInt(value, 10) : value;
+
+    commitState((currentState) => ({
+      ...currentState,
+      profile: {
+        ...currentState.profile,
+        parentMode: {
+          ...currentState.profile.parentMode,
+          rewards: {
+            ...currentState.profile.parentMode.rewards,
+            [key]: normalizedValue,
+          },
+        },
+      },
+    }));
+  },
+  requestParentReset(resetId) {
+    const definition = getResetDefinition(resetId);
+    if (!definition) {
+      return;
+    }
+
+    store.setState((currentState) => ({
+      ...currentState,
+      session: {
+        ...currentState.session,
+        parent: {
+          ...currentState.session.parent,
+          pendingReset: definition,
+        },
+      },
+    }));
+    renderApp();
+  },
+  cancelParentReset() {
+    store.setState((currentState) => ({
+      ...currentState,
+      session: {
+        ...currentState.session,
+        parent: {
+          ...currentState.session.parent,
+          pendingReset: null,
+        },
+      },
+    }));
+    renderApp();
+  },
+  confirmParentReset(resetId) {
+    const definition = getResetDefinition(resetId);
+    if (!definition) {
+      return;
+    }
+
+    commitState((currentState) => ({
+      ...currentState,
+      profile: definition.apply(currentState.profile),
+      session: {
+        ...currentState.session,
+        reward: createRewardSession(),
+        gameResult: null,
+        modalCardId: null,
+        learnSelectedCardId: null,
+        parent: {
+          ...currentState.session.parent,
+          pendingReset: null,
+          transfer: {
+            ...currentState.session.parent.transfer,
+            status: {
+              kind: "success",
+              title: "Reset complete",
+              detail: definition.title.replace("?", ""),
+              lines: [],
+            },
+          },
+        },
+      },
+    }));
+  },
+  updateParentTransferText(text) {
+    store.setState((currentState) => ({
+      ...currentState,
+      session: {
+        ...currentState.session,
+        parent: {
+          ...currentState.session.parent,
+          transfer: {
+            ...currentState.session.parent.transfer,
+            text,
+          },
+        },
+      },
+    }));
+  },
+  clearParentTransferText() {
+    store.setState((currentState) => ({
+      ...currentState,
+      session: {
+        ...currentState.session,
+        parent: {
+          ...currentState.session.parent,
+          transfer: createTransferState(),
+        },
+      },
+    }));
+    renderApp();
+  },
+  exportParentData() {
+    const jsonText = exportProfileToJson(store.getState().profile);
+    store.setState((currentState) => ({
+      ...currentState,
+      session: {
+        ...currentState.session,
+        parent: {
+          ...currentState.session.parent,
+          transfer: {
+            text: jsonText,
+            status: {
+              kind: "success",
+              title: "Export ready",
+              detail: "The current browser profile has been serialized to JSON.",
+              lines: [],
+            },
+          },
+        },
+      },
+    }));
+    renderApp();
+  },
+  requestImportParentData() {
+    const currentText = store.getState().session.parent.transfer.text;
+    const result = importProfileFromJson(currentText);
+
+    if (!result.ok) {
+      store.setState((currentState) => ({
+        ...currentState,
+        session: {
+          ...currentState.session,
+          parent: {
+            ...currentState.session.parent,
+            transfer: {
+              ...currentState.session.parent.transfer,
+              status: {
+                kind: "error",
+                title: "Import blocked",
+                detail: "The JSON payload failed validation and was not applied.",
+                lines: result.errors,
+              },
+            },
+          },
+        },
+      }));
+      renderApp();
+      return;
+    }
+
+    commitState((currentState) => ({
+      ...currentState,
+      profile: result.profile,
+      session: {
+        ...currentState.session,
+        reward: createRewardSession(),
+        gameResult: null,
+        modalCardId: null,
+        learnSelectedCardId: null,
+        parent: {
+          ...currentState.session.parent,
+          transfer: {
+            ...currentState.session.parent.transfer,
+            status: {
+              kind: result.warnings.length ? "warning" : "success",
+              title: result.warnings.length ? "Import applied with warnings" : "Import applied",
+              detail: "The validated profile data is now live in this browser.",
+              lines: result.warnings,
+            },
+          },
+        },
+      },
+    }));
+  },
   playRandomGame(currentGameId = null) {
     const nextGameId = getRandomGameId({
       excludeGameId: currentGameId ?? store.getState().route.game,
@@ -260,6 +712,26 @@ const actions = {
       return;
     }
 
+    const activeCards = getChildModeCards(hydrateCards(profile), profile);
+    if (!activeCards.length) {
+      commitState((currentState) => ({
+        ...currentState,
+        session: {
+          ...currentState.session,
+          reward: {
+            ...currentState.session.reward,
+            reveal: {
+              type: "blocked",
+              title: "No active cards available",
+              detail: "A parent needs to enable a category or card before rewards can reveal vocabulary again.",
+            },
+            phase: "revealed",
+          },
+        },
+      }));
+      return;
+    }
+
     const nextClicks = session.reward.clicks + 1;
 
     if (nextClicks < BOX_TAP_COUNT) {
@@ -284,14 +756,14 @@ const actions = {
     feedback.trigger(FEEDBACK_EVENTS.rewardTap3);
     clearRewardRevealTimeout();
 
-    const cards = hydrateCards(profile);
-    const rewardResult = openRewardBox(profile, cards);
+    const rewardResult = openRewardBox(profile, activeCards);
     const nextCards = hydrateCards(rewardResult.profile);
+    const nextActiveCards = getChildModeCards(nextCards, rewardResult.profile);
     const revealedCard =
-      rewardResult.reward.type === "card"
+      rewardResult.reward.type === "card" || rewardResult.reward.type === "duplicate"
         ? getCardById(nextCards, rewardResult.reward.cardId)
         : null;
-    const nextProgress = summarizeProgress(nextCards, rewardResult.profile);
+    const nextProgress = summarizeProgress(nextActiveCards, rewardResult.profile);
     const reachedAlbumMilestone =
       rewardResult.reward.type === "card" &&
       nextProgress.totalUnlocked > 0 &&
@@ -332,10 +804,10 @@ const actions = {
 
       feedback.trigger(FEEDBACK_EVENTS.cardReveal, {
         rarity: revealedCard?.rarity,
-        audio: rewardResult.reward.type === "card",
+        audio: rewardResult.reward.type === "card" || rewardResult.reward.type === "duplicate",
       });
 
-      if (revealedCard) {
+      if (rewardResult.reward.type === "card" && revealedCard) {
         feedback.trigger(FEEDBACK_EVENTS.newCardUnlocked, {
           rarity: revealedCard.rarity,
           audio: revealedCard.rarity !== "legendary",
@@ -426,14 +898,40 @@ const SCREEN_RENDERERS = {
   [ROUTES.reward]: (container, context) => renderRewardScreen(container, context),
   [ROUTES.learn]: (container, context) => renderLearnScreen(container, context),
   [ROUTES.play]: (container, context) => renderGameScreen(container, context),
+  [ROUTES.parent]: (container, context) => renderParentScreen(container, context),
 };
 
 function renderShell({ progress, currentRoute, audioSettings, navMotion }) {
+  if (currentRoute.path === ROUTES.parent) {
+    return `
+      <div class="app-shell app-shell--parent">
+        <div class="route-glow route-glow--parent" aria-hidden="true"></div>
+        <header class="shell-topbar shell-topbar--parent">
+          <div class="brand-lockup brand-lockup--parent">
+            <span class="brand-mark" aria-hidden="true"></span>
+            <span class="brand-copy">
+              <strong>${APP_NAME} Parent Mode</strong>
+              <span>Manage content, rewards, progress, and backups.</span>
+            </span>
+          </div>
+          <div class="topbar-status topbar-status--parent">
+            <span class="status-pill"><strong>${progress.totalUnlocked}</strong><span>unlocked</span></span>
+            <span class="status-pill"><strong>${progress.rewardBoxes}</strong><span>stash</span></span>
+            <button class="ghost-button" type="button" data-parent-exit-shell="true">Exit Parent Mode</button>
+          </div>
+        </header>
+        <main class="shell-main shell-main--${navMotion}" data-route="${currentRoute.path}">
+          <div id="screen-root"></div>
+        </main>
+      </div>
+    `;
+  }
+
   return `
     <div class="app-shell app-shell--${currentRoute.path}">
       <div class="route-glow route-glow--${currentRoute.path}" aria-hidden="true"></div>
       <header class="shell-topbar">
-        <a class="brand-lockup" href="${buildRoute(ROUTES.home)}" data-ui-click="true">
+        <a class="brand-lockup" href="${buildRoute(ROUTES.home)}" data-ui-click="true" data-parent-secret="true">
           <span class="brand-mark" aria-hidden="true"></span>
           <span class="brand-copy">
             <strong>${APP_NAME}</strong>
@@ -443,6 +941,13 @@ function renderShell({ progress, currentRoute, audioSettings, navMotion }) {
         <div class="topbar-status">
           <span class="status-pill"><strong>${progress.rewardBoxes}</strong><span>boxes</span></span>
           <span class="status-pill"><strong>${progress.totalUnlocked}</strong><span>cards</span></span>
+          <a
+            class="ghost-button parent-entry-button"
+            href="${buildRoute(ROUTES.parent, { section: DEFAULT_PARENT_SECTION })}"
+            data-ui-click="true"
+          >
+            Parent
+          </a>
           <div class="audio-controls" aria-label="Audio controls">
             <button class="mute-toggle ${audioSettings.muted ? "is-muted" : ""}" type="button" data-toggle-mute="true">
               ${audioSettings.muted ? "Sound Off" : "Sound On"}
@@ -494,7 +999,20 @@ function renderShell({ progress, currentRoute, audioSettings, navMotion }) {
 function renderApp() {
   activeScreen?.destroy?.();
 
-  const { state, cards, progress, newestCard, modalCard, rewardCard, reviewDeck } = deriveState();
+  const {
+    state,
+    allCards,
+    cards,
+    parentSummary,
+    progress,
+    collectionFilters,
+    learnFilters,
+    newestCard,
+    modalCard,
+    rewardCard,
+    reviewDeck,
+  } =
+    deriveState();
   const selectedLearnCard =
     reviewDeck.find((card) => card.id === state.session.learnSelectedCardId) ?? reviewDeck[0] ?? null;
 
@@ -511,6 +1029,10 @@ function renderApp() {
 
   root.querySelector("[data-toggle-mute]")?.addEventListener("click", () => {
     actions.toggleMute();
+  });
+
+  root.querySelector("[data-parent-exit-shell]")?.addEventListener("click", () => {
+    actions.exitParentMode();
   });
 
   root.querySelectorAll("[data-toggle-audio]").forEach((button) => {
@@ -530,23 +1052,33 @@ function renderApp() {
     });
   });
 
+  root.querySelector("[data-parent-secret='true']")?.addEventListener("click", (event) => {
+    actions.armParentModeTrigger(event);
+  });
+
   const screenRoot = root.querySelector("#screen-root");
   const renderer = SCREEN_RENDERERS[state.route.path] ?? SCREEN_RENDERERS[ROUTES.home];
 
   activeScreen = renderer(screenRoot, {
     route: state.route,
+    allCards,
     cards,
+    parentSummary,
     progress,
     newestCard,
-    filters: state.profile.collectionFilters,
-    learnFilters: state.profile.learnFilters,
+    filters: collectionFilters,
+    learnFilters,
     modalCard,
     rewardState: state.session.reward,
     rewardCard,
     rewardBoxes: state.profile.rewardBoxes,
+    activeCardCount: parentSummary.activeCardCount,
     unlockedCards: reviewDeck,
     selectedCard: selectedLearnCard,
     result: state.session.gameResult,
+    parentUi: state.session.parent,
+    isUnlocked: state.session.parent.unlocked,
+    profile: state.profile,
     actions,
     playSound(soundId, options) {
       feedback.playSound(soundId, options);
@@ -558,6 +1090,7 @@ router = createRouter((route) => {
   const previousState = store.getState();
   const nextGame = route.game in GAME_CONFIG ? route.game : "memory-match";
   const navMotion = getRouteMotion(previousState.route.path, route.path);
+  const nextSection = normalizeParentSection(route.section ?? previousState.session.parent.section);
 
   if (route.path !== ROUTES.reward) {
     clearRewardRevealTimeout();
@@ -568,6 +1101,7 @@ router = createRouter((route) => {
     route: {
       ...route,
       game: nextGame,
+      section: route.path === ROUTES.parent ? nextSection : null,
     },
     session: {
       ...currentState.session,
@@ -578,6 +1112,10 @@ router = createRouter((route) => {
           ? currentState.session.gameResult
           : null,
       reward: route.path === ROUTES.reward ? currentState.session.reward : createRewardSession(),
+      parent: {
+        ...currentState.session.parent,
+        section: nextSection,
+      },
     },
   }));
   renderApp();
@@ -596,17 +1134,25 @@ document.addEventListener("keydown", primeAudioFromInteraction, {
 });
 
 window.render_game_to_text = () => {
-  const { state, cards, progress } = deriveState();
+  const { state, cards, parentSummary, progress } = deriveState();
   return JSON.stringify({
     route: state.route.path,
     routeGame: state.route.game,
+    routeSection: state.route.section,
     rewardBoxes: state.profile.rewardBoxes,
     rewardBoxesEarned: state.profile.rewardBoxesEarned,
+    rewardBoxesOpened: state.profile.rewardBoxesOpened,
     totalUnlocked: progress.totalUnlocked,
     totalCards: progress.totalCards,
+    activeCards: parentSummary.activeCardCount,
     totalWins: state.profile.totalWins,
     currentStreak: state.profile.currentStreak,
     bestStreak: state.profile.bestStreak,
+    parentMode: {
+      unlocked: state.session.parent.unlocked,
+      section: state.session.parent.section,
+      shelvedUnlocked: parentSummary.shelvedUnlockedCount,
+    },
     audio: {
       muted: state.profile.settings.audio.muted,
       musicEnabled: state.profile.settings.audio.musicEnabled,

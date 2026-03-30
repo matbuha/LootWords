@@ -6,13 +6,19 @@ export function renderLearnScreen(container, { unlockedCards, selectedCard, prog
     ? unlockedCards.findIndex((card) => card.id === selectedCard.id)
     : -1;
   const recentCardIds = new Set(progress.recentCardIds);
+  const categoryOptions = progress.categoryCounts;
 
   let contentMarkup = renderEmptyState(
     "No cards to review yet",
     "Win a mini-game, open a reward box, and your first learning card will appear here.",
   );
 
-  if (!unlockedCards.length && progress.totalUnlocked > 0) {
+  if (!unlockedCards.length && progress.totalCards === 0) {
+    contentMarkup = renderEmptyState(
+      "No active cards are available",
+      "A parent has turned off every active category or card. Parent Mode can turn review content back on.",
+    );
+  } else if (!unlockedCards.length && progress.totalUnlocked > 0) {
     contentMarkup = renderEmptyState(
       "No cards in this review deck",
       "Try another category or review mode to bring cards back into the learn lounge.",
@@ -108,10 +114,10 @@ export function renderLearnScreen(container, { unlockedCards, selectedCard, prog
           <span class="small-label">Category</span>
           <select class="filter-select" data-learn-filter="category">
             <option value="all">All categories</option>
-            ${Object.entries(CATEGORY_META)
+            ${categoryOptions
               .map(
-                ([categoryId, meta]) => `
-                  <option value="${categoryId}" ${learnFilters.category === categoryId ? "selected" : ""}>${meta.label}</option>
+                (entry) => `
+                  <option value="${entry.id}" ${learnFilters.category === entry.id ? "selected" : ""}>${entry.label}</option>
                 `,
               )
               .join("")}

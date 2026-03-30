@@ -1,7 +1,15 @@
 import { BOX_TAP_COUNT } from "../data/config.js";
 import { renderDetailCard, renderEmptyState } from "./ui-kit.js";
 
-function getPhaseCopy(rewardState, rewardBoxes) {
+function getPhaseCopy(rewardState, rewardBoxes, activeCardCount) {
+  if (rewardState.reveal?.type === "blocked" || activeCardCount === 0) {
+    return {
+      eyebrow: "Content paused",
+      title: "Rewards need active cards",
+      hint: "A parent has turned off every active category or card. Parent Mode can turn vocabulary rewards back on.",
+    };
+  }
+
   if (rewardState.phase === "opening") {
     return {
       eyebrow: "Magic burst",
@@ -49,10 +57,10 @@ function getPhaseCopy(rewardState, rewardBoxes) {
   };
 }
 
-export function renderRewardScreen(container, { rewardState, rewardCard, rewardBoxes, actions }) {
+export function renderRewardScreen(container, { rewardState, rewardCard, rewardBoxes, activeCardCount, actions }) {
   const meter = Array.from({ length: BOX_TAP_COUNT }, (_, index) => index < rewardState.clicks);
   const revealPhase = rewardState.phase ?? "idle";
-  const phaseCopy = getPhaseCopy(rewardState, rewardBoxes);
+  const phaseCopy = getPhaseCopy(rewardState, rewardBoxes, activeCardCount);
   const boxStateClass =
     revealPhase === "opening"
       ? "reward-box--opening"
@@ -126,6 +134,33 @@ export function renderRewardScreen(container, { rewardState, rewardCard, rewardB
         <p class="section-copy">Every card is already unlocked, so this reward box transformed into ${rewardState.reveal.amount} bonus stars.</p>
       </div>
     `;
+  } else if (rewardState.reveal?.type === "duplicate" && rewardCard) {
+    revealMarkup = `
+      <div class="reward-reveal__card reward-reveal__card--showcase">
+        ${renderDetailCard(rewardCard, { locked: false })}
+      </div>
+      <div class="celebration-card celebration-card--reward">
+        <span class="small-label">Duplicate reward</span>
+        <h3 class="section-title">You pulled ${rewardCard.word} again</h3>
+        <p class="section-copy">Because duplicate rewards are enabled, this extra copy turned into ${rewardState.reveal.amount} bonus stars.</p>
+      </div>
+    `;
+  } else if (rewardState.reveal?.type === "message") {
+    revealMarkup = `
+      <div class="celebration-card celebration-card--reward">
+        <span class="small-label">Reward note</span>
+        <h3 class="section-title">${rewardState.reveal.title}</h3>
+        <p class="section-copy">${rewardState.reveal.detail}</p>
+      </div>
+    `;
+  } else if (rewardState.reveal?.type === "blocked") {
+    revealMarkup = `
+      <div class="celebration-card celebration-card--reward">
+        <span class="small-label">Reward blocked</span>
+        <h3 class="section-title">${rewardState.reveal.title}</h3>
+        <p class="section-copy">${rewardState.reveal.detail}</p>
+      </div>
+    `;
   }
 
   container.innerHTML = `
@@ -159,7 +194,7 @@ export function renderRewardScreen(container, { rewardState, rewardCard, rewardB
             <button
               class="reward-box-button ${rewardBoxes > 0 && !rewardState.reveal && revealPhase !== "opening" ? "is-clickable" : ""}"
               type="button"
-              ${rewardBoxes <= 0 || rewardState.reveal || revealPhase === "opening" ? "disabled" : ""}
+              ${rewardBoxes <= 0 || rewardState.reveal || revealPhase === "opening" || activeCardCount === 0 ? "disabled" : ""}
               data-reward-box="true"
               aria-label="Reward box"
             >

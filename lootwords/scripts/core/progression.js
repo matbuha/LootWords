@@ -38,7 +38,7 @@ export function summarizeProgress(cards, profile, currentGameId = null) {
       total: categoryCards.length,
       percent: categoryCards.length ? Math.round((unlocked / categoryCards.length) * 100) : 0,
     };
-  });
+  }).filter((entry) => entry.total > 0);
 
   const rarityCounts = RARITY_ORDER.map((rarity) => {
     const total = cards.filter((card) => card.rarity === rarity).length;
@@ -61,7 +61,7 @@ export function summarizeProgress(cards, profile, currentGameId = null) {
       unlocked,
       percent: total ? Math.round((unlocked / total) * 100) : 0,
     };
-  });
+  }).filter((entry) => entry.total > 0);
 
   const strongestCards = sortCards(unlockedCards, "points-desc").slice(0, 3);
   const weakestCards = sortCards(unlockedCards, "points-asc").slice(0, 3);
@@ -74,6 +74,7 @@ export function summarizeProgress(cards, profile, currentGameId = null) {
     completionPercent: cards.length ? Math.round((unlockedCards.length / cards.length) * 100) : 0,
     rewardBoxes: profile.rewardBoxes,
     rewardBoxesEarned: profile.rewardBoxesEarned,
+    rewardBoxesOpened: profile.rewardBoxesOpened,
     totalWins: profile.totalWins,
     bonusStars: profile.bonusStars,
     currentStreak: profile.currentStreak,

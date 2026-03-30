@@ -5,6 +5,7 @@ import {
   WIN_MILESTONE_STEP,
 } from "../data/config.js";
 import { getGameDefinition, getGameEntries, getGameIds, getRandomGameId } from "../games/game-registry.js";
+import { getParentSettings } from "./parent-mode.js";
 
 function createEmptyGameStat() {
   return {
@@ -50,9 +51,12 @@ export function getNextWinMilestoneTarget(totalWins) {
 }
 
 export function buildGameProgressList(profile) {
+  const parentSettings = getParentSettings(profile);
+
   return getGameEntries().map((game) => {
     const stats = getGameStatsFor(profile, game.id);
-    const isFirstWinAvailable = !profile.firstWinGameIds.includes(game.id);
+    const isFirstWinAvailable =
+      parentSettings.rewards.firstWinBonusEnabled && !profile.firstWinGameIds.includes(game.id);
 
     return {
       ...game,
@@ -88,6 +92,7 @@ export function getRecommendedGameId(profile, currentGameId = null) {
 }
 
 export function buildGameSessionSummary(profile, currentGameId = null) {
+  const parentSettings = getParentSettings(profile);
   const gameProgress = buildGameProgressList(profile);
   const totalPlays = gameProgress.reduce((sum, game) => sum + game.stats.plays, 0);
   const gamesTried = gameProgress.filter((game) => game.hasPlayed).length;
@@ -118,15 +123,23 @@ export function buildGameSessionSummary(profile, currentGameId = null) {
       gameProgress.find((game) => game.id === randomGameId) ?? getGameDefinition(randomGameId),
     nextMilestoneTarget,
     winsUntilMilestone: Math.max(0, nextMilestoneTarget - profile.totalWins),
-    firstWinBonusBoxes: FIRST_WIN_BONUS_BOXES,
-    milestoneBonusStars: WIN_MILESTONE_BONUS_STARS,
+    firstWinBonusBoxes: parentSettings.rewards.firstWinBonusEnabled ? FIRST_WIN_BONUS_BOXES : 0,
+    milestoneBonusStars:
+      parentSettings.rewards.milestoneRewardsEnabled ? WIN_MILESTONE_BONUS_STARS : 0,
+    rewardBoxesPerWin: parentSettings.rewards.rewardBoxesPerWin,
   };
 }
 
 export function summarizeWinOutcome(profile, gameId, nextProfile) {
-  const wasFirstWin = !profile.firstWinGameIds.includes(gameId);
-  const reachedMilestone = nextProfile.totalWins > 0 && nextProfile.totalWins % WIN_MILESTONE_STEP === 0;
-  const boxesAwarded = 1 + (wasFirstWin ? FIRST_WIN_BONUS_BOXES : 0);
+  const parentSettings = getParentSettings(profile);
+  const wasFirstWin =
+    parentSettings.rewards.firstWinBonusEnabled && !profile.firstWinGameIds.includes(gameId);
+  const reachedMilestone =
+    parentSettings.rewards.milestoneRewardsEnabled &&
+    nextProfile.totalWins > 0 &&
+    nextProfile.totalWins % WIN_MILESTONE_STEP === 0;
+  const boxesAwarded =
+    parentSettings.rewards.rewardBoxesPerWin + (wasFirstWin ? FIRST_WIN_BONUS_BOXES : 0);
 
   return {
     boxesAwarded,
