@@ -8,13 +8,51 @@ const GAME_MOUNTS = {
   "picture-match": mountMatchGame,
 };
 
+function formatVictoryLabel(key) {
+  return key
+    .replace(/Ms$/, "")
+    .replace(/([A-Z])/g, " $1")
+    .replace(/^./, (letter) => letter.toUpperCase());
+}
+
+function formatVictoryValue(key, value) {
+  if (key.endsWith("Ms") && typeof value === "number") {
+    return `${Math.max(0, Math.round(value / 1000))}s`;
+  }
+
+  return String(value);
+}
+
+function renderVictoryStats(result) {
+  if (!result?.details) {
+    return "";
+  }
+
+  const detailRows = Object.entries(result.details)
+    .map(
+      ([key, value]) => `
+        <div class="victory-chip">
+          <span>${formatVictoryLabel(key)}</span>
+          <strong>${formatVictoryValue(key, value)}</strong>
+        </div>
+      `,
+    )
+    .join("");
+
+  return `
+    <div class="victory-chip-row">
+      ${detailRows}
+    </div>
+  `;
+}
+
 export function renderGameScreen(container, { route, cards, result, actions, playSound }) {
   const gameId = route.game in GAME_CONFIG ? route.game : "memory-match";
   const gameMeta = GAME_CONFIG[gameId];
 
   container.innerHTML = `
     <div class="game-layout">
-      <section class="section-panel">
+      <section class="section-panel section-panel--compact">
         <div class="screen-header">
           <div>
             <span class="small-label">Play</span>
@@ -37,21 +75,28 @@ export function renderGameScreen(container, { route, cards, result, actions, pla
         </div>
       </section>
 
-      <section class="arena-panel">
+      <section class="arena-panel arena-panel--game">
         <div id="game-host"></div>
         ${
           result && result.gameId === gameId
             ? `
               <div class="game-overlay ${result.status === "won" ? "is-win" : "is-lose"}">
+                <div class="game-overlay__sparkles" aria-hidden="true">
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                </div>
                 <span class="small-label">${result.status === "won" ? "Victory" : "Try again"}</span>
                 <h3 class="section-title">${result.status === "won" ? "Reward box earned" : "One more run"}</h3>
                 <p class="section-copy">
                   ${
                     result.status === "won"
-                      ? "You cleared the round. Head to the reward screen to crack open your new box."
+                      ? "You earned this. The reward room is ready for the box-opening moment."
                       : "The round ended before the goal. Reset and jump straight back in."
                   }
                 </p>
+                ${result.status === "won" ? renderVictoryStats(result) : ""}
                 <div class="cta-stack">
                   ${
                     result.status === "won"

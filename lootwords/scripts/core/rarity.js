@@ -23,3 +23,7 @@ export function getRarityFromPoints(points) {
 export function getRarityLabel(rarity) {
   return RARITY_META[rarity]?.label ?? "Common";
 }
+
+export function doesRarityMatchPoints(points, rarity) {
+  return getRarityFromPoints(points) === rarity;
+}

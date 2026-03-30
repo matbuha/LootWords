@@ -2,6 +2,13 @@
 
 LootWords is a browser-based, reward-first word-learning game for children. The player clears short mini-games, earns reward boxes, opens them in exactly three taps, and collects noun cards that double as the vocabulary material.
 
+## Latest polish pass
+
+- Reward boxes now build tension across three taps with stronger glow, crack, shake, and burst states.
+- Card reveals have clearer collectible framing with rarity-driven halos, badges, and spotlight layouts.
+- Home, reward, collection, learn, and play screens now share a more tactile game UI with faster route transitions and richer win states.
+- Audio remains optional and safe: the app exposes hooks for real assets, while the current build falls back to lightweight synthesized cues if files are missing.
+
 ## Run locally
 
 From `C:\Users\ariel\Projects\LootWords`:
@@ -112,6 +119,8 @@ Then open:
 - Unlocked cards persist across reloads and appear in collection and learn views.
 - Collection filters update and persist in localStorage.
 - Placeholder audio cues exist for clicks, reward taps, reward reveal, and victories.
+- The reward screen keeps its reveal copy after the final box is opened, instead of dropping back to an empty-state tone.
+- Learn review supports next/previous stepping through the unlocked deck.
 - Browser verification completed with zero console errors.
 
 ## Optional improvements

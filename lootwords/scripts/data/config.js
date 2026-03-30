@@ -1,6 +1,17 @@
+import {
+  CATEGORY_META,
+  CATEGORY_ORDER,
+  DIFFICULTY_META,
+  LEGACY_CATEGORY_ALIASES,
+  PACK_META,
+  PACK_ORDER,
+} from "./categories.js";
+
 export const APP_NAME = "LootWords";
 export const STORAGE_KEY = "lootwords-profile";
-export const STORAGE_VERSION = 1;
+export const STORAGE_VERSION = 2;
+
+export { CATEGORY_META, CATEGORY_ORDER, DIFFICULTY_META, LEGACY_CATEGORY_ALIASES, PACK_META, PACK_ORDER };
 
 export const ROUTES = {
   home: "home",
@@ -10,22 +21,17 @@ export const ROUTES = {
   learn: "learn",
 };
 
+export const ROUTE_SEQUENCE = [
+  ROUTES.home,
+  ROUTES.play,
+  ROUTES.reward,
+  ROUTES.collection,
+  ROUTES.learn,
+];
+
 export const DEFAULT_ROUTE = {
   path: ROUTES.home,
   game: "memory-match",
-};
-
-export const CATEGORY_META = {
-  animals: { label: "Animals", accent: "#ff9f6e" },
-  food: { label: "Food", accent: "#ffcf66" },
-  vehicles: { label: "Vehicles", accent: "#56d2ff" },
-  "home-objects": { label: "Home Objects", accent: "#90f2c8" },
-  clothes: { label: "Clothes", accent: "#ff92c7" },
-  nature: { label: "Nature", accent: "#6fe68e" },
-  toys: { label: "Toys", accent: "#ff8f5e" },
-  "school-objects": { label: "School Objects", accent: "#9bb3ff" },
-  "kitchen-objects": { label: "Kitchen Objects", accent: "#ffd07e" },
-  fantasy: { label: "Fantasy", accent: "#f5a4ff" },
 };
 
 export const RARITY_ORDER = [
@@ -45,20 +51,39 @@ export const RARITY_META = {
 };
 
 export const COLLECTION_SORTS = {
-  "points-desc": "Points high to low",
-  "points-asc": "Points low to high",
-  alphabetical: "Alphabetical",
-  newest: "Newest first",
+  newest: "Newest unlocks",
+  "points-desc": "Highest points",
+  "points-asc": "Lowest points",
+  alphabetical: "A to Z",
+  rarity: "Rarity first",
+  category: "Category order",
+  difficulty: "Easy to hard",
 };
 
 export const DEFAULT_COLLECTION_FILTERS = {
   category: "all",
   rarity: "all",
-  sort: "points-desc",
+  sort: "newest",
+};
+
+export const LEARN_SORTS = {
+  newest: "Fresh pulls",
+  "points-desc": "Strongest cards",
+  "points-asc": "Lower-point cards",
+  alphabetical: "A to Z",
+  category: "Category walk",
+  difficulty: "Easy to hard",
+};
+
+export const DEFAULT_LEARN_FILTERS = {
+  category: "all",
+  sort: "newest",
 };
 
 export const BOX_TAP_COUNT = 3;
 export const FALLBACK_STARS = 50;
+export const REWARD_REVEAL_DELAY_MS = 780;
+export const RECENT_CARD_LIMIT = 4;
 
 export const GAME_CONFIG = {
   "memory-match": {
@@ -83,4 +108,17 @@ export const AUDIO_CUES = {
   boxOpen: "boxOpen",
   rewardReveal: "rewardReveal",
   victory: "victory",
+};
+
+export const AUDIO_TRACKS = {
+  home: null,
+};
+
+export const AUDIO_ASSET_PATHS = {
+  click: null,
+  boxTap: null,
+  boxOpen: null,
+  rewardReveal: null,
+  victory: null,
+  home: null,
 };

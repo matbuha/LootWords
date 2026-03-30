@@ -1,4 +1,15 @@
-import { DEFAULT_COLLECTION_FILTERS, GAME_CONFIG, STORAGE_KEY, STORAGE_VERSION } from "./data/config.js";
+import {
+  CATEGORY_META,
+  COLLECTION_SORTS,
+  DEFAULT_COLLECTION_FILTERS,
+  DEFAULT_LEARN_FILTERS,
+  GAME_CONFIG,
+  LEARN_SORTS,
+  LEGACY_CATEGORY_ALIASES,
+  RARITY_META,
+  STORAGE_KEY,
+  STORAGE_VERSION,
+} from "./data/config.js";
 import { CARD_LIBRARY } from "./data/cards.js";
 
 function clampPoints(value) {
@@ -23,6 +34,19 @@ function createInitialPoints(existing = {}) {
   }, {});
 }
 
+function normalizeCategoryFilter(value) {
+  const normalized = LEGACY_CATEGORY_ALIASES[value] ?? value;
+  return normalized === "all" || CATEGORY_META[normalized] ? normalized : "all";
+}
+
+function normalizeSortFilter(value, allowedSorts, fallback) {
+  return value && Object.hasOwn(allowedSorts, value) ? value : fallback;
+}
+
+function normalizeRarityFilter(value) {
+  return value === "all" || RARITY_META[value] ? value : "all";
+}
+
 export function createInitialProfile() {
   return {
     version: STORAGE_VERSION,
@@ -35,6 +59,7 @@ export function createInitialProfile() {
     bonusStars: 0,
     completedRounds: createCompletedRounds(),
     collectionFilters: { ...DEFAULT_COLLECTION_FILTERS },
+    learnFilters: { ...DEFAULT_LEARN_FILTERS },
     settings: {
       audioMuted: false,
     },
@@ -57,7 +82,14 @@ export function normalizeProfile(rawProfile) {
   }, {});
 
   const completedRounds = { ...createCompletedRounds(), ...(raw.completedRounds ?? {}) };
-  const collectionFilters = { ...DEFAULT_COLLECTION_FILTERS, ...(raw.collectionFilters ?? {}) };
+  const collectionFilters = {
+    ...DEFAULT_COLLECTION_FILTERS,
+    ...(raw.collectionFilters ?? {}),
+  };
+  const learnFilters = {
+    ...DEFAULT_LEARN_FILTERS,
+    ...(raw.learnFilters ?? {}),
+  };
 
   return {
     ...fallback,
@@ -73,7 +105,15 @@ export function normalizeProfile(rawProfile) {
       accumulator[gameId] = Math.max(0, Number.parseInt(completedRounds[gameId], 10) || 0);
       return accumulator;
     }, {}),
-    collectionFilters,
+    collectionFilters: {
+      category: normalizeCategoryFilter(collectionFilters.category),
+      rarity: normalizeRarityFilter(collectionFilters.rarity),
+      sort: normalizeSortFilter(collectionFilters.sort, COLLECTION_SORTS, DEFAULT_COLLECTION_FILTERS.sort),
+    },
+    learnFilters: {
+      category: normalizeCategoryFilter(learnFilters.category),
+      sort: normalizeSortFilter(learnFilters.sort, LEARN_SORTS, DEFAULT_LEARN_FILTERS.sort),
+    },
     settings: {
       audioMuted: Boolean(raw.settings?.audioMuted),
     },

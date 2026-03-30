@@ -1,7 +1,16 @@
-import { APP_NAME, AUDIO_CUES, BOX_TAP_COUNT, GAME_CONFIG, ROUTES } from "./data/config.js";
+import {
+  APP_NAME,
+  AUDIO_CUES,
+  AUDIO_TRACKS,
+  BOX_TAP_COUNT,
+  GAME_CONFIG,
+  REWARD_REVEAL_DELAY_MS,
+  ROUTES,
+  ROUTE_SEQUENCE,
+} from "./data/config.js";
 import { getCardById, hydrateCards } from "./data/cards.js";
 import { createAudioManager } from "./core/audio.js";
-import { summarizeProgress } from "./core/progression.js";
+import { getReviewDeck, summarizeProgress } from "./core/progression.js";
 import { openRewardBox, recordGameWin } from "./core/rewards.js";
 import { createStore } from "./core/state.js";
 import { createRouter, buildRoute } from "./router.js";
@@ -14,17 +23,24 @@ import { renderRewardScreen } from "./ui/reward-screen.js";
 
 const root = document.querySelector("#app");
 
+function createRewardSession() {
+  return {
+    clicks: 0,
+    reveal: null,
+    pendingReveal: null,
+    phase: "idle",
+  };
+}
+
 const store = createStore({
   profile: loadProfile(),
   route: { path: ROUTES.home, game: "memory-match" },
   session: {
-    reward: {
-      clicks: 0,
-      reveal: null,
-    },
+    reward: createRewardSession(),
     gameResult: null,
     modalCardId: null,
     learnSelectedCardId: null,
+    navMotion: "same",
   },
 });
 
@@ -34,16 +50,26 @@ const audio = createAudioManager({
 
 let activeScreen = null;
 let router = null;
+let rewardRevealTimeout = 0;
+
+function clearRewardRevealTimeout() {
+  if (rewardRevealTimeout) {
+    window.clearTimeout(rewardRevealTimeout);
+    rewardRevealTimeout = 0;
+  }
+}
 
 function deriveState() {
   const state = store.getState();
   const cards = hydrateCards(state.profile);
   const progress = summarizeProgress(cards, state.profile);
+  const reviewDeck = getReviewDeck(cards, state.profile.learnFilters);
 
   return {
     state,
     cards,
     progress,
+    reviewDeck,
     newestCard: progress.newestCard,
     modalCard: getCardById(cards, state.session.modalCardId),
     rewardCard:
@@ -63,6 +89,17 @@ function commitState(updater) {
   persistProfile(nextState.profile);
   renderApp();
   return nextState;
+}
+
+function getRouteMotion(fromRoute, toRoute) {
+  const fromIndex = ROUTE_SEQUENCE.indexOf(fromRoute);
+  const toIndex = ROUTE_SEQUENCE.indexOf(toRoute);
+
+  if (fromIndex === -1 || toIndex === -1 || fromIndex === toIndex) {
+    return "same";
+  }
+
+  return toIndex > fromIndex ? "forward" : "backward";
 }
 
 function navigate(path, params = {}) {
@@ -102,6 +139,23 @@ const actions = {
       },
     }));
   },
+  updateLearnFilters(partialFilters) {
+    audio.play(AUDIO_CUES.click);
+    commitState((currentState) => ({
+      ...currentState,
+      profile: {
+        ...currentState.profile,
+        learnFilters: {
+          ...currentState.profile.learnFilters,
+          ...partialFilters,
+        },
+      },
+      session: {
+        ...currentState.session,
+        learnSelectedCardId: null,
+      },
+    }));
+  },
   openCardModal(cardId) {
     audio.play(AUDIO_CUES.click);
     commitState((currentState) => ({
@@ -131,28 +185,51 @@ const actions = {
       },
     }));
   },
+  selectRelativeLearnCard(direction) {
+    audio.play(AUDIO_CUES.click);
+
+    const { reviewDeck, state } = deriveState();
+    if (!reviewDeck.length) {
+      return;
+    }
+
+    const currentId = state.session.learnSelectedCardId ?? reviewDeck[0].id;
+    const currentIndex = Math.max(0, reviewDeck.findIndex((card) => card.id === currentId));
+    const nextIndex = (currentIndex + direction + reviewDeck.length) % reviewDeck.length;
+
+    commitState((currentState) => ({
+      ...currentState,
+      session: {
+        ...currentState.session,
+        learnSelectedCardId: reviewDeck[nextIndex].id,
+      },
+    }));
+  },
   tapRewardBox() {
     const { profile, session } = store.getState();
-    if (profile.rewardBoxes <= 0 || session.reward.reveal) {
+    if (profile.rewardBoxes <= 0 || session.reward.reveal || session.reward.phase === "opening") {
       return;
     }
 
     audio.play(AUDIO_CUES.boxTap);
+    const nextClicks = session.reward.clicks + 1;
 
-    if (session.reward.clicks + 1 < BOX_TAP_COUNT) {
+    if (nextClicks < BOX_TAP_COUNT) {
       commitState((currentState) => ({
         ...currentState,
         session: {
           ...currentState.session,
           reward: {
             ...currentState.session.reward,
-            clicks: currentState.session.reward.clicks + 1,
+            clicks: nextClicks,
+            phase: nextClicks === 1 ? "warming" : "charged",
           },
         },
       }));
       return;
     }
 
+    clearRewardRevealTimeout();
     const cards = hydrateCards(profile);
     const rewardResult = openRewardBox(profile, cards);
 
@@ -163,24 +240,40 @@ const actions = {
         ...currentState.session,
         reward: {
           clicks: BOX_TAP_COUNT,
-          reveal: rewardResult.reward,
+          reveal: null,
+          pendingReveal: rewardResult.reward,
+          phase: "opening",
         },
       },
     }));
 
     audio.play(AUDIO_CUES.boxOpen);
-    window.setTimeout(() => audio.play(AUDIO_CUES.rewardReveal), 120);
+
+    rewardRevealTimeout = window.setTimeout(() => {
+      rewardRevealTimeout = 0;
+      commitState((currentState) => ({
+        ...currentState,
+        session: {
+          ...currentState.session,
+          reward: {
+            ...currentState.session.reward,
+            reveal: currentState.session.reward.pendingReveal,
+            pendingReveal: null,
+            phase: "revealed",
+          },
+        },
+      }));
+      audio.play(AUDIO_CUES.rewardReveal);
+    }, REWARD_REVEAL_DELAY_MS);
   },
   resetRewardReveal() {
+    clearRewardRevealTimeout();
     audio.play(AUDIO_CUES.click);
     commitState((currentState) => ({
       ...currentState,
       session: {
         ...currentState.session,
-        reward: {
-          clicks: 0,
-          reveal: null,
-        },
+        reward: createRewardSession(),
       },
     }));
   },
@@ -207,6 +300,7 @@ const actions = {
     }));
   },
   clearGameResult() {
+    audio.play(AUDIO_CUES.click);
     commitState((currentState) => ({
       ...currentState,
       session: {
@@ -225,11 +319,12 @@ const SCREEN_RENDERERS = {
   [ROUTES.play]: (container, context) => renderGameScreen(container, context),
 };
 
-function renderShell({ progress, currentRoute, audioMuted }) {
+function renderShell({ progress, currentRoute, audioMuted, navMotion }) {
   return `
-    <div class="app-shell">
+    <div class="app-shell app-shell--${currentRoute.path}">
+      <div class="route-glow route-glow--${currentRoute.path}" aria-hidden="true"></div>
       <header class="shell-topbar">
-        <a class="brand-lockup" href="${buildRoute(ROUTES.home)}">
+        <a class="brand-lockup" href="${buildRoute(ROUTES.home)}" data-ui-click="true">
           <span class="brand-mark" aria-hidden="true"></span>
           <span class="brand-copy">
             <strong>${APP_NAME}</strong>
@@ -243,7 +338,7 @@ function renderShell({ progress, currentRoute, audioMuted }) {
         </div>
       </header>
 
-      <main class="shell-main">
+      <main class="shell-main shell-main--${navMotion}" data-route="${currentRoute.path}">
         <div id="screen-root"></div>
       </main>
     </div>
@@ -258,7 +353,7 @@ function renderShell({ progress, currentRoute, audioMuted }) {
       ]
         .map(
           (item) => `
-            <a class="nav-link ${currentRoute.path === item.route ? "is-active" : ""}" href="${buildRoute(item.route, item.params ?? {})}">
+            <a class="nav-link ${currentRoute.path === item.route ? "is-active" : ""}" href="${buildRoute(item.route, item.params ?? {})}" data-ui-click="true">
               <strong>${item.label}</strong>
               <span class="nav-link__tag">${item.tag}</span>
             </a>
@@ -272,22 +367,37 @@ function renderShell({ progress, currentRoute, audioMuted }) {
 function renderApp() {
   activeScreen?.destroy?.();
 
-  const { state, cards, progress, newestCard, modalCard, rewardCard } = deriveState();
+  const { state, cards, progress, newestCard, modalCard, rewardCard, reviewDeck } = deriveState();
+  const selectedLearnCard =
+    reviewDeck.find((card) => card.id === state.session.learnSelectedCardId) ?? reviewDeck[0] ?? null;
+
+  document.body.dataset.route = state.route.path;
+
   root.innerHTML = renderShell({
     progress,
     currentRoute: state.route,
     audioMuted: state.profile.settings.audioMuted,
+    navMotion: state.session.navMotion,
   });
+
+  if (state.route.path === ROUTES.home && AUDIO_TRACKS.home) {
+    audio.playMusic("home");
+  } else {
+    audio.stopMusic();
+  }
 
   root.querySelector("[data-toggle-mute]")?.addEventListener("click", () => {
     actions.toggleMute();
   });
 
+  root.querySelectorAll("[data-ui-click='true']").forEach((element) => {
+    element.addEventListener("click", () => {
+      audio.play(AUDIO_CUES.click);
+    });
+  });
+
   const screenRoot = root.querySelector("#screen-root");
   const renderer = SCREEN_RENDERERS[state.route.path] ?? SCREEN_RENDERERS[ROUTES.home];
-  const unlockedCards = cards.filter((card) => card.unlocked);
-  const selectedLearnCard =
-    getCardById(cards, state.session.learnSelectedCardId) ?? unlockedCards[0] ?? null;
 
   activeScreen = renderer(screenRoot, {
     route: state.route,
@@ -295,11 +405,12 @@ function renderApp() {
     progress,
     newestCard,
     filters: state.profile.collectionFilters,
+    learnFilters: state.profile.learnFilters,
     modalCard,
     rewardState: state.session.reward,
     rewardCard,
     rewardBoxes: state.profile.rewardBoxes,
-    unlockedCards,
+    unlockedCards: reviewDeck,
     selectedCard: selectedLearnCard,
     result: state.session.gameResult,
     actions,
@@ -310,7 +421,14 @@ function renderApp() {
 }
 
 router = createRouter((route) => {
+  const previousState = store.getState();
   const nextGame = route.game in GAME_CONFIG ? route.game : "memory-match";
+  const navMotion = getRouteMotion(previousState.route.path, route.path);
+
+  if (route.path !== ROUTES.reward) {
+    clearRewardRevealTimeout();
+  }
+
   store.setState((currentState) => ({
     ...currentState,
     route: {
@@ -319,15 +437,10 @@ router = createRouter((route) => {
     },
     session: {
       ...currentState.session,
+      navMotion,
       modalCardId: route.path === ROUTES.collection ? currentState.session.modalCardId : null,
       gameResult: route.path === ROUTES.play ? currentState.session.gameResult : null,
-      reward:
-        route.path === ROUTES.reward
-          ? currentState.session.reward
-          : {
-              clicks: 0,
-              reveal: null,
-            },
+      reward: route.path === ROUTES.reward ? currentState.session.reward : createRewardSession(),
     },
   }));
   renderApp();
@@ -343,7 +456,11 @@ window.render_game_to_text = () => {
     totalCards: progress.totalCards,
     totalWins: state.profile.totalWins,
     muted: state.profile.settings.audioMuted,
-    reward: state.session.reward,
+    reward: {
+      clicks: state.session.reward.clicks,
+      phase: state.session.reward.phase,
+      reveal: state.session.reward.reveal,
+    },
     activeScreen: activeScreen?.getDebugState?.() ?? null,
     unlockedPreview: cards.filter((card) => card.unlocked).slice(0, 6).map((card) => card.word),
   });
@@ -352,5 +469,10 @@ window.render_game_to_text = () => {
 window.advanceTime = (milliseconds) => {
   activeScreen?.advanceTime?.(milliseconds);
 };
+
+window.addEventListener("beforeunload", () => {
+  clearRewardRevealTimeout();
+  audio.stopMusic();
+});
 
 renderApp();

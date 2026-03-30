@@ -1,5 +1,7 @@
 Original prompt: Build LootWords as a browser-based children's word-learning game in plain HTML, CSS, and JavaScript, with two internal mini-games, reward boxes that open in exactly three taps, collectible noun cards with persisted random points and rarity, localStorage persistence, modular architecture, and a phase-by-phase checklist that stays updated.
 
+Current prompt: Upgrade LootWords so it feels more like a real reward-driven game, with stronger reward-box anticipation, richer card reveals, clearer rarity presentation, more tactile interactions, better transitions, collection and learn screen polish, and safe audio hooks without destabilizing the existing MVP.
+
 ## Progress Checklist
 
 ### Phase 1: Foundation
@@ -75,6 +77,52 @@ Original prompt: Build LootWords as a browser-based children's word-learning gam
 - [x] Refactor messy code
 - [x] Add README with run instructions and architecture notes
 
+## Game-Feel Upgrade Checklist
+
+### Phase A: Reward Feel
+- [x] Improve reward box visuals
+- [x] Add 3-stage tap progression feedback
+- [x] Add shake / pulse / crack / glow behavior
+- [x] Add final reveal burst effect
+- [x] Improve card reveal animation
+- [x] Verify reward flow feels more exciting
+
+### Phase B: Rarity and Cards
+- [x] Upgrade rarity visual language
+- [x] Add better rarity badge treatment
+- [x] Add card aura/frame differences by rarity
+- [x] Improve card layout hierarchy
+- [x] Verify card rewards feel collectible
+
+### Phase C: Interaction Polish
+- [x] Improve main button feel
+- [x] Add better hover/press states
+- [x] Improve screen transitions
+- [x] Improve win-state celebration
+- [x] Verify app feels more game-like overall
+
+### Phase D: Collection and Learn
+- [x] Polish collection screen layout
+- [x] Add progress indicators
+- [x] Add recent/new card marker if useful
+- [x] Polish learn screen review experience
+- [x] Verify both screens feel enjoyable, not plain
+
+### Phase E: Audio Readiness
+- [x] Create audio management structure
+- [x] Add sound hooks for important events
+- [x] Add mute toggle or clear placeholder support
+- [x] Ensure missing audio files do not break the app
+- [x] Verify sound system is easy to extend
+
+### Phase F: QA
+- [x] Test reward flow after polish
+- [x] Test animations across repeated use
+- [x] Test collection and learn screens
+- [x] Test localStorage still works
+- [x] Test no regressions in mini-games
+- [x] Refactor rough code where needed
+
 ## Work Log
 
 - 2026-03-30: Read the repo baseline and loaded the local frontend/game workflow skills.
@@ -89,8 +137,19 @@ Original prompt: Build LootWords as a browser-based children's word-learning gam
   - Collection filters persisted.
   - "All cards collected" fallback converted a reward box into 50 bonus stars.
   - Final browser refresh completed with zero console errors.
+- 2026-03-30: Upgraded the visual shell with route-specific ambiance, stronger button feedback, layered hero art, and faster route motion states.
+- 2026-03-30: Rebuilt reward presentation with staged tap feedback, opening anticipation, burst reveal framing, and rarity-driven card treatment.
+- 2026-03-30: Polished collection and learn screens with album stats, recent-card ribbons, richer spotlight cards, and next/previous review flow.
+- 2026-03-30: Expanded the audio manager so missing assets safely fall back to lightweight synthesized cues and future file-based music/sfx can be plugged in without breaking the app.
+- 2026-03-30: Re-verified in-browser after polish:
+  - Home screen loaded with the new collectible/game feel and no console errors.
+  - Memory Match win -> reward overlay -> reward room -> 3-tap reveal -> collection/learn persistence still worked.
+  - Treasure Match win still awarded a reward box cleanly.
+  - Reward reveal copy stayed celebratory even when the opened box was the last box in the stash.
+  - Collection rarity filter persisted after page reload.
 
 ## Notes
 
 - MVP card art uses embedded icon-based placeholders so the app is playable before custom images are added.
 - The browser verification used a local static server at `http://127.0.0.1:8123/lootwords/`.
+- Audio asset paths are prepared in config, but the current polish pass still uses placeholder synthesized cues because no final sound files were provided.
