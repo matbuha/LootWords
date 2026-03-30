@@ -197,6 +197,13 @@ a {
   flex-wrap: wrap;
 }
 
+.audio-controls {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
 .status-pill,
 .arena-stat,
 .card-category,
@@ -602,6 +609,31 @@ a {
   color: var(--text-main);
   background: rgba(255, 255, 255, 0.09);
   border: 1px solid var(--line);
+}
+
+.mute-toggle.is-muted {
+  border-color: rgba(255, 123, 141, 0.42);
+  background:
+    linear-gradient(180deg, rgba(255, 123, 141, 0.2), rgba(255, 123, 141, 0.1)),
+    rgba(255, 255, 255, 0.06);
+}
+
+.mute-toggle--sub {
+  min-height: 44px;
+  padding: 0 14px;
+  font-size: 0.92rem;
+}
+
+.mute-toggle--sub.is-on {
+  border-color: rgba(82, 241, 203, 0.3);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    0 10px 18px rgba(6, 5, 17, 0.18),
+    0 0 0 1px rgba(82, 241, 203, 0.06);
+}
+
+.mute-toggle--sub.is-off {
+  opacity: 0.72;
 }
 
 .primary-button {
@@ -1093,6 +1125,36 @@ body[data-route="play"] {
 
 .shell-main--backward {
   animation: routeBackward 260ms ease both;
+}
+
+body.is-feedback-transition .route-glow {
+  animation: feedbackRoutePulse 260ms ease both;
+}
+
+body.is-feedback-victory::before,
+body.is-feedback-reward-burst::before,
+body.is-feedback-card-reveal::before,
+body.is-feedback-milestone::before,
+body.is-feedback-legendary::before {
+  animation: feedbackBloom 900ms ease both;
+}
+
+body.is-feedback-defeat::after {
+  animation: feedbackBloomRose 650ms ease both;
+}
+
+body.is-feedback-reward-tap-1 .route-glow::before,
+body.is-feedback-reward-tap-2 .route-glow::before,
+body.is-feedback-reward-tap-3 .route-glow::before {
+  animation: rewardTapPulse 320ms ease both;
+}
+
+body.is-feedback-reward-burst .route-glow::after,
+body.is-feedback-card-reveal .route-glow::after,
+body.is-feedback-new-card .route-glow::after,
+body.is-feedback-epic .route-glow::after,
+body.is-feedback-legendary .route-glow::after {
+  animation: rewardBurstGlow 900ms ease both;
 }
 
 .shell-topbar {
@@ -2010,6 +2072,81 @@ body[data-route="play"] {
   to {
     opacity: 1;
     transform: translateX(0) scale(1);
+  }
+}
+
+@keyframes feedbackRoutePulse {
+  0% {
+    opacity: 0.7;
+    transform: scale(0.985);
+  }
+  55% {
+    opacity: 1;
+    transform: scale(1.015);
+  }
+  100% {
+    opacity: 0.9;
+    transform: scale(1);
+  }
+}
+
+@keyframes feedbackBloom {
+  0% {
+    transform: scale(0.9);
+    opacity: 0.25;
+  }
+  45% {
+    transform: scale(1.06);
+    opacity: 0.58;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0.18;
+  }
+}
+
+@keyframes feedbackBloomRose {
+  0% {
+    transform: scale(0.92);
+    opacity: 0.2;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 0.44;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0.14;
+  }
+}
+
+@keyframes rewardTapPulse {
+  0% {
+    opacity: 0.8;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.06);
+  }
+  100% {
+    opacity: 0.9;
+    transform: scale(1);
+  }
+}
+
+@keyframes rewardBurstGlow {
+  0% {
+    opacity: 0.86;
+    transform: scale(0.92);
+  }
+  40% {
+    opacity: 1;
+    transform: scale(1.08);
+  }
+  100% {
+    opacity: 0.9;
+    transform: scale(1);
   }
 }
 

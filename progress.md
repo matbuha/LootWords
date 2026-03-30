@@ -4,6 +4,8 @@ Current prompt: Upgrade LootWords so it feels more like a real reward-driven gam
 
 Latest prompt: Improve the card content system, educational structure, and long-term scalability so LootWords has a stronger collectible English noun foundation with 100-150 visual noun cards, richer metadata, better category support, and future-ready content utilities.
 
+Current prompt: Upgrade LootWords with a modular audio and emotional feedback system so music, sound effects, mute controls, staged reward audio, and event-based feedback all work safely in the browser with missing-asset fallbacks.
+
 ## Progress Checklist
 
 ### Phase 1: Foundation
@@ -161,6 +163,53 @@ Latest prompt: Improve the card content system, educational structure, and long-
 - [x] Test newly added card content in UI
 - [x] Refactor messy content logic
 
+## Audio and Feedback Checklist
+
+### Phase A: Audio Foundation
+- [x] Create modular audio manager
+- [x] Add safe initialization after user interaction
+- [x] Add support for music and sfx playback
+- [x] Add missing-asset-safe handling
+- [x] Verify audio system does not crash the app
+
+### Phase B: Sound Events
+- [x] Define key sound events
+- [x] Wire sounds to button interactions
+- [x] Wire sounds to reward box interactions
+- [x] Wire sounds to card reveal events
+- [x] Wire sounds to win/fail states
+- [x] Verify sound events trigger correctly without duplication
+
+### Phase C: Music Support
+- [x] Add background music architecture
+- [x] Support menu and gameplay music states
+- [x] Prevent music overlap on navigation
+- [x] Support mute behavior cleanly
+- [x] Verify browser-safe music startup
+
+### Phase D: Settings Persistence
+- [x] Add mute toggle UI or improve existing one
+- [x] Persist audio settings in localStorage
+- [x] Ensure reload preserves settings
+- [x] Verify toggle behavior is stable
+
+### Phase E: Emotional Feedback Layer
+- [x] Add or improve feedback manager
+- [x] Couple important sound and visual events
+- [x] Improve reward opening emotional pacing
+- [x] Improve card reveal emotional impact
+- [x] Improve victory feedback feel
+- [x] Verify the game feels more alive and rewarding
+
+### Phase F: QA and Cleanup
+- [x] Test repeated navigation between screens
+- [x] Test reward box sound progression
+- [x] Test rare/epic/legendary reveal behavior
+- [x] Test mini-game win/fail audio behavior
+- [x] Test mute persistence and reliability
+- [x] Refactor rough audio code
+- [x] Document where future assets should go
+
 ## Work Log
 
 - 2026-03-30: Read the repo baseline and loaded the local frontend/game workflow skills.
@@ -196,12 +245,28 @@ Latest prompt: Improve the card content system, educational structure, and long-
   - Memory Match still pulled cards from the expanded dataset and awarded a reward box.
   - Reward reveal successfully unlocked a newly added `train` card from the larger pool.
   - Browser console remained clean.
+- 2026-03-30: Replaced the old direct cue calls with a modular audio stack:
+  - `audio-manager.js` now owns browser-safe unlock behavior, music routing, synth fallback cues, and safe asset registration.
+  - `feedback-manager.js` now maps gameplay events to audio and route-level visual pulses.
+  - `settings-manager.js` now normalizes persisted audio settings with master mute plus separate music and SFX toggles.
+- 2026-03-30: Expanded config-driven audio support with named feedback events, route-aware music targets, and an asset manifest for future real files.
+- 2026-03-30: Wired new feedback events through navigation, reward taps, reward burst, card reveal, collection interactions, filter changes, and win/fail outcomes.
+- 2026-03-30: Added synth-backed fallback music loops for menu, gameplay, and reward states so the MVP feels alive even with no shipped audio files.
+- 2026-03-30: Documented expected future asset filenames in `lootwords/assets/audio/README.md`.
+- 2026-03-30: Re-verified in-browser after the audio refactor:
+  - no browser console errors with empty audio asset folders
+  - mute plus music/SFX settings persisted after reload
+  - route debug state switched between `menuTrack`, `gameplayTrack`, and `rewardTrack`
+  - Memory Match win still granted a reward box
+  - reward opening still required exactly three taps and reached the reveal state cleanly
+  - loss state still triggered without breaking the play screen
+  - a controlled Legendary reveal test activated the `legendary`, `new-card`, and `milestone` feedback path together
 
 ## Notes
 
 - MVP card art uses embedded icon-based placeholders so the app is playable before custom images are added.
 - The browser verification used a local static server at `http://127.0.0.1:8123/lootwords/`.
-- Audio asset paths are prepared in config, but the current polish pass still uses placeholder synthesized cues because no final sound files were provided.
+- Audio file paths are now documented in `lootwords/assets/audio/README.md`, while the live app stays on synthesized fallback cues until real files are added.
 - The card library now uses category-backed starter packs:
   - `starter-daily`: home, clothes, school, kitchen, bathroom
   - `starter-world`: animals, food, nature, city, people/jobs

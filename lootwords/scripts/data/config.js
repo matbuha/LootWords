@@ -183,7 +183,7 @@ export const AUDIO_DEFAULT_SETTINGS = {
   sfxVolume: 0.82,
 };
 
-export const AUDIO_ASSET_PATHS = {
+export const AUDIO_ASSET_MANIFEST = {
   [AUDIO_TRACKS.menu]: "assets/audio/music/menu-loop.mp3",
   [AUDIO_TRACKS.gameplay]: "assets/audio/music/gameplay-loop.mp3",
   [AUDIO_TRACKS.reward]: "assets/audio/music/reward-loop.mp3",
@@ -204,6 +204,29 @@ export const AUDIO_ASSET_PATHS = {
   [AUDIO_SFX.filterShift]: "assets/audio/sfx/filter-change.mp3",
   [AUDIO_SFX.milestone]: "assets/audio/sfx/progress-milestone.mp3",
   [AUDIO_SFX.newCardUnlocked]: "assets/audio/sfx/new-card-unlocked.mp3",
+};
+
+export const AUDIO_ASSET_PATHS = {
+  [AUDIO_TRACKS.menu]: null,
+  [AUDIO_TRACKS.gameplay]: null,
+  [AUDIO_TRACKS.reward]: null,
+  [AUDIO_SFX.click]: null,
+  [AUDIO_SFX.hover]: null,
+  [AUDIO_SFX.menuOpen]: null,
+  [AUDIO_SFX.screenTransition]: null,
+  [AUDIO_SFX.success]: null,
+  [AUDIO_SFX.failure]: null,
+  [AUDIO_SFX.rewardTap1]: null,
+  [AUDIO_SFX.rewardTap2]: null,
+  [AUDIO_SFX.rewardTap3]: null,
+  [AUDIO_SFX.rewardOpen]: null,
+  [AUDIO_SFX.cardReveal]: null,
+  [AUDIO_SFX.epicRevealAccent]: null,
+  [AUDIO_SFX.legendaryReveal]: null,
+  [AUDIO_SFX.cardSelect]: null,
+  [AUDIO_SFX.filterShift]: null,
+  [AUDIO_SFX.milestone]: null,
+  [AUDIO_SFX.newCardUnlocked]: null,
 };
 
 export const AUDIO_CUES = AUDIO_SFX;

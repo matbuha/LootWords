@@ -170,6 +170,7 @@ export function mountMatchGame(container, { cards, onWin, onLose, playSound }) {
     const isCorrect = cardId === state.currentRound.target.id;
 
     if (isCorrect) {
+      playSound("success");
       state = {
         ...state,
         currentRound: {
@@ -180,6 +181,7 @@ export function mountMatchGame(container, { cards, onWin, onLose, playSound }) {
         feedbackMs: 500,
       };
     } else {
+      playSound("failure");
       state = {
         ...state,
         hearts: state.hearts - 1,

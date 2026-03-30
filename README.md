@@ -7,7 +7,29 @@ LootWords is a browser-based, reward-first word-learning game for children. The 
 - Reward boxes now build tension across three taps with stronger glow, crack, shake, and burst states.
 - Card reveals have clearer collectible framing with rarity-driven halos, badges, and spotlight layouts.
 - Home, reward, collection, learn, and play screens now share a more tactile game UI with faster route transitions and richer win states.
-- Audio remains optional and safe: the app exposes hooks for real assets, while the current build falls back to lightweight synthesized cues if files are missing.
+- Audio remains optional and safe: the app now uses a modular audio manager, feedback manager, and persisted settings layer, while the current build falls back to lightweight synthesized cues if files are missing.
+
+## Audio and feedback pass
+
+- Audio now initializes only after valid user interaction, so the game stays compliant with browser autoplay restrictions.
+- Music state is route-aware:
+  - Home, collection, and learn point at the menu track.
+  - Play points at the gameplay track.
+  - Reward points at the reward track.
+- Important events now flow through a shared feedback layer instead of direct scattered cue calls:
+  - button clicks
+  - menu open
+  - screen transitions
+  - mini-game win and fail
+  - reward taps 1, 2, and 3
+  - reward opening burst
+  - card reveal
+  - Epic and Legendary reveal accents
+  - collection card select
+  - filter changes
+  - progress milestones
+  - new-card unlocks
+- The current asset workflow is documented in [lootwords/assets/audio/README.md](C:\Users\ariel\Projects\LootWords\lootwords\assets\audio\README.md). Final files can be dropped into the listed paths later without changing the gameplay flow.
 
 ## Content foundation
 
@@ -61,7 +83,11 @@ Then open:
 - `lootwords/scripts/data/cards.js`: 140-card visual noun dataset with stable ids, packs, tags, and placeholder icon art.
 - `lootwords/scripts/data/config.js`: routes, rarity labels, filter options, game config, and shared constants.
 - `lootwords/scripts/core/card-utils.js`: card validation, slug creation, shared sorting, and category grouping helpers.
-- `lootwords/scripts/core/`: state, rarity, progression, rewards, and audio placeholder logic.
+- `lootwords/scripts/core/audio-manager.js`: safe audio startup, synth fallback cues, music track control, and asset registration.
+- `lootwords/scripts/core/feedback-manager.js`: event-to-feedback mapping for sounds and route-level visual pulses.
+- `lootwords/scripts/core/settings-manager.js`: normalized audio settings and persistence helpers.
+- `lootwords/scripts/core/event-bus.js`: lightweight pub/sub for future event-driven systems.
+- `lootwords/scripts/core/`: state, rarity, progression, rewards, and supporting gameplay systems.
 - `lootwords/scripts/games/`: Memory Match and Treasure Match mini-games.
 - `lootwords/scripts/ui/`: screen rendering for home, collection, reward, learn, and game hosting.
 
@@ -151,6 +177,11 @@ Then open:
 - Collection filters update and persist in localStorage.
 - Learn review filters update and persist in localStorage.
 - Placeholder audio cues exist for clicks, reward taps, reward reveal, and victories.
+- Audio settings now persist with master mute plus separate music and SFX toggles.
+- Missing audio files no longer trigger console errors or break the app.
+- Route-aware music state switches cleanly without stacking tracks.
+- Reward audio now escalates across tap 1, tap 2, tap 3, opening burst, and reveal.
+- Legendary reveal feedback is distinct from lower-rarity reveals and was verified in-browser.
 - The reward screen keeps its reveal copy after the final box is opened, instead of dropping back to an empty-state tone.
 - Learn review supports next/previous stepping through the unlocked deck.
 - Collection now groups cards by category and surfaces starter-pack progress.
@@ -159,6 +190,7 @@ Then open:
 ## Optional improvements
 
 - Replace icon placeholders with custom generated art in `lootwords/assets/images/cards/`.
-- Add sound asset packs and optional background music on top of the current synthesized placeholders.
+- Drop in final music and sound files using the manifest in `lootwords/scripts/data/config.js` and `lootwords/assets/audio/README.md`.
+- Add per-screen music mixing, more layered stingers, and optional ambience on top of the current synthesized placeholders.
 - Add progression layers such as streaks, achievements, and themed packs.
 - Add a dedicated quiz mode that reuses only unlocked cards.

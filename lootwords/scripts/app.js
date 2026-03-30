@@ -1,18 +1,21 @@
 import {
   APP_NAME,
-  AUDIO_CUES,
-  AUDIO_TRACKS,
+  AUDIO_SFX,
   BOX_TAP_COUNT,
+  FEEDBACK_EVENTS,
   GAME_CONFIG,
   REWARD_REVEAL_DELAY_MS,
   ROUTES,
   ROUTE_SEQUENCE,
 } from "./data/config.js";
 import { getCardById, hydrateCards } from "./data/cards.js";
-import { createAudioManager } from "./core/audio.js";
+import { createAudioManager } from "./core/audio-manager.js";
+import { createEventBus } from "./core/event-bus.js";
+import { createFeedbackManager } from "./core/feedback-manager.js";
 import { getReviewDeck, summarizeProgress } from "./core/progression.js";
 import { openRewardBox, recordGameWin } from "./core/rewards.js";
 import { createStore } from "./core/state.js";
+import { updateAudioSettings } from "./core/settings-manager.js";
 import { createRouter, buildRoute } from "./router.js";
 import { loadProfile, saveProfile } from "./storage.js";
 import { renderCollectionScreen } from "./ui/collection-screen.js";
@@ -45,8 +48,10 @@ const store = createStore({
 });
 
 const audio = createAudioManager({
-  muted: store.getState().profile.settings.audioMuted,
+  settings: store.getState().profile.settings.audio,
 });
+const eventBus = createEventBus();
+const feedback = createFeedbackManager({ audio, eventBus });
 
 let activeScreen = null;
 let router = null;
@@ -81,7 +86,7 @@ function deriveState() {
 
 function persistProfile(profile) {
   saveProfile(profile);
-  audio.setMuted(profile.settings.audioMuted);
+  feedback.setAudioSettings(profile.settings.audio);
 }
 
 function commitState(updater) {
@@ -103,31 +108,60 @@ function getRouteMotion(fromRoute, toRoute) {
 }
 
 function navigate(path, params = {}) {
+  feedback.trigger(FEEDBACK_EVENTS.buttonClick);
   router.navigate(path, params);
+}
+
+function patchAudioSettings(partialAudio) {
+  return (currentState) => ({
+    ...currentState,
+    profile: {
+      ...currentState.profile,
+      settings: updateAudioSettings(currentState.profile.settings, partialAudio),
+    },
+  });
 }
 
 const actions = {
   navigate,
   toggleMute() {
-    const wasMuted = store.getState().profile.settings.audioMuted;
+    const { settings } = store.getState().profile;
+    const wasMuted = settings.audio.muted;
 
-    commitState((currentState) => ({
-      ...currentState,
-      profile: {
-        ...currentState.profile,
-        settings: {
-          ...currentState.profile.settings,
-          audioMuted: !currentState.profile.settings.audioMuted,
-        },
-      },
-    }));
+    commitState(patchAudioSettings({ muted: !wasMuted }));
 
     if (wasMuted) {
-      audio.play(AUDIO_CUES.click);
+      feedback.trigger(FEEDBACK_EVENTS.buttonClick, {
+        audioOptions: { throttleMs: 0 },
+      });
+    }
+  },
+  toggleMusic() {
+    const { settings } = store.getState().profile;
+    const nextEnabled = !settings.audio.musicEnabled;
+
+    commitState(patchAudioSettings({ musicEnabled: nextEnabled }));
+
+    if (!settings.audio.muted && nextEnabled) {
+      feedback.trigger(FEEDBACK_EVENTS.buttonClick, {
+        audioOptions: { throttleMs: 0 },
+      });
+    }
+  },
+  toggleSfx() {
+    const { settings } = store.getState().profile;
+    const nextEnabled = !settings.audio.sfxEnabled;
+
+    commitState(patchAudioSettings({ sfxEnabled: nextEnabled }));
+
+    if (!settings.audio.muted && nextEnabled) {
+      feedback.trigger(FEEDBACK_EVENTS.buttonClick, {
+        audioOptions: { throttleMs: 0 },
+      });
     }
   },
   updateCollectionFilters(partialFilters) {
-    audio.play(AUDIO_CUES.click);
+    feedback.trigger(FEEDBACK_EVENTS.filterChange);
     commitState((currentState) => ({
       ...currentState,
       profile: {
@@ -140,7 +174,7 @@ const actions = {
     }));
   },
   updateLearnFilters(partialFilters) {
-    audio.play(AUDIO_CUES.click);
+    feedback.trigger(FEEDBACK_EVENTS.filterChange);
     commitState((currentState) => ({
       ...currentState,
       profile: {
@@ -157,7 +191,7 @@ const actions = {
     }));
   },
   openCardModal(cardId) {
-    audio.play(AUDIO_CUES.click);
+    feedback.trigger(FEEDBACK_EVENTS.collectionCardSelect);
     commitState((currentState) => ({
       ...currentState,
       session: {
@@ -167,6 +201,7 @@ const actions = {
     }));
   },
   closeCardModal() {
+    feedback.trigger(FEEDBACK_EVENTS.buttonClick);
     commitState((currentState) => ({
       ...currentState,
       session: {
@@ -176,7 +211,7 @@ const actions = {
     }));
   },
   selectLearnCard(cardId) {
-    audio.play(AUDIO_CUES.click);
+    feedback.trigger(FEEDBACK_EVENTS.collectionCardSelect);
     commitState((currentState) => ({
       ...currentState,
       session: {
@@ -186,12 +221,12 @@ const actions = {
     }));
   },
   selectRelativeLearnCard(direction) {
-    audio.play(AUDIO_CUES.click);
-
     const { reviewDeck, state } = deriveState();
     if (!reviewDeck.length) {
       return;
     }
+
+    feedback.trigger(FEEDBACK_EVENTS.collectionCardSelect);
 
     const currentId = state.session.learnSelectedCardId ?? reviewDeck[0].id;
     const currentIndex = Math.max(0, reviewDeck.findIndex((card) => card.id === currentId));
@@ -211,7 +246,6 @@ const actions = {
       return;
     }
 
-    audio.play(AUDIO_CUES.boxTap);
     const nextClicks = session.reward.clicks + 1;
 
     if (nextClicks < BOX_TAP_COUNT) {
@@ -226,12 +260,28 @@ const actions = {
           },
         },
       }));
+
+      feedback.trigger(
+        nextClicks === 1 ? FEEDBACK_EVENTS.rewardTap1 : FEEDBACK_EVENTS.rewardTap2,
+      );
       return;
     }
 
+    feedback.trigger(FEEDBACK_EVENTS.rewardTap3);
     clearRewardRevealTimeout();
+
     const cards = hydrateCards(profile);
     const rewardResult = openRewardBox(profile, cards);
+    const nextCards = hydrateCards(rewardResult.profile);
+    const revealedCard =
+      rewardResult.reward.type === "card"
+        ? getCardById(nextCards, rewardResult.reward.cardId)
+        : null;
+    const nextProgress = summarizeProgress(nextCards, rewardResult.profile);
+    const reachedAlbumMilestone =
+      rewardResult.reward.type === "card" &&
+      nextProgress.totalUnlocked > 0 &&
+      nextProgress.totalUnlocked % 10 === 0;
 
     commitState((currentState) => ({
       ...currentState,
@@ -247,7 +297,9 @@ const actions = {
       },
     }));
 
-    audio.play(AUDIO_CUES.boxOpen);
+    window.setTimeout(() => {
+      feedback.trigger(FEEDBACK_EVENTS.rewardOpen);
+    }, 140);
 
     rewardRevealTimeout = window.setTimeout(() => {
       rewardRevealTimeout = 0;
@@ -263,12 +315,30 @@ const actions = {
           },
         },
       }));
-      audio.play(AUDIO_CUES.rewardReveal);
+
+      feedback.trigger(FEEDBACK_EVENTS.cardReveal, {
+        rarity: revealedCard?.rarity,
+        audio: rewardResult.reward.type === "card",
+      });
+
+      if (revealedCard) {
+        feedback.trigger(FEEDBACK_EVENTS.newCardUnlocked, {
+          rarity: revealedCard.rarity,
+          audio: revealedCard.rarity !== "legendary",
+          audioOptions: { delayMs: 120 },
+        });
+      }
+
+      if (reachedAlbumMilestone) {
+        feedback.trigger(FEEDBACK_EVENTS.progressMilestone, {
+          audioOptions: { delayMs: 240 },
+        });
+      }
     }, REWARD_REVEAL_DELAY_MS);
   },
   resetRewardReveal() {
     clearRewardRevealTimeout();
-    audio.play(AUDIO_CUES.click);
+    feedback.trigger(FEEDBACK_EVENTS.buttonClick);
     commitState((currentState) => ({
       ...currentState,
       session: {
@@ -279,7 +349,6 @@ const actions = {
   },
   finishGame(result) {
     if (result.status === "won") {
-      audio.play(AUDIO_CUES.victory);
       commitState((currentState) => ({
         ...currentState,
         profile: recordGameWin(currentState.profile, result.gameId),
@@ -288,6 +357,7 @@ const actions = {
           gameResult: result,
         },
       }));
+      feedback.trigger(FEEDBACK_EVENTS.gameWin);
       return;
     }
 
@@ -298,9 +368,10 @@ const actions = {
         gameResult: result,
       },
     }));
+    feedback.trigger(FEEDBACK_EVENTS.gameLose);
   },
   clearGameResult() {
-    audio.play(AUDIO_CUES.click);
+    feedback.trigger(FEEDBACK_EVENTS.buttonClick);
     commitState((currentState) => ({
       ...currentState,
       session: {
@@ -319,7 +390,7 @@ const SCREEN_RENDERERS = {
   [ROUTES.play]: (container, context) => renderGameScreen(container, context),
 };
 
-function renderShell({ progress, currentRoute, audioMuted, navMotion }) {
+function renderShell({ progress, currentRoute, audioSettings, navMotion }) {
   return `
     <div class="app-shell app-shell--${currentRoute.path}">
       <div class="route-glow route-glow--${currentRoute.path}" aria-hidden="true"></div>
@@ -334,7 +405,25 @@ function renderShell({ progress, currentRoute, audioMuted, navMotion }) {
         <div class="topbar-status">
           <span class="status-pill"><strong>${progress.rewardBoxes}</strong><span>boxes</span></span>
           <span class="status-pill"><strong>${progress.totalUnlocked}</strong><span>cards</span></span>
-          <button class="mute-toggle" type="button" data-toggle-mute="true">${audioMuted ? "Sound Off" : "Sound On"}</button>
+          <div class="audio-controls" aria-label="Audio controls">
+            <button class="mute-toggle ${audioSettings.muted ? "is-muted" : ""}" type="button" data-toggle-mute="true">
+              ${audioSettings.muted ? "Sound Off" : "Sound On"}
+            </button>
+            <button
+              class="mute-toggle mute-toggle--sub ${audioSettings.musicEnabled ? "is-on" : "is-off"}"
+              type="button"
+              data-toggle-audio="music"
+            >
+              Music ${audioSettings.musicEnabled ? "On" : "Off"}
+            </button>
+            <button
+              class="mute-toggle mute-toggle--sub ${audioSettings.sfxEnabled ? "is-on" : "is-off"}"
+              type="button"
+              data-toggle-audio="sfx"
+            >
+              SFX ${audioSettings.sfxEnabled ? "On" : "Off"}
+            </button>
+          </div>
         </div>
       </header>
 
@@ -376,23 +465,30 @@ function renderApp() {
   root.innerHTML = renderShell({
     progress,
     currentRoute: state.route,
-    audioMuted: state.profile.settings.audioMuted,
+    audioSettings: state.profile.settings.audio,
     navMotion: state.session.navMotion,
   });
 
-  if (state.route.path === ROUTES.home && AUDIO_TRACKS.home) {
-    audio.playMusic("home");
-  } else {
-    audio.stopMusic();
-  }
+  feedback.syncRoute(state.route.path);
 
   root.querySelector("[data-toggle-mute]")?.addEventListener("click", () => {
     actions.toggleMute();
   });
 
+  root.querySelectorAll("[data-toggle-audio]").forEach((button) => {
+    button.addEventListener("click", () => {
+      if (button.dataset.toggleAudio === "music") {
+        actions.toggleMusic();
+        return;
+      }
+
+      actions.toggleSfx();
+    });
+  });
+
   root.querySelectorAll("[data-ui-click='true']").forEach((element) => {
     element.addEventListener("click", () => {
-      audio.play(AUDIO_CUES.click);
+      feedback.trigger(FEEDBACK_EVENTS.buttonClick);
     });
   });
 
@@ -414,8 +510,8 @@ function renderApp() {
     selectedCard: selectedLearnCard,
     result: state.session.gameResult,
     actions,
-    playSound(cueId) {
-      audio.play(cueId);
+    playSound(soundId, options) {
+      feedback.playSound(soundId, options);
     },
   });
 }
@@ -446,6 +542,18 @@ router = createRouter((route) => {
   renderApp();
 });
 
+function primeAudioFromInteraction() {
+  feedback.prime();
+}
+
+document.addEventListener("pointerdown", primeAudioFromInteraction, {
+  passive: true,
+  capture: true,
+});
+document.addEventListener("keydown", primeAudioFromInteraction, {
+  capture: true,
+});
+
 window.render_game_to_text = () => {
   const { state, cards, progress } = deriveState();
   return JSON.stringify({
@@ -455,7 +563,12 @@ window.render_game_to_text = () => {
     totalUnlocked: progress.totalUnlocked,
     totalCards: progress.totalCards,
     totalWins: state.profile.totalWins,
-    muted: state.profile.settings.audioMuted,
+    audio: {
+      muted: state.profile.settings.audio.muted,
+      musicEnabled: state.profile.settings.audio.musicEnabled,
+      sfxEnabled: state.profile.settings.audio.sfxEnabled,
+      debug: feedback.getDebugState(),
+    },
     reward: {
       clicks: state.session.reward.clicks,
       phase: state.session.reward.phase,
@@ -472,7 +585,8 @@ window.advanceTime = (milliseconds) => {
 
 window.addEventListener("beforeunload", () => {
   clearRewardRevealTimeout();
-  audio.stopMusic();
+  feedback.destroy();
+  eventBus.clear();
 });
 
 renderApp();

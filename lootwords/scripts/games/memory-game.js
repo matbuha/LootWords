@@ -170,6 +170,7 @@ export function mountMemoryGame(container, { cards, onWin, onLose, playSound }) 
       };
 
       if (first.cardId === second.cardId) {
+        playSound("success");
         nextState = {
           ...nextState,
           deck: nextDeck.map((entry) =>
@@ -178,6 +179,7 @@ export function mountMemoryGame(container, { cards, onWin, onLose, playSound }) 
           matches: state.matches + 1,
         };
       } else {
+        playSound("failure");
         nextState = {
           ...nextState,
           pendingMismatch: {

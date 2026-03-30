@@ -11,6 +11,7 @@ import {
   STORAGE_VERSION,
 } from "./data/config.js";
 import { CARD_LIBRARY } from "./data/cards.js";
+import { createDefaultSettings, normalizeSettings } from "./core/settings-manager.js";
 
 function clampPoints(value) {
   const normalized = Number.parseInt(value, 10);
@@ -60,9 +61,7 @@ export function createInitialProfile() {
     completedRounds: createCompletedRounds(),
     collectionFilters: { ...DEFAULT_COLLECTION_FILTERS },
     learnFilters: { ...DEFAULT_LEARN_FILTERS },
-    settings: {
-      audioMuted: false,
-    },
+    settings: createDefaultSettings(),
   };
 }
 
@@ -114,9 +113,7 @@ export function normalizeProfile(rawProfile) {
       category: normalizeCategoryFilter(learnFilters.category),
       sort: normalizeSortFilter(learnFilters.sort, LEARN_SORTS, DEFAULT_LEARN_FILTERS.sort),
     },
-    settings: {
-      audioMuted: Boolean(raw.settings?.audioMuted),
-    },
+    settings: normalizeSettings(raw.settings),
   };
 }
 
