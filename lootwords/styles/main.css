@@ -377,6 +377,15 @@ a {
   padding: 18px;
 }
 
+.empty-state--error {
+  display: grid;
+  gap: 14px;
+  background:
+    linear-gradient(135deg, rgba(255, 123, 141, 0.14), rgba(255, 201, 79, 0.08)),
+    rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 123, 141, 0.22);
+}
+
 .stat-card span,
 .progress-chip span,
 .rarity-chip span {

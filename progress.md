@@ -10,6 +10,8 @@ Latest prompt: Expand replayability and progression by adding more lightweight m
 
 Latest prompt: Add a dedicated Parent Mode and content-management layer so a parent can safely manage content availability, categories, rewards, progression settings, progress visibility, resets, and import/export without breaking the child-facing game flow.
 
+Latest prompt: Perform a focused QA, cleanup, and architecture hardening pass so LootWords is more stable, storage-safe, maintainable, and ready for future development.
+
 ## Progress Checklist
 
 ### Phase 1: Foundation
@@ -301,6 +303,53 @@ Latest prompt: Add a dedicated Parent Mode and content-management layer so a par
 - [x] Refactor rough admin code
 - [x] Update documentation
 
+## QA / Cleanup Hardening Checklist
+
+### Phase A: QA
+- [x] Test first load and initialization
+- [x] Test navigation across all screens
+- [x] Test mini-game loops
+- [x] Test reward flow end-to-end
+- [x] Test persistence after refresh
+- [x] Test repeated play sessions
+- [x] Fix major issues found
+
+### Phase B: State and Storage Hardening
+- [x] Audit state management
+- [x] Reduce duplicated state logic
+- [x] Harden localStorage parsing and defaults
+- [x] Add safe fallback behavior for bad state
+- [x] Verify consistent updates across UI and state
+
+### Phase C: Architecture Cleanup
+- [x] Clean up rendering flow
+- [x] Clean up mini-game integration
+- [x] Clean up reward system structure
+- [x] Improve modularity where weak
+- [x] Refactor rough areas without breaking features
+
+### Phase D: Parent Mode and Edge Cases
+- [x] Test parent mode if present
+- [x] Test category toggle edge cases
+- [x] Test no-active-content edge cases
+- [x] Test reset/import/export flows
+- [x] Fix parent-related breakages safely
+
+### Phase E: Usability and Resilience
+- [x] Improve practical usability issues
+- [x] Improve empty states and fallback messages
+- [x] Improve missing asset resilience
+- [x] Improve defensive coding around invalid data
+- [x] Verify app stays stable under edge conditions
+
+### Phase F: Documentation and Final Cleanup
+- [x] Add or improve README
+- [x] Add architecture notes
+- [x] Add extension guidance for cards and mini-games
+- [x] Remove dead code
+- [x] Improve naming/comments
+- [x] Final manual smoke test
+
 ## Work Log
 
 - 2026-03-30: Read the repo baseline and loaded the local frontend/game workflow skills.
@@ -405,6 +454,24 @@ Latest prompt: Add a dedicated Parent Mode and content-management layer so a par
   - invalid import payloads are now blocked instead of normalizing into a blank profile
   - exported profiles no longer keep stray unknown fields after normalization
   - browser console remained clean
+- 2026-03-30: Hardened saved-state recovery:
+  - `storage.js` now validates `discoveredAtByCardId` timestamps before keeping them
+  - saves now write to both `lootwords-profile` and `lootwords-profile:backup`
+  - load now recovers from the backup copy when the primary record is unreadable
+- 2026-03-30: Added render containment:
+  - `error-boundary.js` now catches screen destroy/render failures and replaces them with a safe fallback panel instead of crashing the app shell
+  - `window.render_game_to_text()` now exposes the latest captured render error plus total/active/shelved unlock counts for QA
+- 2026-03-30: Fixed a parent-mode progress display bug:
+  - the parent top bar now shows total unlocked cards from the full collection, not just child-active unlocks
+- 2026-03-30: Re-verified in-browser during the hardening pass:
+  - clean first load still initializes correctly with zero progress
+  - a corrupted primary storage record recovers from the backup record and restores unlocks, reward boxes, and audio settings
+  - Loot Pop still wins cleanly, grants reward boxes, and updates streaks
+  - reward boxes still open in exactly three taps and reveal persisted cards
+  - collection, learn, and reward state persist after reload
+  - parent invalid-import UI still blocks malformed JSON
+  - resetting settings restores all categories and removes shelved unlocks
+  - browser console remained free of runtime errors
 
 ## Notes
 
@@ -427,3 +494,7 @@ Latest prompt: Add a dedicated Parent Mode and content-management layer so a par
   - `lootwords/scripts/core/reset-manager.js`
   - `lootwords/scripts/ui/parent-screen.js`
   - `lootwords/scripts/ui/parent-sections/`
+- New docs added during hardening:
+  - `lootwords/docs/architecture.md`
+  - `lootwords/docs/content-model.md`
+  - `lootwords/docs/future-roadmap.md`

@@ -9,6 +9,13 @@ import {
 } from "./data/config.js";
 import { getCardById, hydrateCards } from "./data/cards.js";
 import { createAudioManager } from "./core/audio-manager.js";
+import {
+  clearLastAppError,
+  getLastAppError,
+  renderAppSafely,
+  renderScreenSafely,
+  safeDestroyScreen,
+} from "./core/error-boundary.js";
 import { createEventBus } from "./core/event-bus.js";
 import { createFeedbackManager } from "./core/feedback-manager.js";
 import { importProfileFromJson, exportProfileToJson } from "./core/import-export-manager.js";
@@ -31,6 +38,7 @@ import {
 } from "./core/reset-manager.js";
 import { openRewardBox, recordGameLoss, recordGameWin } from "./core/rewards.js";
 import { createStore } from "./core/state.js";
+import { createUiEffects } from "./core/ui-effects.js";
 import { updateAudioSettings } from "./core/settings-manager.js";
 import { getRandomGameId } from "./games/game-registry.js";
 import { createRouter, buildRoute } from "./router.js";
@@ -99,6 +107,7 @@ const audio = createAudioManager({
 });
 const eventBus = createEventBus();
 const feedback = createFeedbackManager({ audio, eventBus });
+const uiEffects = createUiEffects();
 
 let activeScreen = null;
 let router = null;
@@ -901,7 +910,7 @@ const SCREEN_RENDERERS = {
   [ROUTES.parent]: (container, context) => renderParentScreen(container, context),
 };
 
-function renderShell({ progress, currentRoute, audioSettings, navMotion }) {
+function renderShell({ progress, parentSummary, currentRoute, audioSettings, navMotion }) {
   if (currentRoute.path === ROUTES.parent) {
     return `
       <div class="app-shell app-shell--parent">
@@ -915,7 +924,7 @@ function renderShell({ progress, currentRoute, audioSettings, navMotion }) {
             </span>
           </div>
           <div class="topbar-status topbar-status--parent">
-            <span class="status-pill"><strong>${progress.totalUnlocked}</strong><span>unlocked</span></span>
+            <span class="status-pill"><strong>${parentSummary.unlockedAllCount}</strong><span>unlocked</span></span>
             <span class="status-pill"><strong>${progress.rewardBoxes}</strong><span>stash</span></span>
             <button class="ghost-button" type="button" data-parent-exit-shell="true">Exit Parent Mode</button>
           </div>
@@ -997,7 +1006,22 @@ function renderShell({ progress, currentRoute, audioSettings, navMotion }) {
 }
 
 function renderApp() {
-  activeScreen?.destroy?.();
+  const currentRoute = store.getState().route.path;
+  safeDestroyScreen(activeScreen, { routePath: currentRoute });
+  activeScreen = null;
+  clearLastAppError();
+
+  let derived;
+  try {
+    derived = deriveState();
+  } catch (error) {
+    renderAppSafely({
+      root,
+      routePath: currentRoute,
+      error,
+    });
+    return;
+  }
 
   const {
     state,
@@ -1011,79 +1035,94 @@ function renderApp() {
     modalCard,
     rewardCard,
     reviewDeck,
-  } =
-    deriveState();
+  } = derived;
   const selectedLearnCard =
     reviewDeck.find((card) => card.id === state.session.learnSelectedCardId) ?? reviewDeck[0] ?? null;
 
-  document.body.dataset.route = state.route.path;
+  try {
+    document.body.dataset.route = state.route.path;
 
-  root.innerHTML = renderShell({
-    progress,
-    currentRoute: state.route,
-    audioSettings: state.profile.settings.audio,
-    navMotion: state.session.navMotion,
-  });
-
-  feedback.syncRoute(state.route.path);
-
-  root.querySelector("[data-toggle-mute]")?.addEventListener("click", () => {
-    actions.toggleMute();
-  });
-
-  root.querySelector("[data-parent-exit-shell]")?.addEventListener("click", () => {
-    actions.exitParentMode();
-  });
-
-  root.querySelectorAll("[data-toggle-audio]").forEach((button) => {
-    button.addEventListener("click", () => {
-      if (button.dataset.toggleAudio === "music") {
-        actions.toggleMusic();
-        return;
-      }
-
-      actions.toggleSfx();
+    root.innerHTML = renderShell({
+      progress,
+      parentSummary,
+      currentRoute: state.route,
+      audioSettings: state.profile.settings.audio,
+      navMotion: state.session.navMotion,
     });
-  });
 
-  root.querySelectorAll("[data-ui-click='true']").forEach((element) => {
-    element.addEventListener("click", () => {
-      feedback.trigger(FEEDBACK_EVENTS.buttonClick);
+    feedback.syncRoute(state.route.path);
+
+    root.querySelector("[data-toggle-mute]")?.addEventListener("click", () => {
+      actions.toggleMute();
     });
-  });
 
-  root.querySelector("[data-parent-secret='true']")?.addEventListener("click", (event) => {
-    actions.armParentModeTrigger(event);
-  });
+    root.querySelector("[data-parent-exit-shell]")?.addEventListener("click", () => {
+      actions.exitParentMode();
+    });
 
-  const screenRoot = root.querySelector("#screen-root");
-  const renderer = SCREEN_RENDERERS[state.route.path] ?? SCREEN_RENDERERS[ROUTES.home];
+    root.querySelectorAll("[data-toggle-audio]").forEach((button) => {
+      button.addEventListener("click", () => {
+        if (button.dataset.toggleAudio === "music") {
+          actions.toggleMusic();
+          return;
+        }
 
-  activeScreen = renderer(screenRoot, {
-    route: state.route,
-    allCards,
-    cards,
-    parentSummary,
-    progress,
-    newestCard,
-    filters: collectionFilters,
-    learnFilters,
-    modalCard,
-    rewardState: state.session.reward,
-    rewardCard,
-    rewardBoxes: state.profile.rewardBoxes,
-    activeCardCount: parentSummary.activeCardCount,
-    unlockedCards: reviewDeck,
-    selectedCard: selectedLearnCard,
-    result: state.session.gameResult,
-    parentUi: state.session.parent,
-    isUnlocked: state.session.parent.unlocked,
-    profile: state.profile,
-    actions,
-    playSound(soundId, options) {
-      feedback.playSound(soundId, options);
-    },
-  });
+        actions.toggleSfx();
+      });
+    });
+
+    root.querySelectorAll("[data-ui-click='true']").forEach((element) => {
+      element.addEventListener("click", () => {
+        feedback.trigger(FEEDBACK_EVENTS.buttonClick);
+      });
+    });
+
+    root.querySelector("[data-parent-secret='true']")?.addEventListener("click", (event) => {
+      actions.armParentModeTrigger(event);
+    });
+
+    const screenRoot = root.querySelector("#screen-root");
+    const renderer = SCREEN_RENDERERS[state.route.path] ?? SCREEN_RENDERERS[ROUTES.home];
+
+    activeScreen = renderScreenSafely({
+      container: screenRoot,
+      renderer,
+      routePath: state.route.path,
+      context: {
+        route: state.route,
+        allCards,
+        cards,
+        parentSummary,
+        progress,
+        newestCard,
+        filters: collectionFilters,
+        learnFilters,
+        modalCard,
+        rewardState: state.session.reward,
+        rewardCard,
+        rewardBoxes: state.profile.rewardBoxes,
+        activeCardCount: parentSummary.activeCardCount,
+        unlockedCards: reviewDeck,
+        selectedCard: selectedLearnCard,
+        result: state.session.gameResult,
+        parentUi: state.session.parent,
+        isUnlocked: state.session.parent.unlocked,
+        profile: state.profile,
+        actions,
+        playSound(soundId, options) {
+          feedback.playSound(soundId, options);
+        },
+      },
+    });
+
+    uiEffects.apply(root);
+  } catch (error) {
+    renderAppSafely({
+      root,
+      routePath: state.route.path,
+      error,
+    });
+  }
 }
 
 router = createRouter((route) => {
@@ -1134,7 +1173,7 @@ document.addEventListener("keydown", primeAudioFromInteraction, {
 });
 
 window.render_game_to_text = () => {
-  const { state, cards, parentSummary, progress } = deriveState();
+  const { state, allCards, cards, parentSummary, progress } = deriveState();
   return JSON.stringify({
     route: state.route.path,
     routeGame: state.route.game,
@@ -1143,7 +1182,11 @@ window.render_game_to_text = () => {
     rewardBoxesEarned: state.profile.rewardBoxesEarned,
     rewardBoxesOpened: state.profile.rewardBoxesOpened,
     totalUnlocked: progress.totalUnlocked,
+    totalUnlockedAll: parentSummary.unlockedAllCount,
+    totalUnlockedActive: parentSummary.unlockedActiveCount,
+    totalUnlockedShelved: parentSummary.shelvedUnlockedCount,
     totalCards: progress.totalCards,
+    totalCardsAll: allCards.length,
     activeCards: parentSummary.activeCardCount,
     totalWins: state.profile.totalWins,
     currentStreak: state.profile.currentStreak,
@@ -1174,6 +1217,7 @@ window.render_game_to_text = () => {
       randomGame: progress.playSummary.randomGame?.id ?? null,
     },
     activeScreen: activeScreen?.getDebugState?.() ?? null,
+    lastError: getLastAppError(),
     unlockedPreview: cards.filter((card) => card.unlocked).slice(0, 6).map((card) => card.word),
   });
 };
@@ -1184,6 +1228,7 @@ window.advanceTime = (milliseconds) => {
 
 window.addEventListener("beforeunload", () => {
   clearRewardRevealTimeout();
+  uiEffects.destroy();
   feedback.destroy();
   eventBus.clear();
 });

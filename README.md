@@ -141,6 +141,18 @@ Then open:
 - `lootwords/scripts/ui/parent-sections/`: content, category, progression, progress, import/export, and reset admin panels.
 - `lootwords/scripts/ui/`: screen rendering for home, collection, reward, learn, play, and parent hosting.
 
+## Docs
+
+- [Architecture](C:\Users\ariel\Projects\LootWords\lootwords\docs\architecture.md)
+- [Content model](C:\Users\ariel\Projects\LootWords\lootwords\docs\content-model.md)
+- [Future roadmap](C:\Users\ariel\Projects\LootWords\lootwords\docs\future-roadmap.md)
+
+## QA and hardening notes
+
+- Saved profiles now write to a primary key plus a backup key so corrupted localStorage can recover without discarding progress immediately.
+- Screen destroy/render failures are now contained by a small error boundary instead of taking the whole app down.
+- `window.render_game_to_text()` now exposes both total unlocked cards and active unlocked cards so future QA can distinguish parent-shelved content from real progress loss.
+
 ## Completed checklist
 
 ### Phase 1: Foundation
@@ -216,6 +228,53 @@ Then open:
 - [x] Refactor messy code
 - [x] Add README with run instructions and architecture notes
 
+## QA / Cleanup Hardening Checklist
+
+### Phase A: QA
+- [x] Test first load and initialization
+- [x] Test navigation across all screens
+- [x] Test mini-game loops
+- [x] Test reward flow end-to-end
+- [x] Test persistence after refresh
+- [x] Test repeated play sessions
+- [x] Fix major issues found
+
+### Phase B: State and Storage Hardening
+- [x] Audit state management
+- [x] Reduce duplicated state logic
+- [x] Harden localStorage parsing and defaults
+- [x] Add safe fallback behavior for bad state
+- [x] Verify consistent updates across UI and state
+
+### Phase C: Architecture Cleanup
+- [x] Clean up rendering flow
+- [x] Clean up mini-game integration
+- [x] Clean up reward system structure
+- [x] Improve modularity where weak
+- [x] Refactor rough areas without breaking features
+
+### Phase D: Parent Mode and Edge Cases
+- [x] Test parent mode if present
+- [x] Test category toggle edge cases
+- [x] Test no-active-content edge cases
+- [x] Test reset/import/export flows
+- [x] Fix parent-related breakages safely
+
+### Phase E: Usability and Resilience
+- [x] Improve practical usability issues
+- [x] Improve empty states and fallback messages
+- [x] Improve missing asset resilience
+- [x] Improve defensive coding around invalid data
+- [x] Verify app stays stable under edge conditions
+
+### Phase F: Documentation and Final Cleanup
+- [x] Add or improve README
+- [x] Add architecture notes
+- [x] Add extension guidance for cards and mini-games
+- [x] Remove dead code
+- [x] Improve naming/comments
+- [x] Final manual smoke test
+
 ## Verified behavior
 
 - Home, play, reward, collection, and learn screens all route cleanly.
@@ -244,6 +303,9 @@ Then open:
 - Reset tools require a second confirmation before applying destructive changes.
 - Invalid import payloads are blocked and surfaced in the Parent Mode UI instead of being applied.
 - Export/import roundtrip works with the validated JSON format.
+- A corrupted primary localStorage record now recovers from the backup profile instead of immediately wiping progress.
+- Parent Mode now keeps showing total unlocked cards even when some unlocked cards are shelved by disabled categories.
+- Render failures are now contained by a safe fallback panel, and the latest captured error is exposed in the debug payload for QA.
 - Browser verification completed with zero console errors.
 
 ## Optional improvements

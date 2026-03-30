@@ -15,12 +15,18 @@ import { normalizeGameStatsMap, createEmptyGameStatsMap } from "./core/game-sess
 import { createDefaultParentSettings, normalizeParentSettings } from "./core/parent-mode.js";
 import { createDefaultSettings, normalizeSettings } from "./core/settings-manager.js";
 
+const STORAGE_BACKUP_KEY = `${STORAGE_KEY}:backup`;
+
 function clampPoints(value) {
   const normalized = Number.parseInt(value, 10);
   if (Number.isNaN(normalized)) {
     return Math.floor(Math.random() * 1000) + 1;
   }
   return Math.max(1, Math.min(1000, normalized));
+}
+
+function isValidTimestamp(value) {
+  return typeof value === "string" && !Number.isNaN(Date.parse(value));
 }
 
 function createCompletedRounds() {
@@ -99,7 +105,7 @@ export function normalizeProfile(rawProfile) {
     : [];
 
   const discoveredAtByCardId = CARD_LIBRARY.reduce((accumulator, card) => {
-    if (raw.discoveredAtByCardId?.[card.id]) {
+    if (isValidTimestamp(raw.discoveredAtByCardId?.[card.id])) {
       accumulator[card.id] = raw.discoveredAtByCardId[card.id];
     }
     return accumulator;
@@ -158,22 +164,60 @@ export function normalizeProfile(rawProfile) {
   };
 }
 
-export function loadProfile() {
+function readProfileRecord(key) {
   try {
-    const rawValue = window.localStorage.getItem(STORAGE_KEY);
+    const rawValue = window.localStorage.getItem(key);
     if (!rawValue) {
-      return createInitialProfile();
+      return { status: "missing", profile: null };
     }
-    return normalizeProfile(JSON.parse(rawValue));
+    return {
+      status: "ok",
+      profile: normalizeProfile(JSON.parse(rawValue)),
+    };
   } catch (error) {
-    console.warn("LootWords profile reset after storage read failure.", error);
-    return createInitialProfile();
+    console.warn(`LootWords profile read failed for ${key}.`, error);
+    return { status: "error", profile: null };
   }
+}
+
+function persistSerializedProfile(serializedProfile) {
+  try {
+    window.localStorage.setItem(STORAGE_KEY, serializedProfile);
+  } catch (error) {
+    console.warn("LootWords profile could not be saved to primary storage.", error);
+  }
+
+  try {
+    window.localStorage.setItem(STORAGE_BACKUP_KEY, serializedProfile);
+  } catch (error) {
+    console.warn("LootWords profile backup could not be saved.", error);
+  }
+}
+
+export function loadProfile() {
+  const primary = readProfileRecord(STORAGE_KEY);
+  if (primary.status === "ok") {
+    return primary.profile;
+  }
+
+  const backup = readProfileRecord(STORAGE_BACKUP_KEY);
+  if (backup.status === "ok") {
+    const serializedBackup = JSON.stringify(backup.profile);
+    persistSerializedProfile(serializedBackup);
+    console.warn("LootWords profile recovered from backup storage.");
+    return backup.profile;
+  }
+
+  if (primary.status === "error" || backup.status === "error") {
+    console.warn("LootWords profile reset after storage recovery failed.");
+  }
+
+  return createInitialProfile();
 }
 
 export function saveProfile(profile) {
   try {
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(normalizeProfile(profile)));
+    persistSerializedProfile(JSON.stringify(normalizeProfile(profile)));
   } catch (error) {
     console.warn("LootWords profile could not be saved.", error);
   }

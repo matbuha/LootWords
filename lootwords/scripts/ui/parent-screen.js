@@ -89,7 +89,7 @@ export function renderParentScreen(
       ${
         !isUnlocked
           ? `
-            <div class="parent-gate">
+            <form class="parent-gate" data-parent-gate-form="true">
               <div class="screen-header">
                 <div>
                   <span class="small-label">Parent check</span>
@@ -99,7 +99,7 @@ export function renderParentScreen(
               </div>
               <label class="parent-field">
                 <span>Parent phrase</span>
-                <input class="parent-input" type="password" value="${parentUi.gateInput}" data-parent-gate-input="true" placeholder="Type the parent phrase" />
+                <input class="parent-input" type="text" value="${parentUi.gateInput}" data-parent-gate-input="true" placeholder="Type the parent phrase" autocomplete="off" autocapitalize="characters" spellcheck="false" />
               </label>
               ${
                 parentUi.gateError
@@ -107,10 +107,10 @@ export function renderParentScreen(
                   : ""
               }
               <div class="cta-stack cta-stack--parent">
-                <button class="primary-button" type="button" data-parent-gate-submit="true">Unlock Parent Mode</button>
+                <button class="primary-button" type="submit" data-parent-gate-submit="true">Unlock Parent Mode</button>
                 <button class="ghost-button" type="button" data-parent-gate-cancel="true">Back to child mode</button>
               </div>
-            </div>
+            </form>
           `
           : `
             <div class="parent-layout">
@@ -152,7 +152,8 @@ export function renderParentScreen(
       actions.updateParentGateInput(event.target.value);
     });
 
-    container.querySelector("[data-parent-gate-submit]")?.addEventListener("click", () => {
+    container.querySelector("[data-parent-gate-form]")?.addEventListener("submit", (event) => {
+      event.preventDefault();
       actions.submitParentGate();
     });
 
