@@ -9,7 +9,7 @@ import {
 
 export const APP_NAME = "LootWords";
 export const STORAGE_KEY = "lootwords-profile";
-export const STORAGE_VERSION = 2;
+export const STORAGE_VERSION = 3;
 
 export { CATEGORY_META, CATEGORY_ORDER, DIFFICULTY_META, LEGACY_CATEGORY_ALIASES, PACK_META, PACK_ORDER };
 
@@ -102,23 +102,108 @@ export const GAME_CONFIG = {
   },
 };
 
-export const AUDIO_CUES = {
+export const AUDIO_SFX = {
   click: "click",
-  boxTap: "boxTap",
-  boxOpen: "boxOpen",
-  rewardReveal: "rewardReveal",
-  victory: "victory",
+  hover: "hover",
+  menuOpen: "menuOpen",
+  screenTransition: "screenTransition",
+  success: "success",
+  failure: "failure",
+  rewardTap1: "rewardTap1",
+  rewardTap2: "rewardTap2",
+  rewardTap3: "rewardTap3",
+  rewardOpen: "rewardOpen",
+  cardReveal: "cardReveal",
+  epicRevealAccent: "epicRevealAccent",
+  legendaryReveal: "legendaryReveal",
+  cardSelect: "cardSelect",
+  filterShift: "filterShift",
+  milestone: "milestone",
+  newCardUnlocked: "newCardUnlocked",
+};
+
+export const FEEDBACK_EVENTS = {
+  buttonClick: "buttonClick",
+  menuOpen: "menuOpen",
+  screenTransition: "screenTransition",
+  gameWin: "gameWin",
+  gameLose: "gameLose",
+  rewardTap1: "rewardTap1",
+  rewardTap2: "rewardTap2",
+  rewardTap3: "rewardTap3",
+  rewardOpen: "rewardOpen",
+  cardReveal: "cardReveal",
+  collectionCardSelect: "collectionCardSelect",
+  filterChange: "filterChange",
+  progressMilestone: "progressMilestone",
+  newCardUnlocked: "newCardUnlocked",
+};
+
+export const AUDIO_EVENT_SFX = {
+  [FEEDBACK_EVENTS.buttonClick]: AUDIO_SFX.click,
+  [FEEDBACK_EVENTS.menuOpen]: AUDIO_SFX.menuOpen,
+  [FEEDBACK_EVENTS.screenTransition]: AUDIO_SFX.screenTransition,
+  [FEEDBACK_EVENTS.gameWin]: AUDIO_SFX.success,
+  [FEEDBACK_EVENTS.gameLose]: AUDIO_SFX.failure,
+  [FEEDBACK_EVENTS.rewardTap1]: AUDIO_SFX.rewardTap1,
+  [FEEDBACK_EVENTS.rewardTap2]: AUDIO_SFX.rewardTap2,
+  [FEEDBACK_EVENTS.rewardTap3]: AUDIO_SFX.rewardTap3,
+  [FEEDBACK_EVENTS.rewardOpen]: AUDIO_SFX.rewardOpen,
+  [FEEDBACK_EVENTS.cardReveal]: AUDIO_SFX.cardReveal,
+  [FEEDBACK_EVENTS.collectionCardSelect]: AUDIO_SFX.cardSelect,
+  [FEEDBACK_EVENTS.filterChange]: AUDIO_SFX.filterShift,
+  [FEEDBACK_EVENTS.progressMilestone]: AUDIO_SFX.milestone,
+  [FEEDBACK_EVENTS.newCardUnlocked]: AUDIO_SFX.newCardUnlocked,
+};
+
+export const AUDIO_RARITY_ACCENTS = {
+  epic: AUDIO_SFX.epicRevealAccent,
+  legendary: AUDIO_SFX.legendaryReveal,
 };
 
 export const AUDIO_TRACKS = {
-  home: null,
+  menu: "menuTrack",
+  gameplay: "gameplayTrack",
+  reward: "rewardTrack",
+};
+
+export const AUDIO_ROUTE_TRACKS = {
+  [ROUTES.home]: AUDIO_TRACKS.menu,
+  [ROUTES.collection]: AUDIO_TRACKS.menu,
+  [ROUTES.learn]: AUDIO_TRACKS.menu,
+  [ROUTES.play]: AUDIO_TRACKS.gameplay,
+  [ROUTES.reward]: AUDIO_TRACKS.reward,
+};
+
+export const AUDIO_DEFAULT_SETTINGS = {
+  muted: false,
+  musicEnabled: true,
+  sfxEnabled: true,
+  musicVolume: 0.34,
+  sfxVolume: 0.82,
 };
 
 export const AUDIO_ASSET_PATHS = {
-  click: null,
-  boxTap: null,
-  boxOpen: null,
-  rewardReveal: null,
-  victory: null,
-  home: null,
+  [AUDIO_TRACKS.menu]: "assets/audio/music/menu-loop.mp3",
+  [AUDIO_TRACKS.gameplay]: "assets/audio/music/gameplay-loop.mp3",
+  [AUDIO_TRACKS.reward]: "assets/audio/music/reward-loop.mp3",
+  [AUDIO_SFX.click]: "assets/audio/sfx/button-click.mp3",
+  [AUDIO_SFX.hover]: "assets/audio/sfx/button-hover.mp3",
+  [AUDIO_SFX.menuOpen]: "assets/audio/sfx/menu-open.mp3",
+  [AUDIO_SFX.screenTransition]: "assets/audio/sfx/screen-transition.mp3",
+  [AUDIO_SFX.success]: "assets/audio/sfx/victory.mp3",
+  [AUDIO_SFX.failure]: "assets/audio/sfx/failure.mp3",
+  [AUDIO_SFX.rewardTap1]: "assets/audio/sfx/reward-tap-1.mp3",
+  [AUDIO_SFX.rewardTap2]: "assets/audio/sfx/reward-tap-2.mp3",
+  [AUDIO_SFX.rewardTap3]: "assets/audio/sfx/reward-tap-3.mp3",
+  [AUDIO_SFX.rewardOpen]: "assets/audio/sfx/reward-open.mp3",
+  [AUDIO_SFX.cardReveal]: "assets/audio/sfx/card-reveal.mp3",
+  [AUDIO_SFX.epicRevealAccent]: "assets/audio/sfx/epic-reveal.mp3",
+  [AUDIO_SFX.legendaryReveal]: "assets/audio/sfx/legendary-reveal.mp3",
+  [AUDIO_SFX.cardSelect]: "assets/audio/sfx/card-select.mp3",
+  [AUDIO_SFX.filterShift]: "assets/audio/sfx/filter-change.mp3",
+  [AUDIO_SFX.milestone]: "assets/audio/sfx/progress-milestone.mp3",
+  [AUDIO_SFX.newCardUnlocked]: "assets/audio/sfx/new-card-unlocked.mp3",
 };
+
+export const AUDIO_CUES = AUDIO_SFX;

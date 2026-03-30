@@ -9,6 +9,35 @@ LootWords is a browser-based, reward-first word-learning game for children. The 
 - Home, reward, collection, learn, and play screens now share a more tactile game UI with faster route transitions and richer win states.
 - Audio remains optional and safe: the app exposes hooks for real assets, while the current build falls back to lightweight synthesized cues if files are missing.
 
+## Content foundation
+
+- The starter library now contains 140 curated, image-friendly English nouns.
+- Cards are grouped into 14 consistent categories: animals, food, vehicles, home, clothes, nature, toys, school, kitchen, fantasy, city, bathroom, people/jobs, and sports.
+- Every card is defined with stable content metadata before profile hydration:
+  - `id`
+  - `word`
+  - `category`
+  - `packId`
+  - `icon`
+  - `image`
+  - `imageMode`
+  - `difficultyLevel`
+  - `tags`
+  - `sortOrder`
+- Profile hydration then adds runtime progression data:
+  - `points`
+  - `rarity`
+  - `unlocked`
+  - `discoveredAt`
+
+## Starter packs
+
+- `starter-daily`: home, clothes, school, kitchen, bathroom
+- `starter-world`: animals, food, nature, city, people/jobs
+- `starter-adventure`: vehicles, toys, fantasy, sports
+
+These pack ids are already part of every card, so future parent-controlled pack selection and seasonal content can build on the existing model instead of replacing it.
+
 ## Run locally
 
 From `C:\Users\ariel\Projects\LootWords`:
@@ -28,8 +57,10 @@ Then open:
 - `lootwords/scripts/app.js`: app bootstrap, shared shell, state actions, persistence wiring, and debug hooks.
 - `lootwords/scripts/router.js`: hash-based screen routing.
 - `lootwords/scripts/storage.js`: profile initialization, normalization, and localStorage persistence.
-- `lootwords/scripts/data/cards.js`: 70-card visual noun dataset with placeholder icon art.
-- `lootwords/scripts/data/config.js`: categories, routes, rarity labels, game config, and shared constants.
+- `lootwords/scripts/data/categories.js`: category metadata, pack metadata, and legacy category aliases.
+- `lootwords/scripts/data/cards.js`: 140-card visual noun dataset with stable ids, packs, tags, and placeholder icon art.
+- `lootwords/scripts/data/config.js`: routes, rarity labels, filter options, game config, and shared constants.
+- `lootwords/scripts/core/card-utils.js`: card validation, slug creation, shared sorting, and category grouping helpers.
 - `lootwords/scripts/core/`: state, rarity, progression, rewards, and audio placeholder logic.
 - `lootwords/scripts/games/`: Memory Match and Treasure Match mini-games.
 - `lootwords/scripts/ui/`: screen rendering for home, collection, reward, learn, and game hosting.
@@ -118,9 +149,11 @@ Then open:
 - Reward boxes require exactly three taps and reveal a new card or a 50-star fallback when every card is already unlocked.
 - Unlocked cards persist across reloads and appear in collection and learn views.
 - Collection filters update and persist in localStorage.
+- Learn review filters update and persist in localStorage.
 - Placeholder audio cues exist for clicks, reward taps, reward reveal, and victories.
 - The reward screen keeps its reveal copy after the final box is opened, instead of dropping back to an empty-state tone.
 - Learn review supports next/previous stepping through the unlocked deck.
+- Collection now groups cards by category and surfaces starter-pack progress.
 - Browser verification completed with zero console errors.
 
 ## Optional improvements
