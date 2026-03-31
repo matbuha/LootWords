@@ -1,0 +1,332 @@
+@keyframes ambientDrift {
+  0% { transform: translate3d(0, 0, 0) scale(1); opacity: 0.78; }
+  50% { transform: translate3d(0, -10px, 0) scale(1.02); opacity: 0.96; }
+  100% { transform: translate3d(0, 0, 0) scale(1); opacity: 0.78; }
+}
+
+@keyframes backgroundSweep {
+  0% { transform: translate3d(-3%, 0, 0) scale(1); }
+  50% { transform: translate3d(3%, -2%, 0) scale(1.04); }
+  100% { transform: translate3d(-3%, 0, 0) scale(1); }
+}
+
+@keyframes pressRebound {
+  0% { transform: scale(0.97); }
+  55% { transform: scale(1.02); }
+  100% { transform: scale(1); }
+}
+
+@keyframes rewardBoxIdleFloat {
+  0% { transform: translate3d(0, 0, 0) rotate(0deg) scale(1); }
+  50% { transform: translate3d(0, -7px, 0) rotate(1deg) scale(1.012); }
+  100% { transform: translate3d(0, 0, 0) rotate(0deg) scale(1); }
+}
+
+@keyframes rewardAuraPulse {
+  0% { opacity: 0.4; transform: scale(0.96); }
+  50% { opacity: 0.88; transform: scale(1.08); }
+  100% { opacity: 0.48; transform: scale(1); }
+}
+
+@keyframes rewardTapStrike1 {
+  0% { transform: translate3d(0, 0, 0) scale(1, 1); }
+  22% { transform: translate3d(-8px, 2px, 0) scale(0.96, 1.03); }
+  48% { transform: translate3d(7px, -2px, 0) scale(1.03, 0.97); }
+  100% { transform: translate3d(0, 0, 0) scale(1, 1); }
+}
+
+@keyframes rewardTapStrike2 {
+  0% { transform: translate3d(0, 0, 0) scale(1, 1); }
+  18% { transform: translate3d(-12px, 3px, 0) scale(0.93, 1.06); }
+  34% { transform: translate3d(10px, -3px, 0) scale(1.05, 0.95); }
+  52% { transform: translate3d(-9px, 2px, 0) scale(0.96, 1.02); }
+  100% { transform: translate3d(0, 0, 0) scale(1, 1); }
+}
+
+@keyframes rewardTapStrike3 {
+  0% { transform: translate3d(0, 0, 0) scale(1, 1); }
+  16% { transform: translate3d(-14px, 5px, 0) scale(0.9, 1.1); }
+  32% { transform: translate3d(12px, -5px, 0) scale(1.07, 0.92); }
+  48% { transform: translate3d(-10px, 3px, 0) scale(0.97, 1.02); }
+  100% { transform: translate3d(0, 0, 0) scale(1, 1); }
+}
+
+@keyframes rewardImpactFlash {
+  0% { opacity: 0; transform: scale(0.42); }
+  35% { opacity: 1; transform: scale(1.04); }
+  100% { opacity: 0; transform: scale(1.3); }
+}
+
+@keyframes pressureRingExpand {
+  0% { opacity: 0; transform: scale(0.58); }
+  20% { opacity: 0.6; }
+  100% { opacity: 0; transform: scale(1.46); }
+}
+
+@keyframes emberRise {
+  0% { opacity: 0; transform: translate3d(0, 6px, 0) scale(0.4); }
+  25% { opacity: 1; }
+  100% { opacity: 0; transform: translate3d(var(--ember-x, 0), -42px, 0) scale(1.14); }
+}
+
+@keyframes boxLidPop {
+  0% { transform: translateY(0) rotateX(0deg); }
+  42% { transform: translateY(-20px) rotateX(-34deg); }
+  100% { transform: translateY(-28px) rotateX(-54deg); }
+}
+
+@keyframes rewardFlashDisk {
+  0% { opacity: 0; transform: scale(0.3); }
+  22% { opacity: 0.96; transform: scale(1.08); }
+  100% { opacity: 0; transform: scale(1.36); }
+}
+
+@keyframes rewardTrailRise {
+  0% { opacity: 0; transform: translateY(56px) scaleY(0.35); }
+  20% { opacity: 0.92; }
+  100% { opacity: 0; transform: translateY(-64px) scaleY(1.18); }
+}
+
+@keyframes rewardCardLaunch {
+  0% { opacity: 0; transform: translate(-50%, 180px) rotateX(-44deg) scale(0.38); }
+  48% { opacity: 1; transform: translate(-50%, -42px) rotateX(12deg) scale(1.08); }
+  76% { opacity: 1; transform: translate(-50%, -8px) rotateX(0deg) scale(0.98); }
+  100% { opacity: 1; transform: translate(-50%, 0) rotateX(0deg) scale(1); }
+}
+
+@keyframes rewardCardSpinCommon {
+  0% { transform: rotateZ(-28deg) rotateY(-30deg); }
+  100% { transform: rotateZ(0deg) rotateY(0deg); }
+}
+
+@keyframes rewardCardSpinRare {
+  0% { transform: rotateZ(-180deg) rotateY(-150deg); }
+  100% { transform: rotateZ(0deg) rotateY(0deg); }
+}
+
+@keyframes rewardCardSpinEpic {
+  0% { transform: rotateZ(-360deg) rotateY(-320deg); }
+  100% { transform: rotateZ(0deg) rotateY(0deg); }
+}
+
+@keyframes rewardCardSpinLegendary {
+  0% { transform: rotateZ(-620deg) rotateY(-540deg) scale(0.88); }
+  70% { transform: rotateZ(24deg) rotateY(14deg) scale(1.04); }
+  100% { transform: rotateZ(0deg) rotateY(0deg) scale(1); }
+}
+
+@keyframes rewardShadowGrow {
+  0% { opacity: 0; transform: translateX(-50%) scale(0.4); }
+  50% { opacity: 0.34; transform: translateX(-50%) scale(1.08); }
+  100% { opacity: 0.22; transform: translateX(-50%) scale(1); }
+}
+
+@keyframes rewardInfoRise {
+  0% { opacity: 0; transform: translateY(22px) scale(0.96); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes rewardShineSweep {
+  0% { transform: translateX(-130%) rotate(12deg); opacity: 0; }
+  18% { opacity: 0.4; }
+  54% { opacity: 0.86; }
+  100% { transform: translateX(150%) rotate(12deg); opacity: 0; }
+}
+
+@keyframes cardBreath {
+  0% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-5px) scale(1.01); }
+  100% { transform: translateY(0) scale(1); }
+}
+
+@keyframes auraPulseLegendary {
+  0% { opacity: 0.42; transform: scale(0.96); filter: blur(16px); }
+  50% { opacity: 0.94; transform: scale(1.12); filter: blur(24px); }
+  100% { opacity: 0.48; transform: scale(1); filter: blur(18px); }
+}
+
+@keyframes badgePop {
+  0% { opacity: 0; transform: translateY(10px) scale(0.8); }
+  70% { opacity: 1; transform: translateY(-2px) scale(1.06); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes shimmerSweep {
+  0% { transform: translateX(-120%); opacity: 0; }
+  20% { opacity: 0.24; }
+  50% { opacity: 0.48; }
+  100% { transform: translateX(140%); opacity: 0; }
+}
+
+body::before {
+  animation: ambientDrift 14s ease-in-out infinite;
+}
+
+body::after {
+  animation: backgroundSweep 18s ease-in-out infinite;
+}
+
+.is-rebounding {
+  animation: pressRebound 220ms cubic-bezier(0.2, 0.9, 0.2, 1);
+}
+
+.showcase-card,
+.vault-ring,
+.hero-panel--stash-ready .stat-card--glow,
+.reward-box--idle .reward-box,
+.reward-box--idle .reward-box__aura {
+  animation: cardBreath 3.6s ease-in-out infinite;
+}
+
+.reward-box--idle .reward-box {
+  animation-name: rewardBoxIdleFloat;
+  animation-duration: 2.9s;
+}
+
+.reward-box--idle .reward-box__aura {
+  animation-name: rewardAuraPulse;
+  animation-duration: 2.4s;
+}
+
+.reward-box--tap-1 .reward-box {
+  animation: rewardTapStrike1 320ms cubic-bezier(0.2, 0.9, 0.2, 1);
+}
+
+.reward-box--tap-2 .reward-box {
+  animation: rewardTapStrike2 420ms cubic-bezier(0.16, 0.9, 0.18, 1);
+}
+
+.reward-box--tap-3 .reward-box {
+  animation: rewardTapStrike3 520ms cubic-bezier(0.12, 0.95, 0.16, 1);
+}
+
+.reward-box--tap-1 .reward-box__impact,
+.reward-box--tap-2 .reward-box__impact,
+.reward-box--tap-3 .reward-box__impact,
+.reward-box--opening .reward-box__impact {
+  animation: rewardImpactFlash 460ms ease-out forwards;
+}
+
+.reward-box--tap-1 .reward-box__pressure-rings span,
+.reward-box--tap-2 .reward-box__pressure-rings span,
+.reward-box--tap-3 .reward-box__pressure-rings span,
+.reward-box--opening .reward-box__pressure-rings span {
+  animation: pressureRingExpand 640ms ease-out forwards;
+}
+
+.reward-box--tap-1 .reward-box__pressure-rings span:nth-child(2),
+.reward-box--tap-2 .reward-box__pressure-rings span:nth-child(2),
+.reward-box--tap-3 .reward-box__pressure-rings span:nth-child(2),
+.reward-box--opening .reward-box__pressure-rings span:nth-child(2) {
+  animation-delay: 80ms;
+}
+
+.reward-box--tap-1 .reward-box__embers span,
+.reward-box--tap-2 .reward-box__embers span,
+.reward-box--tap-3 .reward-box__embers span,
+.reward-box--opening .reward-box__embers span {
+  animation: emberRise 620ms ease-out forwards;
+}
+
+.reward-box__embers span:nth-child(1) { --ember-x: -12px; }
+.reward-box__embers span:nth-child(2) { --ember-x: -18px; animation-delay: 36ms; }
+.reward-box__embers span:nth-child(3) { --ember-x: 0px; animation-delay: 72ms; }
+.reward-box__embers span:nth-child(4) { --ember-x: 18px; animation-delay: 108ms; }
+.reward-box__embers span:nth-child(5) { --ember-x: 12px; animation-delay: 144ms; }
+
+.reward-box--opening .reward-box__lid {
+  transform-origin: center bottom;
+  animation: boxLidPop 540ms cubic-bezier(0.16, 0.92, 0.22, 1) forwards;
+}
+
+.reward-reveal--revealing .reward-reveal__flash-disk,
+.reward-reveal--revealed .reward-reveal__flash-disk {
+  animation: rewardFlashDisk 780ms ease-out forwards;
+}
+
+.reward-reveal--revealing .reward-reveal__trail,
+.reward-reveal--revealed .reward-reveal__trail {
+  animation: rewardTrailRise 860ms ease-out forwards;
+}
+
+.reward-reveal--revealing .reward-reveal__launch,
+.reward-reveal--revealed .reward-reveal__launch {
+  animation: rewardCardLaunch 980ms cubic-bezier(0.14, 0.98, 0.22, 1) forwards;
+}
+
+.reward-reveal--revealing .reward-reveal__shadow,
+.reward-reveal--revealed .reward-reveal__shadow {
+  animation: rewardShadowGrow 860ms ease-out forwards;
+}
+
+.reward-reveal--revealed .celebration-card--reward-info {
+  animation: rewardInfoRise 440ms cubic-bezier(0.2, 0.9, 0.2, 1) 120ms both;
+}
+
+.reward-reveal--revealed .card-sheen,
+.reward-reveal--revealing .card-sheen {
+  animation: rewardShineSweep 1200ms ease-out 320ms;
+}
+
+.reward-reveal__launch[data-rarity="common"] .reward-reveal__spin,
+.reward-reveal__launch[data-rarity="rare"] .reward-reveal__spin,
+.reward-reveal__launch[data-rarity="super-rare"] .reward-reveal__spin,
+.reward-reveal__launch[data-rarity="epic"] .reward-reveal__spin,
+.reward-reveal__launch[data-rarity="legendary"] .reward-reveal__spin {
+  animation-fill-mode: forwards;
+  animation-timing-function: cubic-bezier(0.16, 0.96, 0.22, 1);
+}
+
+.reward-reveal__launch[data-rarity="common"] .reward-reveal__spin {
+  animation-name: rewardCardSpinCommon;
+  animation-duration: 840ms;
+}
+
+.reward-reveal__launch[data-rarity="rare"] .reward-reveal__spin,
+.reward-reveal__launch[data-rarity="super-rare"] .reward-reveal__spin {
+  animation-name: rewardCardSpinRare;
+  animation-duration: 980ms;
+}
+
+.reward-reveal__launch[data-rarity="epic"] .reward-reveal__spin {
+  animation-name: rewardCardSpinEpic;
+  animation-duration: 1120ms;
+}
+
+.reward-reveal__launch[data-rarity="legendary"] .reward-reveal__spin {
+  animation-name: rewardCardSpinLegendary;
+  animation-duration: 1380ms;
+}
+
+.reward-reveal__launch[data-rarity="epic"] .card-halo,
+.reward-reveal__launch[data-rarity="legendary"] .card-halo {
+  animation: auraPulseLegendary 1800ms ease-in-out infinite;
+}
+
+.new-badge,
+.recent-chip,
+.collection-card-button--new::after {
+  animation: badgePop 280ms cubic-bezier(0.2, 0.95, 0.25, 1);
+}
+
+.card-sheen::after,
+.showcase-card::after,
+.hero-panel--home::before {
+  animation: shimmerSweep 5.2s ease-in-out infinite;
+}
+
+.screen[data-transition-state="entering"],
+.screen[data-transition-state="active"] {
+  animation: rewardInfoRise 280ms cubic-bezier(0.2, 0.9, 0.2, 1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+    scroll-behavior: auto !important;
+  }
+}

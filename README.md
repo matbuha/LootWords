@@ -9,6 +9,23 @@ LootWords is a browser-based, reward-first word-learning game for children. The 
 - Home, reward, collection, learn, and play screens now share a more tactile game UI with faster route transitions and richer win states.
 - Audio remains optional and safe: the app now uses a modular audio manager, feedback manager, and persisted settings layer, while the current build falls back to lightweight synthesized cues if files are missing.
 
+## Visual identity and living UI pass
+
+- The UI now uses additive theme and animation layers in `lootwords/styles/theme.css` and `lootwords/styles/animations.css` instead of burying more overrides inside the main stylesheet.
+- Buttons, game picks, stat cards, collection cards, and reward boxes now share a tactile interaction model:
+  - pointer tilt
+  - glow tracking
+  - press compression
+  - rebound release
+- Reward boxes now have a clearer physical motion sequence:
+  - idle float and aura pulse
+  - escalating tap strikes
+  - pressure rings and embers
+  - lid-pop opening beat
+  - flash/trail/card-launch reveal
+- Card reveals now stage the reward as a launch toward the viewer with spin, shadow growth, aura, and a more readable settle state.
+- The visual assumptions for future art are documented in [Visual language](C:\Users\ariel\Projects\LootWords\lootwords\docs\visual-language.md).
+
 ## Replayability and progression pass
 
 - The play loop now runs through a shared game registry, so mini-games are mounted and selected from one extensible source instead of hardcoded screen branches.
@@ -146,6 +163,7 @@ Then open:
 - [Architecture](C:\Users\ariel\Projects\LootWords\lootwords\docs\architecture.md)
 - [Content model](C:\Users\ariel\Projects\LootWords\lootwords\docs\content-model.md)
 - [Future roadmap](C:\Users\ariel\Projects\LootWords\lootwords\docs\future-roadmap.md)
+- [Visual language](C:\Users\ariel\Projects\LootWords\lootwords\docs\visual-language.md)
 
 ## QA and hardening notes
 

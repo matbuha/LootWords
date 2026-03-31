@@ -1,0 +1,632 @@
+:root {
+  --font-display: "Trebuchet MS", "Avenir Next", "Segoe UI", sans-serif;
+  --surface-0: rgba(8, 18, 45, 0.92);
+  --surface-1: rgba(15, 27, 63, 0.92);
+  --surface-2: rgba(28, 44, 96, 0.9);
+  --surface-3: rgba(49, 72, 145, 0.86);
+  --surface-glass: rgba(23, 39, 88, 0.66);
+  --outline-soft: rgba(255, 255, 255, 0.1);
+  --outline-strong: rgba(181, 233, 255, 0.32);
+  --shadow-soft: 0 20px 44px rgba(1, 8, 28, 0.34);
+  --shadow-panel: 0 28px 72px rgba(4, 12, 41, 0.44);
+  --shadow-glow: 0 0 0 1px rgba(255, 255, 255, 0.06), 0 18px 42px rgba(78, 159, 255, 0.18);
+  --accent-cyan: #73dcff;
+  --accent-teal: #57ffc6;
+  --accent-gold: #ffd364;
+  --accent-pink: #ff85cc;
+  --accent-orange: #ff9a53;
+  --accent-violet: #ad8cff;
+  --text-strong: #f5fbff;
+  --text-soft: rgba(235, 245, 255, 0.74);
+  --card-radius: 30px;
+  --button-radius: 999px;
+  --tilt-rotate-x: 0deg;
+  --tilt-rotate-y: 0deg;
+  --tilt-shift-y: 0px;
+  --tilt-scale: 1;
+  --tilt-glow-opacity: 0;
+  --tilt-glow-x: 50%;
+  --tilt-glow-y: 50%;
+}
+
+body {
+  font-family: var(--font-display);
+  color: var(--text-strong);
+  background:
+    radial-gradient(circle at top, rgba(83, 157, 255, 0.24), transparent 34%),
+    radial-gradient(circle at 22% 16%, rgba(87, 255, 198, 0.14), transparent 28%),
+    radial-gradient(circle at 80% 22%, rgba(255, 173, 77, 0.18), transparent 26%),
+    linear-gradient(180deg, #09112a 0%, #0b1430 28%, #081124 100%);
+}
+
+body::before,
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -2;
+}
+
+body::before {
+  background:
+    radial-gradient(circle at 18% 18%, rgba(115, 220, 255, 0.12), transparent 22%),
+    radial-gradient(circle at 84% 18%, rgba(255, 159, 92, 0.12), transparent 24%),
+    radial-gradient(circle at 50% 78%, rgba(122, 114, 255, 0.1), transparent 28%);
+  opacity: 0.8;
+}
+
+body::after {
+  z-index: -1;
+  background:
+    linear-gradient(115deg, transparent 0 34%, rgba(255, 255, 255, 0.025) 46%, transparent 58%),
+    radial-gradient(circle at center, rgba(255, 255, 255, 0.04), transparent 64%);
+  mix-blend-mode: screen;
+}
+
+.shell-topbar,
+.section-panel,
+.collection-panel,
+.reward-panel,
+.learn-panel,
+.arena-panel,
+.detail-modal__dialog,
+.parent-panel,
+.parent-section,
+.hero-panel {
+  backdrop-filter: blur(18px);
+  border: 1px solid var(--outline-soft);
+  box-shadow: var(--shadow-panel);
+}
+
+.hero-panel {
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at top, rgba(126, 205, 255, 0.18), transparent 34%),
+    linear-gradient(160deg, rgba(24, 44, 108, 0.96), rgba(11, 20, 51, 0.96));
+}
+
+.hero-panel::after,
+.section-panel::after,
+.reward-panel::after,
+.learn-panel::after,
+.collection-panel::after {
+  content: "";
+  position: absolute;
+  inset: 1px;
+  border-radius: inherit;
+  pointer-events: none;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.12), transparent 32%, transparent 68%, rgba(115, 220, 255, 0.08));
+  opacity: 0.8;
+}
+
+.hero-panel--home {
+  overflow: hidden;
+  background:
+    radial-gradient(circle at top right, rgba(255, 211, 100, 0.24), transparent 30%),
+    radial-gradient(circle at 16% 18%, rgba(87, 255, 198, 0.18), transparent 28%),
+    linear-gradient(152deg, rgba(21, 42, 98, 0.98), rgba(10, 18, 47, 0.98));
+}
+
+.hero-panel--home .hero-copy h1,
+.hero-panel--home .hero-copy p,
+.brand-lockup h1,
+.section-heading h2,
+.section-title h2,
+.reward-header h1,
+.page-header h1 {
+  text-shadow: 0 4px 18px rgba(9, 18, 52, 0.45);
+}
+
+.brand-mark,
+.loot-badge,
+.rarity-chip,
+.card-badge,
+.card-tag,
+.detail-chip {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.22);
+}
+
+.primary-button,
+.secondary-button,
+.ghost-button,
+.mute-toggle,
+.parent-entry-button,
+.parent-nav__button,
+.pack-chip,
+.game-choice,
+.game-pick-card,
+.collection-card-button,
+.learn-list button,
+.showcase-card,
+.stat-card {
+  position: relative;
+  isolation: isolate;
+  border-color: rgba(255, 255, 255, 0.14);
+  transition:
+    transform 180ms cubic-bezier(0.2, 0.9, 0.2, 1),
+    box-shadow 180ms ease,
+    border-color 180ms ease,
+    background 220ms ease,
+    filter 180ms ease;
+}
+
+.primary-button::before,
+.secondary-button::before,
+.ghost-button::before,
+.pack-chip::before,
+.game-choice::before,
+.game-pick-card::before,
+.collection-card-button::before,
+.learn-list button::before,
+.showcase-card::before,
+.stat-card::before {
+  content: "";
+  position: absolute;
+  inset: 1px;
+  border-radius: inherit;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at var(--tilt-glow-x) var(--tilt-glow-y), rgba(255, 255, 255, 0.22), transparent 32%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.12), transparent 34%);
+  opacity: calc(0.28 + (var(--tilt-glow-opacity) * 0.56));
+  mix-blend-mode: screen;
+}
+
+.primary-button {
+  background:
+    linear-gradient(180deg, rgba(255, 224, 119, 0.98), rgba(255, 160, 78, 0.95)),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.18), transparent);
+  color: #271200;
+  box-shadow:
+    0 14px 28px rgba(255, 151, 58, 0.34),
+    inset 0 1px 0 rgba(255, 255, 255, 0.35),
+    inset 0 -6px 12px rgba(173, 79, 0, 0.2);
+}
+
+.secondary-button {
+  background:
+    linear-gradient(180deg, rgba(127, 229, 255, 0.96), rgba(74, 154, 255, 0.9)),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.16), transparent);
+  color: #03152f;
+  box-shadow:
+    0 14px 28px rgba(77, 148, 255, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.26);
+}
+
+.ghost-button,
+.mute-toggle,
+.parent-entry-button {
+  background:
+    linear-gradient(180deg, rgba(39, 60, 126, 0.92), rgba(16, 28, 69, 0.92));
+  box-shadow: 0 12px 24px rgba(7, 13, 38, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.14);
+}
+
+.primary-button:hover,
+.secondary-button:hover,
+.ghost-button:hover,
+.mute-toggle:hover,
+.parent-entry-button:hover,
+.parent-nav__button:hover,
+.pack-chip:hover,
+.game-choice:hover,
+.game-pick-card:hover,
+.collection-card-button:hover,
+.learn-list button:hover,
+.showcase-card:hover,
+.stat-card:hover,
+.primary-button.is-tilting,
+.secondary-button.is-tilting,
+.ghost-button.is-tilting,
+.pack-chip.is-tilting,
+.game-choice.is-tilting,
+.game-pick-card.is-tilting,
+.collection-card-button.is-tilting,
+.learn-list button.is-tilting,
+.showcase-card.is-tilting,
+.stat-card.is-tilting {
+  transform:
+    perspective(1000px)
+    rotateX(var(--tilt-rotate-x))
+    rotateY(var(--tilt-rotate-y))
+    translateY(var(--tilt-shift-y))
+    scale(var(--tilt-scale));
+  border-color: var(--outline-strong);
+  box-shadow: var(--shadow-glow);
+}
+
+.primary-button.is-pressing,
+.secondary-button.is-pressing,
+.ghost-button.is-pressing,
+.mute-toggle.is-pressing,
+.pack-chip.is-pressing,
+.game-choice.is-pressing,
+.game-pick-card.is-pressing,
+.collection-card-button.is-pressing,
+.learn-list button.is-pressing,
+.showcase-card.is-pressing,
+.stat-card.is-pressing {
+  transform:
+    perspective(1000px)
+    rotateX(calc(var(--tilt-rotate-x) * 0.45))
+    rotateY(calc(var(--tilt-rotate-y) * 0.45))
+    translateY(1px)
+    scale(0.972);
+  filter: saturate(1.04) brightness(0.98);
+}
+
+.primary-button:disabled,
+.secondary-button:disabled,
+.ghost-button:disabled,
+.mute-toggle:disabled {
+  filter: grayscale(0.15) brightness(0.82);
+  box-shadow: 0 8px 18px rgba(4, 10, 28, 0.24);
+}
+
+.showcase-card,
+.stat-card,
+.pack-chip,
+.collection-card-button,
+.learn-list button,
+.game-choice,
+.game-pick-card,
+.reward-box-button {
+  transform-style: preserve-3d;
+}
+
+.showcase-card {
+  background:
+    linear-gradient(160deg, rgba(21, 39, 88, 0.96), rgba(8, 16, 43, 0.96));
+  box-shadow:
+    0 28px 54px rgba(4, 10, 35, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.14);
+}
+
+.showcase-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 30% 22%, rgba(255, 255, 255, 0.24), transparent 22%),
+    linear-gradient(120deg, transparent 12%, rgba(255, 255, 255, 0.08) 40%, transparent 64%);
+  opacity: 0.65;
+  pointer-events: none;
+}
+
+.vault-ring {
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.08),
+    0 0 0 16px rgba(124, 215, 255, 0.04),
+    0 26px 54px rgba(12, 25, 68, 0.36);
+}
+
+.vault-box-mini {
+  background:
+    radial-gradient(circle at top, rgba(255, 255, 255, 0.28), transparent 34%),
+    linear-gradient(180deg, #ffc865, #ff9150 70%, #d95e2a 100%);
+  box-shadow:
+    0 20px 34px rgba(255, 145, 80, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.32),
+    inset 0 -10px 16px rgba(116, 39, 10, 0.18);
+}
+
+.loot-card,
+.detail-card {
+  position: relative;
+  overflow: hidden;
+  transform-style: preserve-3d;
+  transform:
+    perspective(1100px)
+    rotateX(var(--tilt-rotate-x))
+    rotateY(var(--tilt-rotate-y))
+    translateY(var(--tilt-shift-y))
+    scale(var(--tilt-scale));
+  transition:
+    transform 220ms cubic-bezier(0.2, 0.9, 0.2, 1),
+    box-shadow 220ms ease,
+    border-color 200ms ease,
+    filter 200ms ease;
+}
+
+.loot-card::before,
+.detail-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at var(--tilt-glow-x) var(--tilt-glow-y), rgba(255, 255, 255, 0.22), transparent 28%),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.16), transparent 32%);
+  opacity: calc(0.18 + (var(--tilt-glow-opacity) * 0.64));
+  pointer-events: none;
+  mix-blend-mode: screen;
+}
+
+.collection-card-button:hover .loot-card,
+.collection-card-button.is-tilting .loot-card,
+.learn-list button:hover .loot-card,
+.learn-list button.is-tilting .loot-card {
+  box-shadow:
+    0 24px 48px rgba(6, 13, 42, 0.42),
+    0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+
+.card-halo,
+.reward-reveal__flash-disk,
+.reward-box__aura {
+  mix-blend-mode: screen;
+}
+
+.card-halo {
+  filter: blur(18px);
+  opacity: 0.85;
+}
+
+.card-sheen {
+  background:
+    linear-gradient(118deg, transparent 0 22%, rgba(255, 255, 255, 0.24) 42%, transparent 58%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.1), transparent 28%);
+}
+
+.card-art__backdrop {
+  background:
+    radial-gradient(circle at 50% 25%, rgba(255, 255, 255, 0.36), transparent 34%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0));
+}
+
+.card-art__stage {
+  backdrop-filter: blur(4px);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.18),
+    0 18px 30px rgba(13, 27, 75, 0.24);
+}
+
+.card-art__burst {
+  opacity: 0.45;
+  background:
+    radial-gradient(circle at center, rgba(255, 255, 255, 0.42), transparent 38%),
+    conic-gradient(from 0deg, rgba(255, 255, 255, 0.18), transparent 12%, rgba(255, 255, 255, 0.16) 20%, transparent 34%, rgba(255, 255, 255, 0.14) 46%, transparent 62%, rgba(255, 255, 255, 0.12) 74%, transparent 90%);
+}
+
+.reward-panel {
+  overflow: hidden;
+  background:
+    radial-gradient(circle at top, rgba(255, 213, 110, 0.2), transparent 26%),
+    radial-gradient(circle at 18% 18%, rgba(115, 220, 255, 0.14), transparent 28%),
+    linear-gradient(180deg, rgba(17, 28, 69, 0.96), rgba(8, 15, 41, 0.98));
+}
+
+.reward-box-wrap {
+  position: relative;
+  isolation: isolate;
+}
+
+.reward-box-button {
+  transform:
+    perspective(1200px)
+    rotateX(var(--tilt-rotate-x))
+    rotateY(var(--tilt-rotate-y))
+    translateY(var(--tilt-shift-y))
+    scale(var(--tilt-scale));
+}
+
+.reward-box-button::before {
+  content: "";
+  position: absolute;
+  inset: -8%;
+  border-radius: 42px;
+  background:
+    radial-gradient(circle at center, rgba(255, 214, 112, 0.26), transparent 42%),
+    radial-gradient(circle at var(--tilt-glow-x) var(--tilt-glow-y), rgba(255, 255, 255, 0.18), transparent 28%);
+  opacity: calc(0.22 + (var(--tilt-glow-opacity) * 0.52));
+  filter: blur(8px);
+  z-index: -1;
+}
+
+.reward-box {
+  overflow: visible;
+  filter: drop-shadow(0 24px 34px rgba(8, 11, 25, 0.38));
+}
+
+.reward-box__impact,
+.reward-box__pressure-rings,
+.reward-box__embers,
+.reward-reveal__trail,
+.reward-reveal__flash-disk {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.reward-box__impact {
+  inset: 18% 10% auto;
+  height: 64%;
+  border-radius: 999px;
+  background: radial-gradient(circle at center, rgba(255, 237, 173, 0.64), transparent 60%);
+  opacity: 0;
+  filter: blur(12px);
+}
+
+.reward-box__pressure-rings span,
+.reward-box__embers span {
+  position: absolute;
+  display: block;
+  border-radius: 999px;
+}
+
+.reward-box__pressure-rings span {
+  inset: 10%;
+  border: 2px solid rgba(255, 233, 170, 0.22);
+  opacity: 0;
+}
+
+.reward-box__embers span {
+  width: 10px;
+  height: 10px;
+  background: radial-gradient(circle at 35% 35%, rgba(255, 255, 255, 0.95), rgba(255, 212, 88, 0.74) 45%, rgba(255, 153, 83, 0.22) 70%, transparent 72%);
+  opacity: 0;
+}
+
+.reward-box__embers span:nth-child(1) { left: 20%; top: 40%; }
+.reward-box__embers span:nth-child(2) { left: 32%; top: 18%; }
+.reward-box__embers span:nth-child(3) { left: 50%; top: 26%; }
+.reward-box__embers span:nth-child(4) { left: 66%; top: 18%; }
+.reward-box__embers span:nth-child(5) { left: 76%; top: 42%; }
+
+.reward-box__aura {
+  filter: blur(18px);
+  opacity: 0.62;
+}
+
+.reward-stage {
+  position: relative;
+  perspective: 1400px;
+}
+
+.reward-stage::before {
+  content: "";
+  position: absolute;
+  inset: 8% 14% auto;
+  height: 44%;
+  border-radius: 999px;
+  background: radial-gradient(circle at center, rgba(124, 215, 255, 0.16), transparent 66%);
+  filter: blur(28px);
+  opacity: 0.8;
+}
+
+.reward-reveal {
+  position: relative;
+  z-index: 2;
+}
+
+.reward-reveal__stage {
+  position: relative;
+  min-height: 420px;
+  perspective: 1500px;
+}
+
+.reward-reveal__flash-disk {
+  inset: 18% 22% 18% 22%;
+  border-radius: 999px;
+  background:
+    radial-gradient(circle at center, rgba(255, 255, 255, 0.94), rgba(255, 223, 133, 0.82) 22%, rgba(115, 220, 255, 0.26) 46%, transparent 72%);
+  opacity: 0;
+  filter: blur(8px);
+}
+
+.reward-reveal__trail {
+  inset: 24% 30% 16%;
+  opacity: 0;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.84), rgba(255, 219, 114, 0.44) 45%, transparent 100%);
+  clip-path: polygon(50% 0%, 72% 34%, 62% 100%, 38% 100%, 28% 34%);
+  filter: blur(6px);
+}
+
+.reward-reveal__launch {
+  position: absolute;
+  inset: 8% 50% auto 50%;
+  width: min(310px, 74vw);
+  transform: translate(-50%, 160px) scale(0.42);
+  opacity: 0;
+  transform-style: preserve-3d;
+}
+
+.reward-reveal__spin {
+  transform-style: preserve-3d;
+}
+
+.reward-reveal__shadow {
+  position: absolute;
+  left: 50%;
+  bottom: 6%;
+  width: min(300px, 66vw);
+  height: 52px;
+  border-radius: 999px;
+  transform: translateX(-50%) scale(0.58);
+  background: radial-gradient(circle at center, rgba(5, 8, 22, 0.5), transparent 72%);
+  opacity: 0;
+  filter: blur(14px);
+}
+
+.reward-reveal__card--showcase {
+  max-width: min(100%, 310px);
+  margin: 0 auto;
+}
+
+.celebration-card--reward-info {
+  position: relative;
+  overflow: hidden;
+  background:
+    linear-gradient(180deg, rgba(26, 44, 104, 0.92), rgba(10, 18, 46, 0.96));
+  box-shadow:
+    0 20px 42px rgba(5, 10, 29, 0.34),
+    inset 0 1px 0 rgba(255, 255, 255, 0.14);
+}
+
+.celebration-card--reward-info::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(118deg, transparent 0 18%, rgba(255, 255, 255, 0.08) 40%, transparent 58%),
+    radial-gradient(circle at 50% 0%, rgba(124, 215, 255, 0.16), transparent 40%);
+  pointer-events: none;
+}
+
+.collection-panel,
+.learn-panel {
+  background:
+    radial-gradient(circle at top, rgba(116, 220, 255, 0.12), transparent 28%),
+    linear-gradient(180deg, rgba(17, 29, 67, 0.96), rgba(8, 15, 40, 0.98));
+}
+
+.collection-section,
+.learn-guide,
+.learn-spotlight {
+  position: relative;
+  overflow: hidden;
+  background:
+    linear-gradient(180deg, rgba(25, 42, 96, 0.76), rgba(11, 19, 49, 0.82));
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 18px 36px rgba(4, 9, 28, 0.28);
+}
+
+.collection-card-button--new::after,
+.new-badge,
+.recent-chip {
+  box-shadow: 0 10px 26px rgba(255, 155, 82, 0.32);
+}
+
+.filter-chip,
+.detail-chip,
+.pack-chip,
+.rarity-filter button,
+.category-filter button {
+  border-color: rgba(255, 255, 255, 0.12);
+  background:
+    linear-gradient(180deg, rgba(27, 45, 102, 0.82), rgba(12, 20, 52, 0.88));
+}
+
+.progress-meter,
+.meter-fill,
+.stat-card__meter,
+.progress-card__bar {
+  overflow: hidden;
+}
+
+.screen-error {
+  background:
+    linear-gradient(180deg, rgba(48, 16, 30, 0.94), rgba(26, 8, 18, 0.98));
+  border-color: rgba(255, 129, 152, 0.2);
+}
+
+@media (max-width: 820px) {
+  .reward-reveal__stage {
+    min-height: 360px;
+  }
+
+  .reward-reveal__launch {
+    width: min(280px, 78vw);
+  }
+}

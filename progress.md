@@ -12,6 +12,8 @@ Latest prompt: Add a dedicated Parent Mode and content-management layer so a par
 
 Latest prompt: Perform a focused QA, cleanup, and architecture hardening pass so LootWords is more stable, storage-safe, maintainable, and ready for future development.
 
+Latest prompt: Define and implement the visual identity, animation language, tactile interaction feel, and living UI behavior so LootWords feels more alive, responsive, magical, and game-like.
+
 ## Progress Checklist
 
 ### Phase 1: Foundation
@@ -132,6 +134,53 @@ Latest prompt: Perform a focused QA, cleanup, and architecture hardening pass so
 - [x] Test localStorage still works
 - [x] Test no regressions in mini-games
 - [x] Refactor rough code where needed
+
+## Visual Identity and Living UI Checklist
+
+### Phase A: Visual Identity Foundation
+- [x] Strengthen theme/colors/shapes/shadows
+- [x] Create or improve reusable visual style system
+- [x] Improve button styles
+- [x] Improve panel/card/reward visual hierarchy
+- [x] Verify the game looks more premium and coherent
+
+### Phase B: Living UI and Tactile Motion
+- [x] Add subtle idle motion to key UI elements
+- [x] Improve button press/release feel
+- [x] Add micro-interactions across the interface
+- [x] Improve general UI responsiveness feel
+- [x] Verify the app feels more alive overall
+
+### Phase C: Reward Box Animation
+- [x] Add reward box idle motion
+- [x] Add squash/compress effect on tap
+- [x] Add left-right shake behavior on tap
+- [x] Add escalating tap-state reactions
+- [x] Add opening burst transition
+- [x] Verify reward box feels tactile and exciting
+
+### Phase D: Card Reveal Animation
+- [x] Implement dramatic card emergence from box
+- [x] Add spinning/rotating reveal motion
+- [x] Add outward/toward-screen movement feel
+- [x] Add settle/focus hero state
+- [x] Add rarity-sensitive reveal polish
+- [x] Verify card reveal feels special
+
+### Phase E: Collection and Screen Polish
+- [x] Improve collection card presentation
+- [x] Improve home screen visual identity
+- [x] Improve screen transitions
+- [x] Improve learn screen visual calm/polish
+- [x] Verify overall presentation quality
+
+### Phase F: Audio Coupling and QA
+- [x] Couple key animations with sound hooks
+- [x] Test repeated interactions for smoothness
+- [x] Test reward flow multiple times
+- [x] Test collection browsing interactions
+- [x] Refactor rough animation code
+- [x] Document any placeholder visual assumptions
 
 ## Content Foundation Checklist
 

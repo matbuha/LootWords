@@ -13,6 +13,17 @@ const PRESSABLE_SELECTOR = [
   ".parent-toggle",
 ].join(", ");
 
+const TILTABLE_SELECTOR = [
+  ".collection-card-button",
+  ".learn-list button",
+  ".game-choice--rich",
+  ".game-pick-card",
+  ".reward-box-button",
+  ".showcase-card",
+  ".pack-chip",
+  ".stat-card",
+].join(", ");
+
 function formatCount(value, format = "integer") {
   const formatter = COUNT_FORMATTERS[format] ?? COUNT_FORMATTERS.integer;
   return formatter.format(Math.round(value));
@@ -77,6 +88,12 @@ export function createUiEffects() {
   }
 
   function wirePressable(element) {
+    if (element.dataset.effectsPressBound === "true") {
+      return;
+    }
+
+    element.dataset.effectsPressBound = "true";
+
     const release = () => {
       if (!element.classList.contains("is-pressing")) {
         return;
@@ -101,6 +118,51 @@ export function createUiEffects() {
     });
   }
 
+  function wireTiltable(element) {
+    if (element.dataset.effectsTiltBound === "true") {
+      return;
+    }
+
+    element.dataset.effectsTiltBound = "true";
+
+    const resetTilt = () => {
+      element.classList.remove("is-tilting");
+      element.style.setProperty("--tilt-rotate-x", "0deg");
+      element.style.setProperty("--tilt-rotate-y", "0deg");
+      element.style.setProperty("--tilt-shift-y", "0px");
+      element.style.setProperty("--tilt-scale", "1");
+      element.style.setProperty("--tilt-glow-opacity", "0");
+      element.style.setProperty("--tilt-glow-x", "50%");
+      element.style.setProperty("--tilt-glow-y", "50%");
+    };
+
+    element.addEventListener("pointermove", (event) => {
+      const rect = element.getBoundingClientRect();
+      if (!rect.width || !rect.height) {
+        return;
+      }
+
+      const offsetX = (event.clientX - rect.left) / rect.width;
+      const offsetY = (event.clientY - rect.top) / rect.height;
+      const rotateY = (offsetX - 0.5) * 10;
+      const rotateX = (0.5 - offsetY) * 10;
+
+      element.classList.add("is-tilting");
+      element.style.setProperty("--tilt-rotate-x", `${rotateX.toFixed(2)}deg`);
+      element.style.setProperty("--tilt-rotate-y", `${rotateY.toFixed(2)}deg`);
+      element.style.setProperty("--tilt-shift-y", "-6px");
+      element.style.setProperty("--tilt-scale", "1.012");
+      element.style.setProperty("--tilt-glow-opacity", "1");
+      element.style.setProperty("--tilt-glow-x", `${(offsetX * 100).toFixed(1)}%`);
+      element.style.setProperty("--tilt-glow-y", `${(offsetY * 100).toFixed(1)}%`);
+    });
+
+    element.addEventListener("pointerleave", resetTilt);
+    element.addEventListener("pointercancel", resetTilt);
+    element.addEventListener("blur", resetTilt);
+    resetTilt();
+  }
+
   return {
     apply(root) {
       applyToken += 1;
@@ -108,6 +170,10 @@ export function createUiEffects() {
 
       root.querySelectorAll(PRESSABLE_SELECTOR).forEach((element) => {
         wirePressable(element);
+      });
+
+      root.querySelectorAll(TILTABLE_SELECTOR).forEach((element) => {
+        wireTiltable(element);
       });
 
       window.requestAnimationFrame(() => {
