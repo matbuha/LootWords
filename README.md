@@ -2,6 +2,10 @@
 
 LootWords is a browser-based, reward-first word-learning game for children. The player clears short mini-games, earns reward boxes, opens them in exactly three taps, and collects noun cards that double as the vocabulary material.
 
+## Link for playing
+
+https://matbuha.github.io/LootWords/
+
 ## Latest polish pass
 
 - Reward boxes now build tension across three taps with stronger glow, crack, shake, and burst states.
