@@ -1,4 +1,5 @@
 import { BOX_TAP_COUNT } from "../data/config.js";
+import { t } from "../core/i18n.js";
 import { renderDetailCard, renderEmptyState } from "./ui-kit.js";
 
 function renderRewardCardShowcase(card, { isNew = false } = {}) {
@@ -29,56 +30,56 @@ function renderRewardCardShowcase(card, { isNew = false } = {}) {
 function getPhaseCopy(rewardState, rewardBoxes, activeCardCount) {
   if (rewardState.reveal?.type === "blocked" || activeCardCount === 0) {
     return {
-      eyebrow: "Content paused",
-      title: "Rewards need active cards",
-      hint: "A parent has turned off every active category or card. Parent Mode can turn vocabulary rewards back on.",
+      eyebrow: t("reward.contentPaused"),
+      title: t("reward.rewardsNeedActiveCards"),
+      hint: t("reward.contentPausedHint"),
     };
   }
 
   if (rewardState.phase === "opening") {
     return {
-      eyebrow: "Magic burst",
-      title: "The box is cracking open",
-      hint: "Hold for the reveal. This pause is the payoff tension before the card arrives.",
+      eyebrow: t("reward.magicBurst"),
+      title: t("reward.crackingOpen"),
+      hint: t("reward.openingHint"),
     };
   }
 
   if (rewardState.phase === "revealed") {
     return {
-      eyebrow: "Reveal complete",
-      title: "A new reward landed in your album",
-      hint: rewardBoxes > 0 ? "Another reward box is still waiting in the stash." : "Use the collection and learn screens to enjoy the new card.",
+      eyebrow: t("reward.revealComplete"),
+      title: t("reward.newRewardLanded"),
+      hint: rewardBoxes > 0 ? t("reward.anotherBoxWaiting") : t("reward.enjoyNewCard"),
     };
   }
 
   if (rewardBoxes <= 0) {
     return {
-      eyebrow: "No box ready",
-      title: "Win a mini-game to refill the reward room",
-      hint: "No reward boxes are waiting. A victory instantly adds a new one to the stash.",
+      eyebrow: t("reward.noBoxReady"),
+      title: t("reward.refillRewardRoom"),
+      hint: t("reward.refillHint"),
     };
   }
 
   if (rewardState.clicks === 2) {
     return {
-      eyebrow: "Almost open",
-      title: "One more tap for the burst reveal",
-      hint: "The glow is peaking. The third tap will crack the lid and launch the reward.",
+      eyebrow: t("reward.almostOpen"),
+      title: t("reward.oneMoreTap"),
+      hint: t("reward.oneMoreTapHint"),
     };
   }
 
   if (rewardState.clicks === 1) {
     return {
-      eyebrow: "Something is happening",
-      title: "The box is waking up",
-      hint: "A first crack appeared. Tap again to build more pressure.",
+      eyebrow: t("reward.somethingHappening"),
+      title: t("reward.boxWakingUp"),
+      hint: t("reward.firstCrackHint"),
     };
   }
 
   return {
-    eyebrow: "Reward box",
-    title: "Tap exactly three times to crack it open",
-    hint: "Three taps. Rising glow. Final burst. Keep it tight and satisfying.",
+    eyebrow: t("reward.rewardBox"),
+    title: t("reward.tapThreeTimes"),
+    hint: t("reward.tapHint"),
   };
 }
 
@@ -98,9 +99,9 @@ export function renderRewardScreen(container, { rewardState, rewardCard, rewardB
             : "reward-box--idle";
 
   const stageMarkup = [
-    { step: 1, label: "Wake", detail: "Glow and shake" },
-    { step: 2, label: "Charge", detail: "Cracks spread" },
-    { step: 3, label: "Burst", detail: "Reveal the card" },
+    { step: 1, label: t("reward.wake"), detail: t("reward.glowAndShake") },
+    { step: 2, label: t("reward.charge"), detail: t("reward.cracksSpread") },
+    { step: 3, label: t("reward.burst"), detail: t("reward.revealCard") },
   ]
     .map(
       (entry) => `
@@ -114,8 +115,8 @@ export function renderRewardScreen(container, { rewardState, rewardCard, rewardB
     .join("");
 
   let revealMarkup = renderEmptyState(
-    "Waiting for the reveal",
-    "Tap the box to build suspense, then watch the card burst onto the screen.",
+    t("emptyState.waitingRevealTitle"),
+    t("emptyState.waitingRevealBody"),
   );
 
   if (revealPhase === "opening") {
@@ -125,9 +126,9 @@ export function renderRewardScreen(container, { rewardState, rewardCard, rewardB
         <div class="reward-flare reward-flare--one" aria-hidden="true"></div>
         <div class="reward-flare reward-flare--two" aria-hidden="true"></div>
         <div class="reward-anticipation__copy">
-          <span class="small-label">Opening...</span>
-          <h3 class="section-title">The card is about to burst out</h3>
-          <p class="section-copy">A short pause makes the reward feel earned. The reveal is being staged right now.</p>
+          <span class="small-label">${t("reward.opening")}</span>
+          <h3 class="section-title">${t("reward.aboutToBurstOut")}</h3>
+          <p class="section-copy">${t("reward.revealPause")}</p>
         </div>
       </div>
     `;
@@ -135,43 +136,43 @@ export function renderRewardScreen(container, { rewardState, rewardCard, rewardB
     revealMarkup = `
       ${renderRewardCardShowcase(rewardCard, { isNew: true })}
       <div class="celebration-card celebration-card--reward celebration-card--reward-info" data-rarity="${rewardCard.rarity}">
-        <span class="card-fanfare">New card unlocked</span>
+        <span class="card-fanfare">${t("reward.newCardUnlocked")}</span>
         <p class="section-copy">
-          <strong>${rewardCard.word}</strong> just joined your collection. Jump to Learn to say it out loud, or open the album to see it in the full inventory.
+          ${t("reward.joinedCollection", { word: rewardCard.word })}
         </p>
       </div>
     `;
   } else if (rewardState.reveal?.type === "stars") {
     revealMarkup = `
       <div class="celebration-card celebration-card--reward">
-        <span class="small-label">All cards collected</span>
-        <h3 class="section-title">Bonus stars instead</h3>
-        <p class="section-copy">Every card is already unlocked, so this reward box transformed into ${rewardState.reveal.amount} bonus stars.</p>
+        <span class="small-label">${t("reward.allCardsCollected")}</span>
+        <h3 class="section-title">${t("reward.bonusStarsInstead")}</h3>
+        <p class="section-copy">${t("reward.transformedStars", { amount: rewardState.reveal.amount })}</p>
       </div>
     `;
   } else if (rewardState.reveal?.type === "duplicate" && rewardCard) {
     revealMarkup = `
       ${renderRewardCardShowcase(rewardCard)}
       <div class="celebration-card celebration-card--reward celebration-card--reward-info" data-rarity="${rewardCard.rarity}">
-        <span class="small-label">Duplicate reward</span>
-        <h3 class="section-title">You pulled ${rewardCard.word} again</h3>
-        <p class="section-copy">Because duplicate rewards are enabled, this extra copy turned into ${rewardState.reveal.amount} bonus stars.</p>
+        <span class="small-label">${t("reward.duplicateReward")}</span>
+        <h3 class="section-title">${t("reward.pulledAgain", { word: rewardCard.word })}</h3>
+        <p class="section-copy">${t("reward.duplicateStars", { amount: rewardState.reveal.amount })}</p>
       </div>
     `;
   } else if (rewardState.reveal?.type === "message") {
     revealMarkup = `
       <div class="celebration-card celebration-card--reward">
-        <span class="small-label">Reward note</span>
-        <h3 class="section-title">${rewardState.reveal.title}</h3>
-        <p class="section-copy">${rewardState.reveal.detail}</p>
+        <span class="small-label">${t("reward.rewardNote")}</span>
+        <h3 class="section-title">${rewardState.reveal.titleKey ? t(rewardState.reveal.titleKey) : rewardState.reveal.title}</h3>
+        <p class="section-copy">${rewardState.reveal.detailKey ? t(rewardState.reveal.detailKey) : rewardState.reveal.detail}</p>
       </div>
     `;
   } else if (rewardState.reveal?.type === "blocked") {
     revealMarkup = `
       <div class="celebration-card celebration-card--reward">
-        <span class="small-label">Reward blocked</span>
-        <h3 class="section-title">${rewardState.reveal.title}</h3>
-        <p class="section-copy">${rewardState.reveal.detail}</p>
+        <span class="small-label">${t("reward.rewardBlocked")}</span>
+        <h3 class="section-title">${rewardState.reveal.titleKey ? t(rewardState.reveal.titleKey) : rewardState.reveal.title}</h3>
+        <p class="section-copy">${rewardState.reveal.detailKey ? t(rewardState.reveal.detailKey) : rewardState.reveal.detail}</p>
       </div>
     `;
   }
@@ -187,9 +188,9 @@ export function renderRewardScreen(container, { rewardState, rewardCard, rewardB
             </div>
             <div class="hero-stats">
               <div class="stat-card stat-card--glow">
-                <span>Boxes ready</span>
+                <span>${t("reward.boxesReady")}</span>
                 <strong>${rewardBoxes}</strong>
-                <small>${rewardBoxes > 0 ? "Your stash is waiting" : "Clear a game to refill it"}</small>
+                <small>${rewardBoxes > 0 ? t("reward.stashWaiting") : t("reward.clearGameToRefill")}</small>
               </div>
             </div>
           </div>
@@ -209,7 +210,7 @@ export function renderRewardScreen(container, { rewardState, rewardCard, rewardB
               type="button"
               ${rewardBoxes <= 0 || rewardState.reveal || revealPhase === "opening" || activeCardCount === 0 ? "disabled" : ""}
               data-reward-box="true"
-              aria-label="Reward box"
+              aria-label="${t("common.rewardBoxAria")}"
             >
               <div class="reward-box ${boxStateClass}" data-tension="${rewardState.clicks}">
                 <div class="reward-box__impact" aria-hidden="true"></div>
@@ -257,17 +258,17 @@ export function renderRewardScreen(container, { rewardState, rewardCard, rewardB
           <div class="cta-stack">
             ${
               rewardState.reveal
-                ? `<button class="primary-button" type="button" data-reset-box="true">${rewardBoxes > 0 ? "Queue the next box" : "Reset reward room"}</button>`
-                : `<button class="secondary-button" type="button" data-route="play" data-game="memory-match">Earn more boxes</button>`
+                ? `<button class="primary-button" type="button" data-reset-box="true">${rewardBoxes > 0 ? t("reward.queueNextBox") : t("reward.resetRewardRoom")}</button>`
+                : `<button class="secondary-button" type="button" data-route="play" data-game="memory-match">${t("common.earnMoreBoxes")}</button>`
             }
-            <button class="ghost-button" type="button" data-route="collection">Open album</button>
+            <button class="ghost-button" type="button" data-route="collection">${t("common.openAlbum")}</button>
           </div>
         </div>
 
         <div class="reward-reveal reward-reveal--${revealPhase}">
           <div>
-            <span class="small-label">Loot spotlight</span>
-            <h3 class="section-title">Make the reward feel special</h3>
+            <span class="small-label">${t("reward.lootSpotlight")}</span>
+            <h3 class="section-title">${t("reward.makeRewardSpecial")}</h3>
           </div>
           ${revealMarkup}
         </div>

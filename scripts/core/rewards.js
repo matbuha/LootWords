@@ -116,8 +116,8 @@ export function openRewardBox(profile, cards) {
       profile,
       reward: {
         type: "blocked",
-        title: "No active cards available",
-        detail: "A parent needs to turn on a category or card before rewards can reveal vocabulary again.",
+        titleKey: "emptyState.noActiveCardsTitle",
+        detailKey: "reward.contentPausedHint",
       },
     };
   }
@@ -170,8 +170,8 @@ export function openRewardBox(profile, cards) {
         profile: baseProfile,
         reward: {
           type: "message",
-          title: "Every active card is already collected",
-          detail: "The current vocabulary pool is fully unlocked. A parent can turn on more categories or cards in Parent Mode.",
+          titleKey: "reward.allCardsCollected",
+          detailKey: "reward.allActiveCollectedDetail",
         },
       };
     }

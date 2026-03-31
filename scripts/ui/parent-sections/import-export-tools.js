@@ -1,3 +1,4 @@
+import { t } from "../../core/i18n.js";
 import { escapeHtml } from "../ui-kit.js";
 
 export function renderImportExportTools(container, { transferState, actions }) {
@@ -7,18 +8,18 @@ export function renderImportExportTools(container, { transferState, actions }) {
     <section class="parent-section">
       <div class="screen-header">
         <div>
-          <span class="small-label">Import / export</span>
-          <h2 class="section-title">Backup or restore this browser profile</h2>
+          <span class="small-label">${t("parent.transfer.eyebrow")}</span>
+          <h2 class="section-title">${t("parent.transfer.title")}</h2>
         </div>
-        <p class="screen-note">Exports include progress, assigned points, audio settings, and parent content controls. Imports are validated before any state is applied.</p>
+        <p class="screen-note">${t("parent.transfer.note")}</p>
       </div>
 
       ${
         status
           ? `
             <div class="parent-status ${status.kind === "error" ? "is-error" : status.kind === "warning" ? "is-warning" : "is-success"}">
-              <strong>${escapeHtml(status.title)}</strong>
-              <p>${escapeHtml(status.detail)}</p>
+              <strong>${escapeHtml(status.titleKey ? t(status.titleKey) : status.title)}</strong>
+              <p>${escapeHtml(status.detailKey ? t(status.detailKey) : status.detail)}</p>
               ${
                 status.lines?.length
                   ? `<ul>${status.lines.map((line) => `<li>${escapeHtml(line)}</li>`).join("")}</ul>`
@@ -30,14 +31,14 @@ export function renderImportExportTools(container, { transferState, actions }) {
       }
 
       <div class="cta-stack cta-stack--parent">
-        <button class="primary-button" type="button" data-parent-export="true">Export current profile</button>
-        <button class="secondary-button" type="button" data-parent-import="true">Validate and import</button>
-        <button class="ghost-button" type="button" data-parent-transfer-clear="true">Clear text</button>
+        <button class="primary-button" type="button" data-parent-export="true">${t("parent.transfer.exportProfile")}</button>
+        <button class="secondary-button" type="button" data-parent-import="true">${t("parent.transfer.importProfile")}</button>
+        <button class="ghost-button" type="button" data-parent-transfer-clear="true">${t("parent.transfer.clearText")}</button>
       </div>
 
       <label class="parent-field">
-        <span>JSON payload</span>
-        <textarea class="parent-textarea" rows="18" data-parent-transfer-text="true" placeholder="Exported LootWords JSON will appear here, or paste a backup to import.">${escapeHtml(transferState.text)}</textarea>
+        <span>${t("parent.transfer.jsonPayload")}</span>
+        <textarea class="parent-textarea" rows="18" data-parent-transfer-text="true" placeholder="${t("parent.transfer.placeholder")}">${escapeHtml(transferState.text)}</textarea>
       </label>
     </section>
   `;

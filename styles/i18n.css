@@ -1,0 +1,143 @@
+.shell-topbar,
+.shell-topbar--parent,
+.topbar-status,
+.audio-controls,
+.shell-nav {
+  direction: ltr;
+}
+
+.language-selector {
+  position: relative;
+  direction: ltr;
+}
+
+.language-selector__trigger,
+.language-option {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  direction: ltr;
+  flex-direction: row;
+}
+
+.language-selector__trigger {
+  min-height: 46px;
+  padding: 0 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: linear-gradient(180deg, rgba(35, 57, 121, 0.92), rgba(15, 27, 67, 0.94));
+  color: var(--text-strong);
+  box-shadow: 0 12px 24px rgba(6, 12, 34, 0.28);
+}
+
+.language-selector__label,
+.language-option__label {
+  unicode-bidi: isolate;
+  text-align: start;
+}
+
+.language-selector__flag,
+.language-option__flag {
+  width: 1.3rem;
+  text-align: center;
+  flex: 0 0 auto;
+}
+
+.language-selector__caret {
+  opacity: 0.7;
+  font-size: 0.82rem;
+}
+
+.language-selector__menu {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  min-width: 188px;
+  padding: 8px;
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: linear-gradient(180deg, rgba(19, 31, 73, 0.98), rgba(11, 19, 46, 0.98));
+  box-shadow: 0 22px 40px rgba(5, 10, 28, 0.36);
+  backdrop-filter: blur(14px);
+  z-index: 30;
+}
+
+.language-option {
+  width: 100%;
+  justify-content: flex-start;
+  min-height: 46px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 14px;
+  background: transparent;
+  color: var(--text-main);
+}
+
+.language-option:hover,
+.language-option.is-active {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.language-option.is-active {
+  box-shadow: inset 0 0 0 1px rgba(115, 220, 255, 0.24);
+  color: var(--text-strong);
+}
+
+html[dir="rtl"] body {
+  text-align: right;
+}
+
+html[dir="rtl"] .screen-header,
+html[dir="rtl"] .hero-copy,
+html[dir="rtl"] .detail-copy,
+html[dir="rtl"] .parent-copy-block,
+html[dir="rtl"] .parent-field,
+html[dir="rtl"] .collection-section__header,
+html[dir="rtl"] .reward-box-stage,
+html[dir="rtl"] .reward-reveal,
+html[dir="rtl"] .learn-guide {
+  text-align: right;
+}
+
+html[dir="rtl"] .brand-copy,
+html[dir="rtl"] .status-pill,
+html[dir="rtl"] .nav-link {
+  text-align: center;
+}
+
+html[dir="rtl"] .detail-modal__top,
+html[dir="rtl"] .parent-row-card,
+html[dir="rtl"] .screen-header,
+html[dir="rtl"] .collection-section__header {
+  direction: rtl;
+}
+
+html[dir="rtl"] .category-progress,
+html[dir="rtl"] .session-loop,
+html[dir="rtl"] .hero-actions,
+html[dir="rtl"] .cta-stack,
+html[dir="rtl"] .collection-toolbar,
+html[dir="rtl"] .parent-form-grid,
+html[dir="rtl"] .parent-toolbar,
+html[dir="rtl"] .parent-stat-grid {
+  direction: rtl;
+}
+
+html[dir="rtl"] .progress-bar,
+html[dir="rtl"] .progress-bar__fill,
+html[dir="rtl"] .reward-meter,
+html[dir="rtl"] .reward-stage-list,
+html[dir="rtl"] .audio-controls,
+html[dir="rtl"] .language-selector,
+html[dir="rtl"] .language-selector__menu,
+html[dir="rtl"] .language-selector__trigger,
+html[dir="rtl"] .language-option {
+  direction: ltr;
+}
+
+@media (max-width: 720px) {
+  .language-selector__menu {
+    right: auto;
+    left: 0;
+  }
+}

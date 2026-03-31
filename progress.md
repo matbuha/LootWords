@@ -14,6 +14,8 @@ Latest prompt: Perform a focused QA, cleanup, and architecture hardening pass so
 
 Latest prompt: Define and implement the visual identity, animation language, tactile interaction feel, and living UI behavior so LootWords feels more alive, responsive, magical, and game-like.
 
+Latest prompt: Implement a complete multilingual UI system with Hebrew, English, and Russian, including a top language selector, persisted language settings, proper RTL/LTR switching, and stable flag placement that does not flip under direction changes.
+
 ## Progress Checklist
 
 ### Phase 1: Foundation
@@ -351,6 +353,56 @@ Latest prompt: Define and implement the visual identity, animation language, tac
 - [x] Test import/export roundtrip
 - [x] Refactor rough admin code
 - [x] Update documentation
+
+## Multilingual UI Checklist
+
+### Phase A: i18n Foundation
+- [x] Create centralized translation system
+- [x] Add language manager
+- [x] Add translation data structure for he/en/ru
+- [x] Add safe translation helper with fallback
+- [x] Persist selected language in localStorage
+- [x] Verify language loads correctly on startup
+
+### Phase B: Direction Handling
+- [x] Implement RTL/LTR direction switching
+- [x] Apply RTL for Hebrew
+- [x] Apply LTR for English and Russian
+- [x] Verify document/app direction updates correctly
+- [x] Prevent direction-related layout breakage
+
+### Phase C: Language Selector
+- [x] Add top language selector button
+- [x] Add dropdown/menu with 3 language options
+- [x] Add flags/icons for each option
+- [x] Keep flag/icon on one fixed side for all options
+- [x] Highlight selected language
+- [x] Verify selector remains visually consistent across directions
+
+### Phase D: Full UI Translation
+- [x] Translate Home screen
+- [x] Translate Game screen
+- [x] Translate Reward screen
+- [x] Translate Collection screen
+- [x] Translate Learn screen
+- [x] Translate shared buttons/messages
+- [x] Translate Parent mode if present
+- [x] Verify current screen updates immediately on language change
+
+### Phase E: Layout and UX Polish
+- [x] Handle text length differences safely
+- [x] Check button/panel alignment in all languages
+- [x] Check dropdown alignment in all languages
+- [x] Improve selector polish and usability
+- [x] Verify stable top-bar behavior
+
+### Phase F: QA and Cleanup
+- [x] Test repeated language switching
+- [x] Test refresh persistence
+- [x] Test RTL/LTR transitions thoroughly
+- [x] Test missing translation fallback
+- [x] Refactor rough i18n code
+- [x] Document how to add new translation keys later
 
 ## QA / Cleanup Hardening Checklist
 

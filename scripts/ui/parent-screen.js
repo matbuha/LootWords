@@ -1,4 +1,4 @@
-import { CATEGORY_META } from "../data/config.js";
+import { categoryLabel, t } from "../core/i18n.js";
 import {
   DEFAULT_PARENT_SECTION,
   filterParentContentCards,
@@ -30,39 +30,39 @@ function renderSettingsSection(container, { parentSummary, actions }) {
     <section class="parent-section">
       <div class="screen-header">
         <div>
-          <span class="small-label">Parent settings</span>
-          <h2 class="section-title">Keep Parent Mode separate from child mode</h2>
+          <span class="small-label">${t("parent.settings.eyebrow")}</span>
+          <h2 class="section-title">${t("parent.settings.title")}</h2>
         </div>
-        <p class="screen-note">This is a local browser-only admin layer. It is not full security, but it keeps adult controls out of the normal child flow.</p>
+        <p class="screen-note">${t("parent.settings.note")}</p>
       </div>
 
       <div class="parent-stat-grid">
         <article class="parent-stat-card">
-          <span>Parent entry</span>
-          <strong>${PARENT_SECRET_CLICK_TARGET} logo taps</strong>
-          <small>Then type ${PARENT_GATE_PHRASE}</small>
+          <span>${t("parent.settings.parentEntry")}</span>
+          <strong>${t("parent.settings.logoTaps", { count: PARENT_SECRET_CLICK_TARGET })}</strong>
+          <small>${t("parent.settings.thenType", { phrase: PARENT_GATE_PHRASE })}</small>
         </article>
         <article class="parent-stat-card">
-          <span>Active categories</span>
+          <span>${t("parent.settings.activeCategories")}</span>
           <strong>${activeCategories.length}</strong>
-          <small>${activeCategories.map((entry) => CATEGORY_META[entry.id]?.label ?? entry.id).slice(0, 3).join(", ") || "None"}</small>
+          <small>${activeCategories.map((entry) => categoryLabel(entry.id)).slice(0, 3).join(", ") || t("parent.settings.none")}</small>
         </article>
         <article class="parent-stat-card">
-          <span>Active cards</span>
+          <span>${t("parent.settings.activeCards")}</span>
           <strong>${parentSummary.activeCardCount}</strong>
-          <small>${parentSummary.shelvedUnlockedCount} unlocked cards are currently shelved</small>
+          <small>${t("parent.settings.shelvedUnlocked", { count: parentSummary.shelvedUnlockedCount })}</small>
         </article>
       </div>
 
       <div class="parent-copy-block">
-        <p><strong>Reward pool:</strong> Child rewards only pull from active categories and cards. Shelved cards stay saved in storage and come back if re-enabled later.</p>
-        <p><strong>Import safety:</strong> Imported JSON is validated before anything is applied. Unknown fields are ignored, and malformed card ids or counters are rejected.</p>
-        <p><strong>Next expansion path:</strong> The current structure is ready for themed packs, seasonal sets, parent-selected age pools, and a fuller card editor later.</p>
+        <p><strong>${t("parent.settings.rewardPoolTitle")}:</strong> ${t("parent.settings.rewardPoolBody")}</p>
+        <p><strong>${t("parent.settings.importSafetyTitle")}:</strong> ${t("parent.settings.importSafetyBody")}</p>
+        <p><strong>${t("parent.settings.expansionTitle")}:</strong> ${t("parent.settings.expansionBody")}</p>
       </div>
 
       <div class="cta-stack cta-stack--parent">
-        <button class="secondary-button" type="button" data-parent-section="content">Manage content</button>
-        <button class="ghost-button" type="button" data-parent-exit="true">Exit Parent Mode</button>
+        <button class="secondary-button" type="button" data-parent-section="content">${t("parent.settings.manageContent")}</button>
+        <button class="ghost-button" type="button" data-parent-exit="true">${t("parent.settings.exit")}</button>
       </div>
     </section>
   `;
@@ -92,23 +92,23 @@ export function renderParentScreen(
             <form class="parent-gate" data-parent-gate-form="true">
               <div class="screen-header">
                 <div>
-                  <span class="small-label">Parent check</span>
-                  <h2 class="section-title">Enter Parent Mode</h2>
+                  <span class="small-label">${t("parent.gate.eyebrow")}</span>
+                  <h2 class="section-title">${t("parent.gate.title")}</h2>
                 </div>
-                <p class="screen-note">This keeps admin controls out of the normal child flow. Type the parent phrase to continue.</p>
+                <p class="screen-note">${t("parent.gate.note")}</p>
               </div>
               <label class="parent-field">
-                <span>Parent phrase</span>
-                <input class="parent-input" type="text" value="${parentUi.gateInput}" data-parent-gate-input="true" placeholder="Type the parent phrase" autocomplete="off" autocapitalize="characters" spellcheck="false" />
+                <span>${t("parent.gate.phrase")}</span>
+                <input class="parent-input" type="text" value="${parentUi.gateInput}" data-parent-gate-input="true" placeholder="${t("parent.gate.placeholder")}" autocomplete="off" autocapitalize="characters" spellcheck="false" />
               </label>
               ${
                 parentUi.gateError
-                  ? `<div class="parent-status is-error"><strong>Parent check failed</strong><p>${parentUi.gateError}</p></div>`
+                  ? `<div class="parent-status is-error"><strong>${t("parent.gate.failedTitle")}</strong><p>${t(parentUi.gateError)}</p></div>`
                   : ""
               }
               <div class="cta-stack cta-stack--parent">
-                <button class="primary-button" type="submit" data-parent-gate-submit="true">Unlock Parent Mode</button>
-                <button class="ghost-button" type="button" data-parent-gate-cancel="true">Back to child mode</button>
+                <button class="primary-button" type="submit" data-parent-gate-submit="true">${t("parent.gate.unlock")}</button>
+                <button class="ghost-button" type="button" data-parent-gate-cancel="true">${t("parent.gate.back")}</button>
               </div>
             </form>
           `
@@ -117,8 +117,8 @@ export function renderParentScreen(
               <aside class="parent-nav">
                 <div class="screen-header">
                   <div>
-                    <span class="small-label">Parent dashboard</span>
-                    <h2 class="section-title">Manage LootWords safely</h2>
+                    <span class="small-label">${t("parent.dashboard.eyebrow")}</span>
+                    <h2 class="section-title">${t("parent.dashboard.title")}</h2>
                   </div>
                 </div>
                 <div class="parent-nav__tabs">
@@ -130,14 +130,14 @@ export function renderParentScreen(
                           type="button"
                           data-parent-section="${section.id}"
                         >
-                          ${section.label}
+                          ${t(`parent.sections.${section.id}`)}
                         </button>
                       `,
                     )
                     .join("")}
                 </div>
                 <div class="parent-nav__footer">
-                  <button class="ghost-button" type="button" data-parent-exit="true">Exit Parent Mode</button>
+                  <button class="ghost-button" type="button" data-parent-exit="true">${t("parent.settings.exit")}</button>
                 </div>
               </aside>
               <div id="parent-section-host"></div>

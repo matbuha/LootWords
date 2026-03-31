@@ -1,4 +1,5 @@
 import { AUDIO_DEFAULT_SETTINGS } from "../data/config.js";
+import { DEFAULT_LANGUAGE, SUPPORTED_LANGUAGES } from "../data/translations.js";
 
 function clampVolume(value, fallback) {
   const normalized = Number.parseFloat(value);
@@ -29,10 +30,15 @@ export function normalizeAudioSettings(rawSettings = {}) {
   };
 }
 
+function normalizeLanguage(language) {
+  return SUPPORTED_LANGUAGES.includes(language) ? language : DEFAULT_LANGUAGE;
+}
+
 export function normalizeSettings(rawSettings = {}) {
   const audio = normalizeAudioSettings(rawSettings);
 
   return {
+    language: normalizeLanguage(rawSettings.language),
     audioMuted: audio.muted,
     audio,
   };
@@ -53,5 +59,12 @@ export function updateAudioSettings(currentSettings = {}, partialAudio = {}) {
       ...(currentSettings.audio ?? {}),
       ...partialAudio,
     },
+  });
+}
+
+export function updateLanguageSettings(currentSettings = {}, language) {
+  return normalizeSettings({
+    ...currentSettings,
+    language,
   });
 }

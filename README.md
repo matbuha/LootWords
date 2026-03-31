@@ -9,6 +9,28 @@ LootWords is a browser-based, reward-first word-learning game for children. The 
 - Home, reward, collection, learn, and play screens now share a more tactile game UI with faster route transitions and richer win states.
 - Audio remains optional and safe: the app now uses a modular audio manager, feedback manager, and persisted settings layer, while the current build falls back to lightweight synthesized cues if files are missing.
 
+## Multilingual UI system
+
+- The full UI now supports English, Hebrew, and Russian through a centralized translation layer.
+- Language state is persisted in localStorage and restored on startup before screen render, so the app does not flash one language and then swap late.
+- Direction handling is centralized:
+  - Hebrew uses RTL
+  - English and Russian use LTR
+- The top language selector is always visible and uses an isolated flex row so the flag stays on the same side in all three languages even when the app direction changes.
+- Main i18n files:
+  - `scripts/data/translations.js`: translation data and language metadata
+  - `scripts/core/i18n.js`: `t()` helper, locale formatting, and label helpers
+  - `scripts/core/language-manager.js`: document `lang` / `dir` application
+  - `scripts/ui/language-selector.js`: selector button and dropdown behavior
+  - `styles/i18n.css`: direction-safe selector and RTL layout rules
+
+### Adding a new translation key
+
+1. Add the key under `en`, `he`, and `ru` in `scripts/data/translations.js`.
+2. Read it from UI code with `t("namespace.key")` instead of hardcoding a string.
+3. If the text is a category, rarity, pack, difficulty, or sort label, prefer the existing helpers in `scripts/core/i18n.js`.
+4. If the new UI element must keep icon placement stable across RTL/LTR, use explicit flex order and `direction: ltr` on that row instead of relying on inherited document direction.
+
 ## Visual identity and living UI pass
 
 - The UI now uses additive theme and animation layers in `lootwords/styles/theme.css` and `lootwords/styles/animations.css` instead of burying more overrides inside the main stylesheet.
@@ -119,17 +141,6 @@ These pack ids are already part of every card, so future parent-controlled pack 
 - Import validation now rejects malformed payloads before state is applied.
 - Profile normalization now strips unknown fields instead of silently preserving them across future exports.
 
-## Run locally
-
-From `C:\Users\ariel\Projects\LootWords`:
-
-```powershell
-python -m http.server 8123 --bind 127.0.0.1
-```
-
-Then open:
-
-- `http://127.0.0.1:8123/lootwords/`
 
 ## Architecture
 

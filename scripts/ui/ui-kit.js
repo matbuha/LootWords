@@ -1,7 +1,7 @@
-import { CATEGORY_META, RARITY_META } from "../data/config.js";
+import { categoryLabel, formatNumber, rarityLabel, t } from "../core/i18n.js";
 
 export function formatPoints(points) {
-  return new Intl.NumberFormat("en-US").format(points);
+  return formatNumber(points);
 }
 
 export function escapeHtml(value) {
@@ -13,10 +13,10 @@ export function escapeHtml(value) {
 }
 
 function renderCardShell(card, { locked, compact, spotlight, isNew }) {
-  const categoryLabel = CATEGORY_META[card.category]?.label ?? card.category;
-  const rarityLabel = RARITY_META[card.rarity]?.label ?? "Common";
-  const cardName = locked ? "Mystery Card" : card.word;
-  const subtitle = locked ? "Unlock to reveal the word." : `${rarityLabel} loot card`;
+  const categoryText = categoryLabel(card.category);
+  const rarityText = rarityLabel(card.rarity);
+  const cardName = locked ? t("common.mysteryCard") : card.word;
+  const subtitle = locked ? t("common.unlockToRevealWord") : t("common.lootCard", { rarity: rarityText });
 
   return `
     <article
@@ -36,16 +36,16 @@ function renderCardShell(card, { locked, compact, spotlight, isNew }) {
       <div class="card-sheen" aria-hidden="true"></div>
       <div class="${spotlight ? "detail-card__header" : "loot-card__header"}">
         <div class="card-chip-row">
-          <span class="card-category">${escapeHtml(categoryLabel)}</span>
-          ${isNew && !locked ? `<span class="card-fanfare">New</span>` : ""}
+          <span class="card-category">${escapeHtml(categoryText)}</span>
+          ${isNew && !locked ? `<span class="card-fanfare">${t("common.new")}</span>` : ""}
         </div>
         ${
           locked
-            ? `<span class="card-tag">Locked</span>`
+            ? `<span class="card-tag">${t("common.locked")}</span>`
             : `
               <div class="card-score-stack">
-                <span class="card-points">${formatPoints(card.points)} pts</span>
-                ${compact ? "" : `<span class="rarity-badge">${escapeHtml(rarityLabel)}</span>`}
+                <span class="card-points">${t("common.pointsValue", { value: formatPoints(card.points) })}</span>
+                ${compact ? "" : `<span class="rarity-badge">${escapeHtml(rarityText)}</span>`}
               </div>
             `
         }
@@ -57,7 +57,7 @@ function renderCardShell(card, { locked, compact, spotlight, isNew }) {
             ? `
               <div class="card-art__locked">
                 <strong>?</strong>
-                <span>Reward mystery</span>
+                <span>${t("common.rewardMystery")}</span>
               </div>
             `
             : `
@@ -71,11 +71,11 @@ function renderCardShell(card, { locked, compact, spotlight, isNew }) {
       <div class="${spotlight ? "detail-card__body" : "loot-card__body"}">
         <div class="card-title-row">
           <h3 class="${spotlight ? "detail-card__word" : "loot-card__word"}">${escapeHtml(cardName)}</h3>
-          ${compact || locked ? "" : `<span class="rarity-badge rarity-badge--inline">${escapeHtml(rarityLabel)}</span>`}
+          ${compact || locked ? "" : `<span class="rarity-badge rarity-badge--inline">${escapeHtml(rarityText)}</span>`}
         </div>
         <div class="${spotlight ? "detail-card__meta" : "loot-card__meta"}">
           <small>${escapeHtml(subtitle)}</small>
-          <span class="card-scoreline">${locked ? "Win to unlock" : `${escapeHtml(rarityLabel)} tier`}</span>
+          <span class="card-scoreline">${locked ? t("common.winToUnlock") : t("common.tierSuffix", { value: escapeHtml(rarityText) })}</span>
         </div>
       </div>
     </article>

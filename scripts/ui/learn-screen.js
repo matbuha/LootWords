@@ -1,4 +1,5 @@
 import { CATEGORY_META, DIFFICULTY_META, LEARN_SORTS, PACK_META, RARITY_META } from "../data/config.js";
+import { categoryLabel, difficultyLabel, learnSortLabel, packLabel, rarityLabel, t } from "../core/i18n.js";
 import { renderCard, renderDetailCard, renderEmptyState, escapeHtml, formatPoints } from "./ui-kit.js";
 
 export function renderLearnScreen(container, { unlockedCards, selectedCard, progress, learnFilters, actions }) {
@@ -9,57 +10,57 @@ export function renderLearnScreen(container, { unlockedCards, selectedCard, prog
   const categoryOptions = progress.categoryCounts;
 
   let contentMarkup = renderEmptyState(
-    "No cards to review yet",
-    "Win a mini-game, open a reward box, and your first learning card will appear here.",
+    t("emptyState.noCardsToReviewTitle"),
+    t("emptyState.noCardsToReviewBody"),
   );
 
   if (!unlockedCards.length && progress.totalCards === 0) {
     contentMarkup = renderEmptyState(
-      "No active cards are available",
-      "A parent has turned off every active category or card. Parent Mode can turn review content back on.",
+      t("emptyState.noActiveCardsTitle"),
+      t("emptyState.noActiveCardsBody"),
     );
   } else if (!unlockedCards.length && progress.totalUnlocked > 0) {
     contentMarkup = renderEmptyState(
-      "No cards in this review deck",
-      "Try another category or review mode to bring cards back into the learn lounge.",
+      t("emptyState.noCardsInDeckTitle"),
+      t("emptyState.noCardsInDeckBody"),
     );
   } else if (unlockedCards.length && selectedCard) {
     contentMarkup = `
       <div class="learn-layout">
         <div class="learn-spotlight">
           <div class="learn-spotlight__top">
-            <span class="card-fanfare">${recentCardIds.has(selectedCard.id) ? "Fresh pull" : "Review card"}</span>
-            <span class="card-scoreline">Card ${currentIndex + 1} of ${unlockedCards.length}</span>
+            <span class="card-fanfare">${recentCardIds.has(selectedCard.id) ? t("common.freshPull") : t("common.reviewCard")}</span>
+            <span class="card-scoreline">${t("common.cardIndex", { current: currentIndex + 1, total: unlockedCards.length })}</span>
           </div>
           ${renderDetailCard(selectedCard, {
             locked: false,
             isNew: recentCardIds.has(selectedCard.id),
           })}
           <div class="learn-guide">
-            <p class="section-copy">Say the word, name the picture, then remember the points like a game score. That score becomes the memory hook.</p>
+            <p class="section-copy">${t("learn.sayWordHint")}</p>
             <div class="pill-row">
-              <span class="card-category">${CATEGORY_META[selectedCard.category]?.label ?? selectedCard.category}</span>
-              <span class="card-points">${formatPoints(selectedCard.points)} pts</span>
-              <span class="rarity-badge rarity-badge--inline">${RARITY_META[selectedCard.rarity]?.label ?? selectedCard.rarity}</span>
-              <span class="card-scoreline">${DIFFICULTY_META[selectedCard.difficultyLevel]?.label ?? "Starter"}</span>
+              <span class="card-category">${categoryLabel(selectedCard.category)}</span>
+              <span class="card-points">${t("common.pointsValue", { value: formatPoints(selectedCard.points) })}</span>
+              <span class="rarity-badge rarity-badge--inline">${rarityLabel(selectedCard.rarity)}</span>
+              <span class="card-scoreline">${difficultyLabel(selectedCard.difficultyLevel)}</span>
             </div>
             <div class="pill-row">
-              <span class="card-category">${PACK_META[selectedCard.packId]?.label ?? "Starter pack"}</span>
+              <span class="card-category">${packLabel(selectedCard.packId ?? "starter-pack")}</span>
               ${selectedCard.tags.slice(0, 3).map((tag) => `<span class="card-category">${escapeHtml(tag.replace(/-/g, " "))}</span>`).join("")}
             </div>
             <div class="cta-stack">
-              <button class="secondary-button" type="button" data-learn-step="-1">Previous</button>
-              <button class="primary-button" type="button" data-learn-step="1">Next card</button>
+              <button class="secondary-button" type="button" data-learn-step="-1">${t("common.previous")}</button>
+              <button class="primary-button" type="button" data-learn-step="1">${t("common.nextCard")}</button>
             </div>
           </div>
         </div>
         <div>
           <div class="screen-header">
             <div>
-              <span class="small-label">Review deck</span>
-              <h3 class="section-title">Tap any card to spotlight it</h3>
+              <span class="small-label">${t("common.reviewDeck")}</span>
+              <h3 class="section-title">${t("learn.spotlightTitle")}</h3>
             </div>
-            <p class="screen-note">${CATEGORY_META[learnFilters.category]?.label ?? "All categories"} • ${LEARN_SORTS[learnFilters.sort]}</p>
+            <p class="screen-note">${learnFilters.category === "all" ? t("common.allCategories") : categoryLabel(learnFilters.category)} ${t("common.localeSeparator")} ${learnSortLabel(learnFilters.sort)}</p>
           </div>
           <div class="learn-list">
             ${unlockedCards
@@ -85,35 +86,35 @@ export function renderLearnScreen(container, { unlockedCards, selectedCard, prog
     <section class="learn-panel">
       <div class="screen-header">
         <div>
-          <span class="small-label">Learn lounge</span>
-          <h2 class="learn-title">Review your unlocked cards in a calm loop</h2>
+          <span class="small-label">${t("learn.eyebrow")}</span>
+          <h2 class="learn-title">${t("learn.title")}</h2>
         </div>
-        <p class="screen-note">Use recent, strongest, or category review to keep the card collection useful for later quiz modes.</p>
+        <p class="screen-note">${t("learn.note")}</p>
       </div>
 
       <div class="collection-dashboard">
         <article class="stat-card stat-card--glow">
-          <span>Review deck</span>
+          <span>${t("common.reviewDeck")}</span>
           <strong data-count-to="${unlockedCards.length}" data-count-key="learn-review-deck">${unlockedCards.length}</strong>
-          <small>${learnFilters.category === "all" ? "All unlocked cards" : CATEGORY_META[learnFilters.category]?.label}</small>
+          <small>${learnFilters.category === "all" ? t("learn.allUnlockedCards") : categoryLabel(learnFilters.category)}</small>
         </article>
         <article class="stat-card">
-          <span>Fresh pull</span>
+          <span>${t("common.freshPull")}</span>
           <strong>${progress.newestCard ? escapeHtml(progress.newestCard.word) : "--"}</strong>
-          <small>${progress.newestCard ? `${formatPoints(progress.newestCard.points)} pts` : "Win a new card to fill this slot"}</small>
+          <small>${progress.newestCard ? t("common.pointsValue", { value: formatPoints(progress.newestCard.points) }) : t("learn.winNewCard")}</small>
         </article>
         <article class="stat-card">
-          <span>Highest points</span>
+          <span>${t("learn.highestPoints")}</span>
           <strong>${progress.strongestCard ? escapeHtml(progress.strongestCard.word) : "--"}</strong>
-          <small>${progress.strongestCard ? `${formatPoints(progress.strongestCard.points)} pts` : "Unlock cards to compare them"}</small>
+          <small>${progress.strongestCard ? t("common.pointsValue", { value: formatPoints(progress.strongestCard.points) }) : t("learn.unlockToCompare")}</small>
         </article>
       </div>
 
       <div class="collection-toolbar">
         <label>
-          <span class="small-label">Category</span>
+          <span class="small-label">${t("common.category")}</span>
           <select class="filter-select" data-learn-filter="category">
-            <option value="all">All categories</option>
+            <option value="all">${t("common.allCategories")}</option>
             ${categoryOptions
               .map(
                 (entry) => `
@@ -124,12 +125,12 @@ export function renderLearnScreen(container, { unlockedCards, selectedCard, prog
           </select>
         </label>
         <label>
-          <span class="small-label">Review mode</span>
+          <span class="small-label">${t("common.reviewMode")}</span>
           <select class="filter-select" data-learn-filter="sort">
             ${Object.entries(LEARN_SORTS)
               .map(
                 ([sortId, label]) => `
-                  <option value="${sortId}" ${learnFilters.sort === sortId ? "selected" : ""}>${label}</option>
+                  <option value="${sortId}" ${learnFilters.sort === sortId ? "selected" : ""}>${learnSortLabel(sortId)}</option>
                 `,
               )
               .join("")}

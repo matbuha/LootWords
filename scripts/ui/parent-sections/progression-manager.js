@@ -1,3 +1,5 @@
+import { t } from "../../core/i18n.js";
+
 export function renderProgressionManager(container, { parentSettings, progress, actions }) {
   const rewardSettings = parentSettings.rewards;
 
@@ -5,15 +7,15 @@ export function renderProgressionManager(container, { parentSettings, progress, 
     <section class="parent-section">
       <div class="screen-header">
         <div>
-          <span class="small-label">Rewards & progression</span>
-          <h2 class="section-title">Tune how often the child gets loot</h2>
+          <span class="small-label">${t("parent.progression.eyebrow")}</span>
+          <h2 class="section-title">${t("parent.progression.title")}</h2>
         </div>
-        <p class="screen-note">Changes here apply immediately to future wins, reward openings, and fallback behavior.</p>
+        <p class="screen-note">${t("parent.progression.note")}</p>
       </div>
 
       <div class="parent-form-grid">
         <label class="parent-field">
-          <span>Reward boxes per win</span>
+          <span>${t("parent.progression.rewardBoxesPerWin")}</span>
           <select class="parent-select" data-parent-reward="rewardBoxesPerWin">
             ${[1, 2, 3]
               .map(
@@ -24,55 +26,55 @@ export function renderProgressionManager(container, { parentSettings, progress, 
         </label>
 
         <label class="parent-field">
-          <span>Fallback behavior</span>
+          <span>${t("parent.progression.fallbackBehavior")}</span>
           <select class="parent-select" data-parent-reward="fallbackRewardType">
-            <option value="stars" ${rewardSettings.fallbackRewardType === "stars" ? "selected" : ""}>Bonus stars</option>
-            <option value="message" ${rewardSettings.fallbackRewardType === "message" ? "selected" : ""}>Message only</option>
+            <option value="stars" ${rewardSettings.fallbackRewardType === "stars" ? "selected" : ""}>${t("parent.progression.bonusStars")}</option>
+            <option value="message" ${rewardSettings.fallbackRewardType === "message" ? "selected" : ""}>${t("parent.progression.messageOnly")}</option>
           </select>
         </label>
 
         <label class="parent-field">
-          <span>Fallback stars</span>
+          <span>${t("parent.progression.fallbackStars")}</span>
           <input class="parent-input" type="number" min="0" max="500" value="${rewardSettings.fallbackStars}" data-parent-reward="fallbackStars" />
         </label>
 
         <label class="parent-field">
-          <span>Cards per reward reveal</span>
+          <span>${t("parent.progression.cardsPerReveal")}</span>
           <input class="parent-input" type="number" value="${rewardSettings.cardsPerRewardReveal}" disabled />
-          <small class="parent-help">MVP stays at one collectible reveal per reward box.</small>
+          <small class="parent-help">${t("parent.progression.cardsPerRevealHelp")}</small>
         </label>
       </div>
 
       <div class="parent-checkbox-list">
         <label class="parent-checkbox">
           <input type="checkbox" data-parent-reward="duplicateRewardsEnabled" ${rewardSettings.duplicateRewardsEnabled ? "checked" : ""} />
-          <span>Allow duplicate rewards. Duplicate pulls convert into bonus stars instead of corrupting progress.</span>
+          <span>${t("parent.progression.allowDuplicates")}</span>
         </label>
         <label class="parent-checkbox">
           <input type="checkbox" data-parent-reward="firstWinBonusEnabled" ${rewardSettings.firstWinBonusEnabled ? "checked" : ""} />
-          <span>Keep the first-win bonus active for newly tried mini-games.</span>
+          <span>${t("parent.progression.keepFirstWinBonus")}</span>
         </label>
         <label class="parent-checkbox">
           <input type="checkbox" data-parent-reward="milestoneRewardsEnabled" ${rewardSettings.milestoneRewardsEnabled ? "checked" : ""} />
-          <span>Keep every 5-win milestone star reward active.</span>
+          <span>${t("parent.progression.keepMilestones")}</span>
         </label>
       </div>
 
       <div class="parent-stat-grid">
         <article class="parent-stat-card">
-          <span>Reward boxes waiting</span>
+          <span>${t("parent.progression.boxesWaiting")}</span>
           <strong>${progress.rewardBoxes}</strong>
-          <small>${progress.rewardBoxesOpened} opened so far</small>
+          <small>${t("parent.progression.openedSoFar", { count: progress.rewardBoxesOpened })}</small>
         </article>
         <article class="parent-stat-card">
-          <span>Boxes earned total</span>
+          <span>${t("parent.progression.boxesEarnedTotal")}</span>
           <strong>${progress.rewardBoxesEarned}</strong>
-          <small>${progress.totalWins} total wins</small>
+          <small>${t("parent.progression.totalWins", { count: progress.totalWins })}</small>
         </article>
         <article class="parent-stat-card">
-          <span>Current streak</span>
+          <span>${t("parent.progression.currentStreak")}</span>
           <strong>${progress.currentStreak}</strong>
-          <small>Best ${progress.bestStreak}</small>
+          <small>${t("parent.progression.bestStreak", { count: progress.bestStreak })}</small>
         </article>
       </div>
     </section>

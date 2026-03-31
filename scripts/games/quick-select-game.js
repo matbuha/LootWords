@@ -1,4 +1,5 @@
 import { formatPoints } from "../ui/ui-kit.js";
+import { t } from "../core/i18n.js";
 
 function shuffle(items) {
   const copy = [...items];
@@ -146,7 +147,7 @@ export function mountFlashFindGame(container, { cards, onWin, onLose, playSound 
             <span class="tile-card">
               <span class="tile-card__icon" aria-hidden="true">${card.icon}</span>
               <span class="tile-card__word">${card.word}</span>
-              <small>${formatPoints(card.points)} pts</small>
+              <small>${t("common.pointsValue", { value: formatPoints(card.points) })}</small>
             </span>
           </button>
         `;
@@ -157,22 +158,22 @@ export function mountFlashFindGame(container, { cards, onWin, onLose, playSound 
   function render() {
     const previewPhase = state.currentRound.phase === "preview";
     const prompt = previewPhase
-      ? "Watch this card carefully."
+      ? t("play.watchCarefully")
       : state.currentRound.feedback === "wrong"
-        ? "That was not the flashed card. A new one is coming."
-        : "Tap the same card you just saw.";
+        ? t("play.wrongFlashedCard")
+        : t("play.tapSameCard");
 
     container.innerHTML = `
       <div class="arena-frame">
         <div class="arena-topline">
           <div>
-            <h3 class="arena-title">Flash Find</h3>
-            <p class="screen-note">A target card flashes first. Lock it in, then tap the same card from the loot spread.</p>
+            <h3 class="arena-title">${t("play.flashFindTitle")}</h3>
+            <p class="screen-note">${t("play.flashFindBody")}</p>
           </div>
           <div class="arena-stats">
-            <span class="arena-stat">Round: ${state.roundIndex}/${state.totalRounds}</span>
-            <span class="arena-stat">Hearts: ${"❤️".repeat(state.hearts)}</span>
-            <span class="arena-stat">Time: ${Math.ceil(state.timerMs / 1000)}s</span>
+            <span class="arena-stat">${t("play.statRounds", { current: state.roundIndex, total: state.totalRounds })}</span>
+            <span class="arena-stat">${t("play.statHearts", { value: "❤️".repeat(state.hearts) })}</span>
+            <span class="arena-stat">${t("play.statTime", { value: Math.ceil(state.timerMs / 1000) })}</span>
           </div>
         </div>
         <div class="game-surface">
@@ -181,18 +182,18 @@ export function mountFlashFindGame(container, { cards, onWin, onLose, playSound 
               <div class="target-card target-card--spotlight">
                 <div class="target-card__icon" aria-hidden="true">${state.currentRound.target.icon}</div>
                 <div class="target-card__copy">
-                  <span class="small-label">Remember this</span>
+                  <span class="small-label">${t("common.rememberThis")}</span>
                   <strong>${state.currentRound.target.word}</strong>
-                  <span>${formatPoints(state.currentRound.target.points)} pts</span>
+                  <span>${t("common.pointsValue", { value: formatPoints(state.currentRound.target.points) })}</span>
                 </div>
-                <div class="target-card__meta">${previewPhase ? "Preview" : "Hidden"}</div>
+                <div class="target-card__meta">${previewPhase ? t("common.preview") : t("common.hiddenLabel")}</div>
               </div>
             </div>
 
             <div class="flash-find-stage__prompt">
-              <span class="small-label">${previewPhase ? "Preview" : "Find it"}</span>
+              <span class="small-label">${previewPhase ? t("common.preview") : t("play.findIt")}</span>
               <strong>${prompt}</strong>
-              <span>Best chain: ${state.bestChain}</span>
+              <span>${t("play.bestChain")}: ${state.bestChain}</span>
             </div>
 
             <div class="match-options flash-options">

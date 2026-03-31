@@ -1,4 +1,5 @@
 import { formatPoints } from "../ui/ui-kit.js";
+import { categoryLabel, t } from "../core/i18n.js";
 
 function shuffle(items) {
   const copy = [...items];
@@ -107,13 +108,13 @@ export function mountMatchGame(container, { cards, onWin, onLose, playSound }) {
       <div class="arena-frame">
         <div class="arena-topline">
           <div>
-            <h3 class="arena-title">Treasure Match</h3>
-            <p class="screen-note">Find the target loot card before the clock or hearts run out.</p>
+            <h3 class="arena-title">${t("play.treasureMatchTitle")}</h3>
+            <p class="screen-note">${t("play.treasureMatchBody")}</p>
           </div>
           <div class="arena-stats">
-            <span class="arena-stat">Round: ${state.roundIndex}/${state.totalRounds}</span>
-            <span class="arena-stat">Hearts: ${"❤️".repeat(state.hearts)}</span>
-            <span class="arena-stat">Time: ${Math.ceil(state.timerMs / 1000)}s</span>
+            <span class="arena-stat">${t("play.statRounds", { current: state.roundIndex, total: state.totalRounds })}</span>
+            <span class="arena-stat">${t("play.statHearts", { value: "❤️".repeat(state.hearts) })}</span>
+            <span class="arena-stat">${t("play.statTime", { value: Math.ceil(state.timerMs / 1000) })}</span>
           </div>
         </div>
         <div class="game-surface">
@@ -121,11 +122,11 @@ export function mountMatchGame(container, { cards, onWin, onLose, playSound }) {
             <div class="target-card">
               <div class="target-card__icon" aria-hidden="true">${target.icon}</div>
               <div class="target-card__copy">
-                <span class="small-label">Target card</span>
+                <span class="small-label">${t("common.targetCard")}</span>
                 <strong>${target.word}</strong>
-                <span>${target.category.replace("-", " ")}</span>
+                <span>${categoryLabel(target.category)}</span>
               </div>
-              <div class="target-card__meta">${formatPoints(target.points)} pts</div>
+              <div class="target-card__meta">${t("common.pointsValue", { value: formatPoints(target.points) })}</div>
             </div>
             <div class="match-options">
               ${options
@@ -142,7 +143,7 @@ export function mountMatchGame(container, { cards, onWin, onLose, playSound }) {
                       <span class="tile-card">
                         <span class="tile-card__icon" aria-hidden="true">${option.icon}</span>
                         <span class="tile-card__word">${option.word}</span>
-                        <small>${formatPoints(option.points)} pts</small>
+                        <small>${t("common.pointsValue", { value: formatPoints(option.points) })}</small>
                       </span>
                     </button>
                   `;

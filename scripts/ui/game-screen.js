@@ -1,17 +1,28 @@
 import { getPlayablePool } from "../core/progression.js";
+import { gameText, t } from "../core/i18n.js";
 import { getGameDefinition } from "../games/game-registry.js";
 import { renderEmptyState } from "./ui-kit.js";
 
 function formatVictoryLabel(key) {
-  return key
-    .replace(/Ms$/, "")
-    .replace(/([A-Z])/g, " $1")
-    .replace(/^./, (letter) => letter.toUpperCase());
+  const mapping = {
+    timeLeftMs: t("play.timeLeftLabel"),
+    roundsCleared: t("play.roundsClearedLabel"),
+    heartsLeft: t("play.heartsLeftLabel"),
+    bestChain: t("play.bestChainLabel"),
+    hits: t("play.hitsLabel"),
+    bestCombo: t("play.bestComboLabel"),
+    moves: t("play.movesLabel"),
+    matches: t("play.matchesLabel"),
+    roundIndex: t("play.roundsClearedLabel"),
+    misses: t("play.missesLabel"),
+  };
+
+  return mapping[key] ?? key;
 }
 
 function formatVictoryValue(key, value) {
   if (key.endsWith("Ms") && typeof value === "number") {
-    return `${Math.max(0, Math.round(value / 1000))}s`;
+    return t("play.statTime", { value: Math.max(0, Math.round(value / 1000)) }).replace(/^[^:：]*[:：]\s*/, "");
   }
 
   return String(value);
@@ -47,20 +58,20 @@ function renderOutcomeSummary(result) {
 
   if (result.status === "won") {
     const rewardChips = [
-      `<div class="victory-chip victory-chip--reward"><span>Reward boxes</span><strong>+${result.summary.boxesAwarded}</strong></div>`,
-      `<div class="victory-chip"><span>Streak</span><strong>${result.summary.currentStreak}</strong></div>`,
-      `<div class="victory-chip"><span>Total wins</span><strong>${result.summary.totalWins}</strong></div>`,
+      `<div class="victory-chip victory-chip--reward"><span>${t("play.rewardBoxes")}</span><strong>+${result.summary.boxesAwarded}</strong></div>`,
+      `<div class="victory-chip"><span>${t("play.streak")}</span><strong>${result.summary.currentStreak}</strong></div>`,
+      `<div class="victory-chip"><span>${t("play.totalWins")}</span><strong>${result.summary.totalWins}</strong></div>`,
     ];
 
     if (result.summary.firstWinBonusBoxes > 0) {
       rewardChips.push(
-        `<div class="victory-chip victory-chip--bonus"><span>First win bonus</span><strong>+${result.summary.firstWinBonusBoxes} box</strong></div>`,
+        `<div class="victory-chip victory-chip--bonus"><span>${t("play.firstWinBonusReward")}</span><strong>+${result.summary.firstWinBonusBoxes}</strong></div>`,
       );
     }
 
     if (result.summary.milestoneBonusStars > 0) {
       rewardChips.push(
-        `<div class="victory-chip victory-chip--bonus"><span>Milestone stars</span><strong>+${result.summary.milestoneBonusStars}</strong></div>`,
+        `<div class="victory-chip victory-chip--bonus"><span>${t("play.milestoneStars")}</span><strong>+${result.summary.milestoneBonusStars}</strong></div>`,
       );
     }
 
@@ -73,11 +84,11 @@ function renderOutcomeSummary(result) {
 
   return `
     <div class="victory-chip-row victory-chip-row--rewards">
-      <div class="victory-chip"><span>Best streak</span><strong>${result.summary.bestStreak}</strong></div>
-      <div class="victory-chip"><span>Losses here</span><strong>${result.summary.lossCount}</strong></div>
+      <div class="victory-chip"><span>${t("play.bestStreak")}</span><strong>${result.summary.bestStreak}</strong></div>
+      <div class="victory-chip"><span>${t("play.lossesHere")}</span><strong>${result.summary.lossCount}</strong></div>
       ${
         result.summary.streakEnded
-          ? `<div class="victory-chip victory-chip--bonus"><span>Streak reset</span><strong>Back to 0</strong></div>`
+          ? `<div class="victory-chip victory-chip--bonus"><span>${t("play.streakReset")}</span><strong>${t("play.backToZero")}</strong></div>`
           : ""
       }
     </div>
@@ -89,17 +100,17 @@ function renderGameChoice(game, activeGameId) {
     <button class="game-choice game-choice--rich ${game.id === activeGameId ? "is-active" : ""}" type="button" data-route="play" data-game="${game.id}">
       <div class="game-choice__topline">
         <span class="game-choice__icon" aria-hidden="true">${game.icon}</span>
-        <span class="small-label">${game.lengthLabel}</span>
+        <span class="small-label">${gameText(game.id, "lengthLabel")}</span>
       </div>
-      <strong>${game.label}</strong>
-      <span>${game.description}</span>
+      <strong>${gameText(game.id, "label")}</strong>
+      <span>${gameText(game.id, "description")}</span>
       <div class="game-choice__meta">
-        <span>${game.energyLabel}</span>
-        <span>${game.stats.wins}/${game.stats.plays} wins</span>
+        <span>${gameText(game.id, "energyLabel")}</span>
+        <span>${game.stats.wins}/${game.stats.plays}</span>
       </div>
       <div class="game-choice__footer">
-        <span class="small-label">${game.rewardText}</span>
-        <span class="game-choice__bonus">${game.isFirstWinAvailable ? "First win bonus ready" : "Loot run ready"}</span>
+        <span class="small-label">${gameText(game.id, "rewardText")}</span>
+        <span class="game-choice__bonus">${game.isFirstWinAvailable ? t("play.bonusReady") : t("play.lootRunReady")}</span>
       </div>
     </button>
   `;
@@ -111,7 +122,7 @@ export function renderGameScreen(container, { route, cards, result, progress, ac
   const gameMeta = playSummary.gameProgress.find((game) => game.id === gameId) ?? getGameDefinition(gameId);
   const recommendedGame = playSummary.recommendedGame;
   const randomGame = playSummary.randomGame;
-  const favoriteLabel = playSummary.favoriteGame ? playSummary.favoriteGame.label : "Still picking a favorite";
+  const favoriteLabel = playSummary.favoriteGame ? gameText(playSummary.favoriteGame.id, "label") : t("play.stillPicking");
   const noActiveContent = progress.totalCards === 0;
 
   container.innerHTML = `
@@ -119,44 +130,44 @@ export function renderGameScreen(container, { route, cards, result, progress, ac
       <section class="section-panel section-panel--compact section-panel--play-hub">
         <div class="screen-header">
           <div>
-            <span class="small-label">Play lab</span>
-            <h2 class="section-title">Pick a fast loot run and chase the next reveal</h2>
+            <span class="small-label">${t("play.playLab")}</span>
+            <h2 class="section-title">${t("play.title")}</h2>
           </div>
-          <p class="screen-note">Short rounds, immediate restart, and better rewards when you branch out.</p>
+          <p class="screen-note">${t("play.note")}</p>
         </div>
 
         <div class="session-strip">
           <article class="session-chip session-chip--glow">
-            <span>Current streak</span>
+            <span>${t("home.currentStreak")}</span>
             <strong data-count-to="${progress.currentStreak}" data-count-key="game-current-streak">${progress.currentStreak}</strong>
-            <small>Best ${progress.bestStreak}</small>
+            <small>${t("common.bestValue", { value: progress.bestStreak })}</small>
           </article>
           <article class="session-chip">
-            <span>Games tried</span>
+            <span>${t("play.gamesTried")}</span>
             <strong>${playSummary.gamesTried}/${playSummary.gameProgress.length}</strong>
-            <small>${playSummary.totalPlays} total rounds</small>
+            <small>${t("play.totalRounds", { count: playSummary.totalPlays })}</small>
           </article>
           <article class="session-chip">
-            <span>Next milestone</span>
+            <span>${t("play.nextMilestone")}</span>
             <strong data-count-to="${playSummary.nextMilestoneTarget}" data-count-key="game-next-milestone">${playSummary.nextMilestoneTarget}</strong>
-            <small>${playSummary.winsUntilMilestone} win${playSummary.winsUntilMilestone === 1 ? "" : "s"} to go</small>
+            <small>${t("play.winsToGo", { count: playSummary.winsUntilMilestone })}</small>
           </article>
           <article class="session-chip">
-            <span>Favorite game</span>
+            <span>${t("play.favoriteGame")}</span>
             <strong>${favoriteLabel}</strong>
-            <small>${progress.rewardBoxesEarned} boxes earned so far</small>
+            <small>${t("play.boxesEarnedSoFar", { count: progress.rewardBoxesEarned })}</small>
           </article>
         </div>
 
         <div class="play-quick-row">
           <button class="primary-button" type="button" data-play-recommended="${gameId}" ${noActiveContent ? "disabled" : ""}>
-            ${recommendedGame ? `Recommended: ${recommendedGame.shortLabel}` : "Play recommended"}
+            ${recommendedGame ? t("play.playRecommended", { game: gameText(recommendedGame.id, "shortLabel") }) : t("home.playRecommended")}
           </button>
           <button class="secondary-button" type="button" data-play-random="${gameId}" ${noActiveContent ? "disabled" : ""}>
-            ${randomGame ? `Random: ${randomGame.shortLabel}` : "Random game"}
+            ${randomGame ? t("play.playRandom", { game: gameText(randomGame.id, "shortLabel") }) : t("home.randomGame")}
           </button>
           <button class="ghost-button" type="button" data-route="reward">
-            ${progress.rewardBoxes > 0 ? `Open ${progress.rewardBoxes} box${progress.rewardBoxes === 1 ? "" : "es"}` : "Reward room"}
+            ${progress.rewardBoxes > 0 ? t("play.openBoxes", { count: progress.rewardBoxes }) : t("play.rewardRoom")}
           </button>
         </div>
 
@@ -168,14 +179,14 @@ export function renderGameScreen(container, { route, cards, result, progress, ac
       <section class="arena-panel arena-panel--game">
         <div class="arena-summary">
           <div>
-            <span class="small-label">${gameMeta.icon} ${gameMeta.energyLabel}</span>
-            <h3 class="section-title">${gameMeta.label}</h3>
-            <p class="screen-note">${gameMeta.description}</p>
+            <span class="small-label">${gameMeta.icon} ${gameText(gameMeta.id, "energyLabel")}</span>
+            <h3 class="section-title">${gameText(gameMeta.id, "label")}</h3>
+            <p class="screen-note">${gameText(gameMeta.id, "description")}</p>
           </div>
           <div class="arena-summary__stats">
-            <span class="arena-stat">${gameMeta.stats.wins}/${gameMeta.stats.plays} wins</span>
-            <span class="arena-stat">${gameMeta.lengthLabel}</span>
-            <span class="arena-stat">${gameMeta.isFirstWinAvailable ? `First win: +${playSummary.firstWinBonusBoxes} box` : "Bonus claimed"}</span>
+            <span class="arena-stat">${gameMeta.stats.wins}/${gameMeta.stats.plays}</span>
+            <span class="arena-stat">${gameText(gameMeta.id, "lengthLabel")}</span>
+            <span class="arena-stat">${gameMeta.isFirstWinAvailable ? t("play.firstWinBonus", { count: playSummary.firstWinBonusBoxes }) : t("play.bonusClaimed")}</span>
           </div>
         </div>
         <div id="game-host"></div>
@@ -189,13 +200,13 @@ export function renderGameScreen(container, { route, cards, result, progress, ac
                   <span></span>
                   <span></span>
                 </div>
-                <span class="small-label">${result.status === "won" ? "Victory" : "Round over"}</span>
-                <h3 class="section-title">${result.status === "won" ? "Reward box secured" : "Jump right back in"}</h3>
+                <span class="small-label">${result.status === "won" ? t("play.victory") : t("play.roundOver")}</span>
+                <h3 class="section-title">${result.status === "won" ? t("play.rewardSecured") : t("play.jumpBackIn")}</h3>
                 <p class="section-copy">
                   ${
                     result.status === "won"
-                      ? "That round paid off. Cash in the reward now, replay this game, or jump to a fresh challenge."
-                      : "This run missed the goal, but the next round is one tap away."
+                      ? t("play.winCopy")
+                      : t("play.loseCopy")
                   }
                 </p>
                 ${renderOutcomeSummary(result)}
@@ -203,11 +214,11 @@ export function renderGameScreen(container, { route, cards, result, progress, ac
                 <div class="cta-stack">
                   ${
                     result.status === "won"
-                      ? `<button class="primary-button" type="button" data-route="reward">Open reward box</button>`
-                      : `<button class="primary-button" type="button" data-reset-game="true">Replay game</button>`
+                      ? `<button class="primary-button" type="button" data-route="reward">${t("play.openRewardBox")}</button>`
+                      : `<button class="primary-button" type="button" data-reset-game="true">${t("play.replayGame")}</button>`
                   }
-                  <button class="secondary-button" type="button" data-reset-game="true">Play this game again</button>
-                  <button class="ghost-button" type="button" data-play-random="${gameId}">Try a random game</button>
+                  <button class="secondary-button" type="button" data-reset-game="true">${t("play.playThisGameAgain")}</button>
+                  <button class="ghost-button" type="button" data-play-random="${gameId}">${t("play.tryRandomGame")}</button>
                 </div>
               </div>
             `
@@ -249,8 +260,8 @@ export function renderGameScreen(container, { route, cards, result, progress, ac
 
   if (!hasPlayableCardPool) {
     gameHost.innerHTML = renderEmptyState(
-      "No active word cards are available",
-      "A parent has turned off the current vocabulary pool. Parent Mode can re-enable categories or cards so this game can hand out word rewards again.",
+      t("emptyState.noPlayablePoolTitle"),
+      t("emptyState.noPlayablePoolBody"),
     );
   } else if (!(result && result.gameId === gameId)) {
     mountedGame = gameMeta.mount(gameHost, {

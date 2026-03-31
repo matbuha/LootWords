@@ -1,19 +1,20 @@
 import { CATEGORY_META, RARITY_META } from "../../data/config.js";
+import { categoryLabel, rarityLabel, t } from "../../core/i18n.js";
 import { escapeHtml, formatPoints, renderDetailCard } from "../ui-kit.js";
 
-function renderAvailability(card, profile, parentSummary) {
+function getAvailabilityState(card, parentSummary) {
   const categoryActive = parentSummary.parentSettings.categoryStates[card.category];
   const cardDisabled = parentSummary.parentSettings.disabledCardIds.includes(card.id);
 
   if (!categoryActive) {
-    return "Category off";
+    return { id: "category-off", label: t("parent.states.categoryOff") };
   }
 
   if (cardDisabled) {
-    return "Card off";
+    return { id: "card-off", label: t("parent.states.cardOff") };
   }
 
-  return "Active";
+  return { id: "active", label: t("parent.states.active") };
 }
 
 export function renderContentManager(container, { allCards, filteredCards, selectedCard, filters, parentSummary, actions }) {
@@ -21,75 +22,75 @@ export function renderContentManager(container, { allCards, filteredCards, selec
     <section class="parent-section">
       <div class="screen-header">
         <div>
-          <span class="small-label">Content manager</span>
-          <h2 class="section-title">Inspect the full card library</h2>
+          <span class="small-label">${t("parent.content.eyebrow")}</span>
+          <h2 class="section-title">${t("parent.content.title")}</h2>
         </div>
-        <p class="screen-note">Search, filter, and turn individual cards on or off without touching the core dataset files.</p>
+        <p class="screen-note">${t("parent.content.note")}</p>
       </div>
 
       <div class="parent-stat-grid">
         <article class="parent-stat-card">
-          <span>All cards</span>
+          <span>${t("parent.content.allCards")}</span>
           <strong>${allCards.length}</strong>
-          <small>${parentSummary.activeCardCount} active in child mode</small>
+          <small>${t("parent.content.activeInChildMode", { count: parentSummary.activeCardCount })}</small>
         </article>
         <article class="parent-stat-card">
-          <span>Disabled cards</span>
+          <span>${t("parent.content.disabledCards")}</span>
           <strong>${parentSummary.disabledCardCount}</strong>
-          <small>Manual per-card switches</small>
+          <small>${t("parent.content.manualSwitches")}</small>
         </article>
         <article class="parent-stat-card">
-          <span>Shelved unlocks</span>
+          <span>${t("parent.content.shelvedUnlocks")}</span>
           <strong>${parentSummary.shelvedUnlockedCount}</strong>
-          <small>Unlocked but hidden by settings</small>
+          <small>${t("parent.content.hiddenBySettings")}</small>
         </article>
       </div>
 
       <div class="parent-toolbar">
         <label class="parent-field parent-field--grow">
-          <span>Search</span>
-          <input class="parent-input" type="search" value="${escapeHtml(filters.search)}" data-parent-filter="search" placeholder="word, id, or tag" />
+          <span>${t("parent.content.search")}</span>
+          <input class="parent-input" type="search" value="${escapeHtml(filters.search)}" data-parent-filter="search" placeholder="${t("parent.content.searchPlaceholder")}" />
         </label>
         <label class="parent-field">
-          <span>Category</span>
+          <span>${t("common.category")}</span>
           <select class="parent-select" data-parent-filter="category">
-            <option value="all">All categories</option>
+            <option value="all">${t("common.allCategories")}</option>
             ${Object.entries(CATEGORY_META)
               .map(
                 ([categoryId, meta]) =>
-                  `<option value="${categoryId}" ${filters.category === categoryId ? "selected" : ""}>${meta.label}</option>`,
+                  `<option value="${categoryId}" ${filters.category === categoryId ? "selected" : ""}>${categoryLabel(categoryId)}</option>`,
               )
               .join("")}
           </select>
         </label>
         <label class="parent-field">
-          <span>Rarity</span>
+          <span>${t("common.rarity")}</span>
           <select class="parent-select" data-parent-filter="rarity">
-            <option value="all">All rarities</option>
+            <option value="all">${t("common.allRarities")}</option>
             ${Object.entries(RARITY_META)
               .map(
                 ([rarityId, meta]) =>
-                  `<option value="${rarityId}" ${filters.rarity === rarityId ? "selected" : ""}>${meta.label}</option>`,
+                  `<option value="${rarityId}" ${filters.rarity === rarityId ? "selected" : ""}>${rarityLabel(rarityId)}</option>`,
               )
               .join("")}
           </select>
         </label>
         <label class="parent-field">
-          <span>Unlock state</span>
+          <span>${t("parent.content.unlockState")}</span>
           <select class="parent-select" data-parent-filter="unlocked">
-            <option value="all" ${filters.unlocked === "all" ? "selected" : ""}>All</option>
-            <option value="unlocked" ${filters.unlocked === "unlocked" ? "selected" : ""}>Unlocked</option>
-            <option value="locked" ${filters.unlocked === "locked" ? "selected" : ""}>Locked</option>
+            <option value="all" ${filters.unlocked === "all" ? "selected" : ""}>${t("parent.content.allStates")}</option>
+            <option value="unlocked" ${filters.unlocked === "unlocked" ? "selected" : ""}>${t("parent.states.unlocked")}</option>
+            <option value="locked" ${filters.unlocked === "locked" ? "selected" : ""}>${t("parent.states.locked")}</option>
           </select>
         </label>
         <label class="parent-field">
-          <span>Availability</span>
+          <span>${t("parent.content.availability")}</span>
           <select class="parent-select" data-parent-filter="availability">
-            <option value="all" ${filters.availability === "all" ? "selected" : ""}>All</option>
-            <option value="active" ${filters.availability === "active" ? "selected" : ""}>Active</option>
-            <option value="shelved" ${filters.availability === "shelved" ? "selected" : ""}>Shelved</option>
-            <option value="manual-off" ${filters.availability === "manual-off" ? "selected" : ""}>Card off</option>
-            <option value="category-off" ${filters.availability === "category-off" ? "selected" : ""}>Category off</option>
+            <option value="all" ${filters.availability === "all" ? "selected" : ""}>${t("parent.content.allAvailability")}</option>
+            <option value="active" ${filters.availability === "active" ? "selected" : ""}>${t("parent.states.active")}</option>
+            <option value="shelved" ${filters.availability === "shelved" ? "selected" : ""}>${t("parent.content.shelved")}</option>
+            <option value="manual-off" ${filters.availability === "manual-off" ? "selected" : ""}>${t("parent.content.manualOff")}</option>
+            <option value="category-off" ${filters.availability === "category-off" ? "selected" : ""}>${t("parent.content.categoryOff")}</option>
           </select>
         </label>
       </div>
@@ -99,12 +100,12 @@ export function renderContentManager(container, { allCards, filteredCards, selec
           <table class="parent-table">
             <thead>
               <tr>
-                <th>Word</th>
-                <th>Category</th>
-                <th>Rarity</th>
-                <th>Points</th>
-                <th>State</th>
-                <th>Child mode</th>
+                <th>${t("parent.content.word")}</th>
+                <th>${t("common.category")}</th>
+                <th>${t("common.rarity")}</th>
+                <th>${t("parent.content.points")}</th>
+                <th>${t("parent.content.state")}</th>
+                <th>${t("parent.content.childMode")}</th>
               </tr>
             </thead>
             <tbody>
@@ -119,17 +120,17 @@ export function renderContentManager(container, { allCards, filteredCards, selec
                                 <span class="parent-word">${card.icon} ${escapeHtml(card.word)}</span>
                               </button>
                             </td>
-                            <td>${escapeHtml(CATEGORY_META[card.category]?.label ?? card.category)}</td>
-                            <td>${escapeHtml(RARITY_META[card.rarity]?.label ?? card.rarity)}</td>
+                            <td>${escapeHtml(categoryLabel(card.category))}</td>
+                            <td>${escapeHtml(rarityLabel(card.rarity))}</td>
                             <td>${formatPoints(card.points)}</td>
-                            <td>${card.unlocked ? "Unlocked" : "Locked"}</td>
+                            <td>${card.unlocked ? t("parent.states.unlocked") : t("parent.states.locked")}</td>
                             <td>
                               <button
-                                class="parent-toggle ${renderAvailability(card, null, parentSummary) === "Active" ? "is-on" : "is-off"}"
+                                class="parent-toggle ${getAvailabilityState(card, parentSummary).id === "active" ? "is-on" : "is-off"}"
                                 type="button"
                                 data-parent-toggle-card="${card.id}"
                               >
-                                ${renderAvailability(card, null, parentSummary)}
+                                ${getAvailabilityState(card, parentSummary).label}
                               </button>
                             </td>
                           </tr>
@@ -139,7 +140,7 @@ export function renderContentManager(container, { allCards, filteredCards, selec
                   : `
                     <tr>
                       <td colspan="6">
-                        <div class="parent-empty-inline">No cards match these parent filters.</div>
+                    <div class="parent-empty-inline">${t("emptyState.noCardsMatchParent")}</div>
                       </td>
                     </tr>
                   `
@@ -151,8 +152,8 @@ export function renderContentManager(container, { allCards, filteredCards, selec
         <aside class="parent-side-panel">
           <div class="screen-header">
             <div>
-              <span class="small-label">Card preview</span>
-              <h3 class="section-title">${selectedCard ? escapeHtml(selectedCard.word) : "Select a card"}</h3>
+              <span class="small-label">${t("parent.content.cardPreview")}</span>
+              <h3 class="section-title">${selectedCard ? escapeHtml(selectedCard.word) : t("parent.content.selectCard")}</h3>
             </div>
           </div>
           ${
@@ -160,16 +161,16 @@ export function renderContentManager(container, { allCards, filteredCards, selec
               ? `
                 ${renderDetailCard(selectedCard, { locked: false })}
                 <div class="parent-copy-block">
-                  <p><strong>Category:</strong> ${escapeHtml(CATEGORY_META[selectedCard.category]?.label ?? selectedCard.category)}</p>
-                  <p><strong>Rarity:</strong> ${escapeHtml(RARITY_META[selectedCard.rarity]?.label ?? selectedCard.rarity)}</p>
-                  <p><strong>Points:</strong> ${formatPoints(selectedCard.points)}</p>
-                  <p><strong>Child mode:</strong> ${renderAvailability(selectedCard, null, parentSummary)}</p>
-                  <p><strong>Unlocked:</strong> ${selectedCard.unlocked ? "Yes" : "No"}</p>
-                  <p><strong>Image mode:</strong> ${escapeHtml(selectedCard.imageMode)}</p>
-                  <p><strong>Image path:</strong> ${escapeHtml(selectedCard.image)}</p>
+                  <p><strong>${t("common.category")}:</strong> ${escapeHtml(categoryLabel(selectedCard.category))}</p>
+                  <p><strong>${t("common.rarity")}:</strong> ${escapeHtml(rarityLabel(selectedCard.rarity))}</p>
+                  <p><strong>${t("parent.content.points")}:</strong> ${formatPoints(selectedCard.points)}</p>
+                  <p><strong>${t("parent.content.childModeLabel")}:</strong> ${getAvailabilityState(selectedCard, parentSummary).label}</p>
+                  <p><strong>${t("parent.states.unlocked")}:</strong> ${selectedCard.unlocked ? t("parent.content.yes") : t("parent.content.no")}</p>
+                  <p><strong>${t("parent.content.imageMode")}:</strong> ${escapeHtml(selectedCard.imageMode)}</p>
+                  <p><strong>${t("parent.content.imagePath")}:</strong> ${escapeHtml(selectedCard.image)}</p>
                 </div>
               `
-              : `<div class="parent-empty-inline">Choose a row to preview its collectible card details.</div>`
+              : `<div class="parent-empty-inline">${t("emptyState.selectCardPreview")}</div>`
           }
         </aside>
       </div>

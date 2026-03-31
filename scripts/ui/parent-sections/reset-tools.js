@@ -1,23 +1,25 @@
+import { t } from "../../core/i18n.js";
+
 export function renderResetTools(container, { pendingReset, actions }) {
   container.innerHTML = `
     <section class="parent-section">
       <div class="screen-header">
         <div>
-          <span class="small-label">Reset tools</span>
-          <h2 class="section-title">Use destructive tools carefully</h2>
+          <span class="small-label">${t("parent.reset.eyebrow")}</span>
+          <h2 class="section-title">${t("parent.reset.title")}</h2>
         </div>
-        <p class="screen-note">Every reset action asks for a second confirmation before changing stored progress or settings.</p>
+        <p class="screen-note">${t("parent.reset.note")}</p>
       </div>
 
       ${
         pendingReset
           ? `
             <div class="parent-status is-warning">
-              <strong>${pendingReset.title}</strong>
-              <p>${pendingReset.detail}</p>
+              <strong>${t(pendingReset.titleKey)}</strong>
+              <p>${t(pendingReset.detailKey)}</p>
               <div class="cta-stack cta-stack--parent">
-                <button class="primary-button" type="button" data-parent-reset-confirm="${pendingReset.id}">Confirm reset</button>
-                <button class="ghost-button" type="button" data-parent-reset-cancel="true">Cancel</button>
+                <button class="primary-button" type="button" data-parent-reset-confirm="${pendingReset.id}">${t("parent.reset.confirm")}</button>
+                <button class="ghost-button" type="button" data-parent-reset-cancel="true">${t("parent.reset.cancel")}</button>
               </div>
             </div>
           `
@@ -27,31 +29,31 @@ export function renderResetTools(container, { pendingReset, actions }) {
       <div class="parent-list">
         <article class="parent-row-card">
           <div class="parent-row-card__copy">
-            <strong>Reset all child progress</strong>
-            <span>Clears collection, wins, rewards, streaks, and gameplay history.</span>
+            <strong>${t("parent.reset.resetAllTitle")}</strong>
+            <span>${t("parent.reset.resetAllBody")}</span>
           </div>
-          <button class="parent-danger-button" type="button" data-parent-reset="all-progress">Arm reset</button>
+          <button class="parent-danger-button" type="button" data-parent-reset="all-progress">${t("parent.reset.armReset")}</button>
         </article>
         <article class="parent-row-card">
           <div class="parent-row-card__copy">
-            <strong>Reset collection only</strong>
-            <span>Clears unlocked cards and discovery timestamps, but keeps wins and parent settings.</span>
+            <strong>${t("parent.reset.resetCollectionTitle")}</strong>
+            <span>${t("parent.reset.resetCollectionBody")}</span>
           </div>
-          <button class="parent-danger-button" type="button" data-parent-reset="collection">Arm reset</button>
+          <button class="parent-danger-button" type="button" data-parent-reset="collection">${t("parent.reset.armReset")}</button>
         </article>
         <article class="parent-row-card">
           <div class="parent-row-card__copy">
-            <strong>Reset rewards only</strong>
-            <span>Clears the current reward-box stash and bonus stars.</span>
+            <strong>${t("parent.reset.resetRewardsTitle")}</strong>
+            <span>${t("parent.reset.resetRewardsBody")}</span>
           </div>
-          <button class="parent-danger-button" type="button" data-parent-reset="rewards">Arm reset</button>
+          <button class="parent-danger-button" type="button" data-parent-reset="rewards">${t("parent.reset.armReset")}</button>
         </article>
         <article class="parent-row-card">
           <div class="parent-row-card__copy">
-            <strong>Reset settings only</strong>
-            <span>Resets audio, child filters, and Parent Mode settings to defaults without deleting progress.</span>
+            <strong>${t("parent.reset.resetSettingsTitle")}</strong>
+            <span>${t("parent.reset.resetSettingsBody")}</span>
           </div>
-          <button class="parent-danger-button" type="button" data-parent-reset="settings">Arm reset</button>
+          <button class="parent-danger-button" type="button" data-parent-reset="settings">${t("parent.reset.armReset")}</button>
         </article>
       </div>
     </section>

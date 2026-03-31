@@ -1,4 +1,5 @@
 import { formatPoints } from "../ui/ui-kit.js";
+import { t } from "../core/i18n.js";
 
 function shuffle(items) {
   const copy = [...items];
@@ -99,13 +100,13 @@ export function mountMemoryGame(container, { cards, onWin, onLose, playSound }) 
       <div class="arena-frame">
         <div class="arena-topline">
           <div>
-            <h3 class="arena-title">Memory Match</h3>
-            <p class="screen-note">Flip the shiny tiles and collect all 6 pairs before time runs out.</p>
+            <h3 class="arena-title">${t("play.memoryMatchTitle")}</h3>
+            <p class="screen-note">${t("play.memoryMatchBody")}</p>
           </div>
           <div class="arena-stats">
-            <span class="arena-stat">Time: ${Math.ceil(state.timerMs / 1000)}s</span>
-            <span class="arena-stat">Moves: ${state.moves}</span>
-            <span class="arena-stat">Pairs: ${state.matches}/6</span>
+            <span class="arena-stat">${t("play.statTime", { value: Math.ceil(state.timerMs / 1000) })}</span>
+            <span class="arena-stat">${t("play.statMoves", { count: state.moves })}</span>
+            <span class="arena-stat">${t("play.statPairs", { current: state.matches, total: 6 })}</span>
           </div>
         </div>
         <div class="game-surface">
@@ -114,13 +115,13 @@ export function mountMemoryGame(container, { cards, onWin, onLose, playSound }) 
               .map(
                 (tile) => `
                   <div class="memory-tile ${tile.revealed ? "is-revealed" : ""} ${tile.matched ? "is-matched" : ""}">
-                    <button class="tile-button" type="button" data-tile-id="${tile.tileId}" aria-label="Memory tile">
+                    <button class="tile-button" type="button" data-tile-id="${tile.tileId}" aria-label="${t("common.memoryTileAria")}">
                       <span class="tile-face tile-face--back"></span>
                       <span class="tile-face tile-face--front">
                         <span class="tile-card">
                           <span class="tile-card__icon" aria-hidden="true">${tile.card.icon}</span>
                           <span class="tile-card__word">${tile.card.word}</span>
-                          <small>${formatPoints(tile.card.points)} pts</small>
+                          <small>${t("common.pointsValue", { value: formatPoints(tile.card.points) })}</small>
                         </span>
                       </span>
                     </button>

@@ -1,3 +1,5 @@
+import { t } from "../core/i18n.js";
+
 function randomPadIndex(previousIndex) {
   let nextIndex = Math.floor(Math.random() * 9);
   if (nextIndex === previousIndex) {
@@ -93,13 +95,13 @@ export function mountReactionGame(container, { onWin, onLose, playSound }) {
       <div class="arena-frame">
         <div class="arena-topline">
           <div>
-            <h3 class="arena-title">Loot Pop</h3>
-            <p class="screen-note">Tap the glowing loot sparks fast. Keep the combo alive and hit the goal before the timer ends.</p>
+            <h3 class="arena-title">${t("play.lootPopTitle")}</h3>
+            <p class="screen-note">${t("play.lootPopBody")}</p>
           </div>
           <div class="arena-stats">
-            <span class="arena-stat">Time: ${Math.ceil(state.timerMs / 1000)}s</span>
-            <span class="arena-stat">Hits: ${state.hits}/${state.goalHits}</span>
-            <span class="arena-stat">Combo: ${state.combo}</span>
+            <span class="arena-stat">${t("play.statTime", { value: Math.ceil(state.timerMs / 1000) })}</span>
+            <span class="arena-stat">${t("play.statHits", { current: state.hits, total: state.goalHits })}</span>
+            <span class="arena-stat">${t("play.statCombo", { count: state.combo })}</span>
           </div>
         </div>
         <div class="game-surface">
@@ -108,11 +110,11 @@ export function mountReactionGame(container, { onWin, onLose, playSound }) {
               <div class="target-card target-card--reaction">
                 <div class="target-card__icon" aria-hidden="true">💥</div>
                 <div class="target-card__copy">
-                  <span class="small-label">Loot combo</span>
+                  <span class="small-label">${t("play.lootCombo")}</span>
                   <strong>${state.bestCombo}</strong>
-                  <span>Best combo so far</span>
+                  <span>${t("play.bestCombo")}</span>
                 </div>
-                <div class="target-card__meta">${state.misses} miss${state.misses === 1 ? "" : "es"}</div>
+                <div class="target-card__meta">${t("play.statMisses", { count: state.misses })}</div>
               </div>
             </div>
 
@@ -124,7 +126,7 @@ export function mountReactionGame(container, { onWin, onLose, playSound }) {
                     class="reaction-pad ${isActive ? "is-active" : ""} ${state.pulseMs > 0 && isActive ? "is-pulsing" : ""}"
                     type="button"
                     data-pad-index="${index}"
-                    aria-label="Loot target pad"
+                    aria-label="${t("common.lootTargetPadAria")}"
                   >
                     <span class="reaction-pad__core" aria-hidden="true">${isActive ? "✨" : ""}</span>
                   </button>

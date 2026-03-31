@@ -1,4 +1,5 @@
 import { CATEGORY_META, COLLECTION_SORTS, DIFFICULTY_META, PACK_META, RARITY_META } from "../data/config.js";
+import { categoryLabel, collectionSortLabel, difficultyLabel, formatDate, packLabel, rarityLabel, t } from "../core/i18n.js";
 import { getCollectionSections } from "../core/progression.js";
 import { renderCard, renderDetailCard, renderEmptyState, escapeHtml, formatPoints } from "./ui-kit.js";
 
@@ -12,32 +13,32 @@ export function renderCollectionScreen(container, { cards, filters, progress, ac
     <section class="collection-panel">
       <div class="screen-header">
         <div>
-          <span class="small-label">Collection album</span>
-          <h2 class="section-title">Your word-card inventory</h2>
+          <span class="small-label">${t("collection.eyebrow")}</span>
+          <h2 class="section-title">${t("collection.title")}</h2>
         </div>
-        <p class="screen-note">Browse by category, chase themed packs, and keep recent finds easy to revisit.</p>
+        <p class="screen-note">${t("collection.note")}</p>
       </div>
 
       <div class="collection-dashboard">
         <article class="stat-card stat-card--glow">
-          <span>Unlocked cards</span>
+          <span>${t("collection.unlockedCards")}</span>
           <strong>${progress.totalUnlocked}/${progress.totalCards}</strong>
-          <small>${progress.completionPercent}% album complete</small>
+          <small>${t("collection.albumComplete", { percent: progress.completionPercent })}</small>
         </article>
         <article class="stat-card">
-          <span>Fresh finds</span>
+          <span>${t("collection.freshFinds")}</span>
           <strong data-count-to="${progress.recentCardIds.length}" data-count-key="collection-recent">${progress.recentCardIds.length}</strong>
-          <small>Newest cards marked with a ribbon</small>
+          <small>${t("collection.newestRibbon")}</small>
         </article>
         <article class="stat-card">
-          <span>Total points</span>
+          <span>${t("collection.totalPoints")}</span>
           <strong data-count-to="${progress.totalPoints}" data-count-key="collection-total-points" data-count-format="points">${formatPoints(progress.totalPoints)}</strong>
-          <small>Memory-value collection score</small>
+          <small>${t("collection.memoryValueScore")}</small>
         </article>
         <article class="stat-card">
-          <span>Top card</span>
+          <span>${t("collection.topCard")}</span>
           <strong>${progress.strongestCard ? escapeHtml(progress.strongestCard.word) : "--"}</strong>
-          <small>${progress.strongestCard ? `${formatPoints(progress.strongestCard.points)} pts` : "Win to reveal more cards"}</small>
+          <small>${progress.strongestCard ? t("common.pointsValue", { value: formatPoints(progress.strongestCard.points) }) : t("collection.winToRevealMore")}</small>
         </article>
       </div>
 
@@ -46,8 +47,8 @@ export function renderCollectionScreen(container, { cards, filters, progress, ac
           .map(
             (entry) => `
               <article class="pack-chip">
-                <strong>${PACK_META[entry.id].icon} ${PACK_META[entry.id].label}</strong>
-                <span>${entry.unlocked}/${entry.total} unlocked</span>
+                <strong>${PACK_META[entry.id].icon} ${packLabel(entry.id)}</strong>
+                <span>${t("collection.collected", { current: entry.unlocked, total: entry.total })}</span>
                 <div class="progress-bar">
                   <div class="progress-bar__fill" data-progress-fill="${(entry.percent / 100).toFixed(3)}" style="--progress-target:${(entry.percent / 100).toFixed(3)}"></div>
                 </div>
@@ -62,8 +63,8 @@ export function renderCollectionScreen(container, { cards, filters, progress, ac
           .map(
             (entry) => `
               <article class="rarity-chip" data-rarity="${entry.id}">
-                <strong>${RARITY_META[entry.id].label}</strong>
-                <span>${entry.unlocked}/${entry.total} collected</span>
+                <strong>${rarityLabel(entry.id)}</strong>
+                <span>${t("collection.collected", { current: entry.unlocked, total: entry.total })}</span>
               </article>
             `,
           )
@@ -72,9 +73,9 @@ export function renderCollectionScreen(container, { cards, filters, progress, ac
 
       <div class="collection-toolbar">
         <label>
-          <span class="small-label">Category</span>
+          <span class="small-label">${t("common.category")}</span>
           <select class="filter-select" data-filter-key="category">
-            <option value="all">All categories</option>
+            <option value="all">${t("common.allCategories")}</option>
             ${categoryOptions
               .map(
                 (entry) => `
@@ -85,25 +86,25 @@ export function renderCollectionScreen(container, { cards, filters, progress, ac
           </select>
         </label>
         <label>
-          <span class="small-label">Rarity</span>
+          <span class="small-label">${t("common.rarity")}</span>
           <select class="filter-select" data-filter-key="rarity">
-            <option value="all">All rarities</option>
+            <option value="all">${t("common.allRarities")}</option>
             ${Object.entries(RARITY_META)
               .map(
                 ([rarityId, meta]) => `
-                  <option value="${rarityId}" ${filters.rarity === rarityId ? "selected" : ""}>${meta.label}</option>
+                  <option value="${rarityId}" ${filters.rarity === rarityId ? "selected" : ""}>${rarityLabel(rarityId)}</option>
                 `,
               )
               .join("")}
           </select>
         </label>
         <label>
-          <span class="small-label">Sort</span>
+          <span class="small-label">${t("common.sort")}</span>
           <select class="filter-select" data-filter-key="sort">
             ${Object.entries(COLLECTION_SORTS)
               .map(
                 ([sortId, label]) => `
-                  <option value="${sortId}" ${filters.sort === sortId ? "selected" : ""}>${label}</option>
+                  <option value="${sortId}" ${filters.sort === sortId ? "selected" : ""}>${collectionSortLabel(sortId)}</option>
                 `,
               )
               .join("")}
@@ -124,12 +125,12 @@ export function renderCollectionScreen(container, { cards, filters, progress, ac
                     <section class="collection-section">
                       <div class="collection-section__header">
                         <div>
-                          <span class="small-label">${section.meta.icon} ${packMeta.label}</span>
-                          <h3 class="section-title">${section.meta.label}</h3>
+                          <span class="small-label">${section.meta.icon} ${packLabel(section.meta.packId)}</span>
+                          <h3 class="section-title">${categoryLabel(section.id)}</h3>
                         </div>
                         <div class="collection-section__meta">
-                          <span class="card-category">${sectionProgress.unlocked}/${sectionProgress.total} unlocked</span>
-                          <span class="card-scoreline">${section.cards.length} cards in view</span>
+                          <span class="card-category">${t("home.activeInView", { unlocked: sectionProgress.unlocked, total: sectionProgress.total })}</span>
+                          <span class="card-scoreline">${t("collection.categoryInView", { count: section.cards.length })}</span>
                         </div>
                       </div>
                       <div class="collection-grid">
@@ -153,10 +154,10 @@ export function renderCollectionScreen(container, { cards, filters, progress, ac
             </div>
           `
           : renderEmptyState(
-              progress.totalCards === 0 ? "No active collection cards" : "No cards match this filter",
+              progress.totalCards === 0 ? t("emptyState.noActiveCollectionTitle") : t("emptyState.noCardsMatchTitle"),
               progress.totalCards === 0
-                ? "A parent has turned off every active category or card. Ask them to re-enable content in Parent Mode."
-                : "Try another category or rarity to see more of the collection.",
+                ? t("emptyState.noActiveCollectionBody")
+                : t("emptyState.noCardsMatchBody"),
             )
       }
     </section>
@@ -165,13 +166,13 @@ export function renderCollectionScreen(container, { cards, filters, progress, ac
       modalCard
         ? `
           <div class="detail-modal" data-close-modal="overlay">
-            <div class="detail-modal__dialog" role="dialog" aria-modal="true" aria-label="Card details">
+            <div class="detail-modal__dialog" role="dialog" aria-modal="true" aria-label="${t("collection.cardDetail")}">
               <div class="detail-modal__top">
                 <div>
-                  <span class="small-label">Card detail</span>
-                  <h3 class="section-title">${escapeHtml(modalCard.unlocked ? modalCard.word : "Mystery Card")}</h3>
+                  <span class="small-label">${t("collection.cardDetail")}</span>
+                  <h3 class="section-title">${escapeHtml(modalCard.unlocked ? modalCard.word : t("common.mysteryCard"))}</h3>
                 </div>
-                <button class="secondary-button" type="button" data-close-modal="button">Close</button>
+                <button class="secondary-button" type="button" data-close-modal="button">${t("common.close")}</button>
               </div>
               <div class="detail-grid">
                 ${renderDetailCard(modalCard, { isNew: recentCardIds.has(modalCard.id) })}
@@ -179,15 +180,15 @@ export function renderCollectionScreen(container, { cards, filters, progress, ac
                   <p class="section-copy">
                     ${
                       modalCard.unlocked
-                        ? `This card belongs to the ${CATEGORY_META[modalCard.category]?.label ?? modalCard.category} collection in the ${PACK_META[modalCard.packId]?.label ?? "starter"} pack.`
-                        : "This silhouette is waiting in the reward pool until you crack it open from a loot box."
+                        ? t("collection.thisCardBelongs", { category: categoryLabel(modalCard.category), pack: packLabel(modalCard.packId ?? "starter") })
+                        : t("collection.silhouetteWaiting")
                     }
                   </p>
                   <ul>
-                    <li>${modalCard.unlocked ? `Rarity: ${RARITY_META[modalCard.rarity]?.label}` : "Rarity stays hidden until unlocked."}</li>
-                    <li>${modalCard.unlocked ? `Points: ${formatPoints(modalCard.points)}` : "Points were generated on first run and will be revealed on unlock."}</li>
-                    <li>${modalCard.unlocked ? `Difficulty: ${DIFFICULTY_META[modalCard.difficultyLevel]?.label}` : "Difficulty stays hidden until unlocked."}</li>
-                    <li>${modalCard.unlocked && modalCard.discoveredAt ? `Discovered: ${new Date(modalCard.discoveredAt).toLocaleString("en-US")}` : "Play mini-games to earn more reward boxes."}</li>
+                    <li>${modalCard.unlocked ? `${t("common.rarity")}: ${rarityLabel(modalCard.rarity)}` : t("collection.rarityHidden")}</li>
+                    <li>${modalCard.unlocked ? `${t("common.points")}: ${formatPoints(modalCard.points)}` : t("collection.pointsHidden")}</li>
+                    <li>${modalCard.unlocked ? `${t("common.difficulty")}: ${difficultyLabel(modalCard.difficultyLevel)}` : t("collection.difficultyHidden")}</li>
+                    <li>${modalCard.unlocked && modalCard.discoveredAt ? `${t("common.discovered")}: ${formatDate(modalCard.discoveredAt)}` : t("collection.playToEarnMore")}</li>
                   </ul>
                   ${
                     modalCard.unlocked
@@ -199,8 +200,8 @@ export function renderCollectionScreen(container, { cards, filters, progress, ac
                       : ""
                   }
                   <div class="cta-stack">
-                    <button class="primary-button" type="button" data-route="play" data-game="memory-match">Play for more loot</button>
-                    <button class="ghost-button" type="button" data-route="reward">Open reward room</button>
+                    <button class="primary-button" type="button" data-route="play" data-game="memory-match">${t("common.playForMoreLoot")}</button>
+                    <button class="ghost-button" type="button" data-route="reward">${t("common.openRewardRoom")}</button>
                   </div>
                 </div>
               </div>

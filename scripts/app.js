@@ -19,6 +19,8 @@ import {
 import { createEventBus } from "./core/event-bus.js";
 import { createFeedbackManager } from "./core/feedback-manager.js";
 import { importProfileFromJson, exportProfileToJson } from "./core/import-export-manager.js";
+import { t } from "./core/i18n.js";
+import { createLanguageManager } from "./core/language-manager.js";
 import { getReviewDeck, summarizeProgress } from "./core/progression.js";
 import { getRecommendedGameId } from "./core/game-session-manager.js";
 import {
@@ -39,7 +41,7 @@ import {
 import { openRewardBox, recordGameLoss, recordGameWin } from "./core/rewards.js";
 import { createStore } from "./core/state.js";
 import { createUiEffects } from "./core/ui-effects.js";
-import { updateAudioSettings } from "./core/settings-manager.js";
+import { updateAudioSettings, updateLanguageSettings } from "./core/settings-manager.js";
 import { getRandomGameId } from "./games/game-registry.js";
 import { createRouter, buildRoute } from "./router.js";
 import { loadProfile, saveProfile } from "./storage.js";
@@ -47,6 +49,7 @@ import { renderCollectionScreen } from "./ui/collection-screen.js";
 import { renderGameScreen } from "./ui/game-screen.js";
 import { renderHomeScreen } from "./ui/home-screen.js";
 import { renderLearnScreen } from "./ui/learn-screen.js";
+import { renderLanguageSelector, wireLanguageSelector } from "./ui/language-selector.js";
 import { renderParentScreen } from "./ui/parent-screen.js";
 import { renderRewardScreen } from "./ui/reward-screen.js";
 
@@ -105,6 +108,7 @@ const store = createStore({
 const audio = createAudioManager({
   settings: store.getState().profile.settings.audio,
 });
+const languageManager = createLanguageManager(store.getState().profile.settings.language);
 const eventBus = createEventBus();
 const feedback = createFeedbackManager({ audio, eventBus });
 const uiEffects = createUiEffects();
@@ -112,6 +116,7 @@ const uiEffects = createUiEffects();
 let activeScreen = null;
 let router = null;
 let rewardRevealTimeout = 0;
+let cleanupLanguageSelector = () => {};
 
 function clearRewardRevealTimeout() {
   if (rewardRevealTimeout) {
@@ -200,30 +205,40 @@ function patchAudioSettings(partialAudio) {
   });
 }
 
+function patchLanguage(language) {
+  return (currentState) => ({
+    ...currentState,
+    profile: {
+      ...currentState.profile,
+      settings: updateLanguageSettings(currentState.profile.settings, language),
+    },
+  });
+}
+
 function getResetDefinition(resetId) {
   const definitions = {
     "all-progress": {
       id: "all-progress",
-      title: "Reset all child progress?",
-      detail: "This clears collection progress, wins, reward counters, streaks, and gameplay history. Parent settings stay intact.",
+      titleKey: "parent.reset.resetAllConfirm",
+      detailKey: "parent.reset.resetAllDetail",
       apply: resetAllChildProgress,
     },
     collection: {
       id: "collection",
-      title: "Reset collection only?",
-      detail: "This clears unlocked cards and discovery timestamps, but keeps wins, rewards, and parent settings.",
+      titleKey: "parent.reset.resetCollectionConfirm",
+      detailKey: "parent.reset.resetCollectionDetail",
       apply: resetCollectionProgress,
     },
     rewards: {
       id: "rewards",
-      title: "Reset reward stash?",
-      detail: "This clears the current reward boxes and bonus stars without touching collection progress.",
+      titleKey: "parent.reset.resetRewardsConfirm",
+      detailKey: "parent.reset.resetRewardsDetail",
       apply: resetRewardState,
     },
     settings: {
       id: "settings",
-      title: "Reset settings to defaults?",
-      detail: "This resets audio, child filters, and Parent Mode configuration. Child progress stays saved.",
+      titleKey: "parent.reset.resetSettingsConfirm",
+      detailKey: "parent.reset.resetSettingsDetail",
       apply: resetSettingsState,
     },
   };
@@ -297,7 +312,7 @@ const actions = {
           ...currentState.session,
           parent: {
             ...currentState.session.parent,
-            gateError: "The parent phrase did not match. Try again.",
+            gateError: "parent.gate.failedBody",
           },
         },
       }));
@@ -476,8 +491,8 @@ const actions = {
             ...currentState.session.parent.transfer,
             status: {
               kind: "success",
-              title: "Reset complete",
-              detail: definition.title.replace("?", ""),
+              titleKey: "parent.reset.resetDoneTitle",
+              detailKey: definition.titleKey,
               lines: [],
             },
           },
@@ -525,8 +540,8 @@ const actions = {
             text: jsonText,
             status: {
               kind: "success",
-              title: "Export ready",
-              detail: "The current browser profile has been serialized to JSON.",
+              titleKey: "parent.transfer.exportReadyTitle",
+              detailKey: "parent.transfer.exportReadyBody",
               lines: [],
             },
           },
@@ -550,8 +565,8 @@ const actions = {
               ...currentState.session.parent.transfer,
               status: {
                 kind: "error",
-                title: "Import blocked",
-                detail: "The JSON payload failed validation and was not applied.",
+                titleKey: "parent.transfer.importBlockedTitle",
+                detailKey: "parent.transfer.importBlockedBody",
                 lines: result.errors,
               },
             },
@@ -577,8 +592,10 @@ const actions = {
             ...currentState.session.parent.transfer,
             status: {
               kind: result.warnings.length ? "warning" : "success",
-              title: result.warnings.length ? "Import applied with warnings" : "Import applied",
-              detail: "The validated profile data is now live in this browser.",
+              titleKey: result.warnings.length
+                ? "parent.transfer.importWarningTitle"
+                : "parent.transfer.importSuccessTitle",
+              detailKey: "parent.transfer.importAppliedBody",
               lines: result.warnings,
             },
           },
@@ -634,6 +651,9 @@ const actions = {
         audioOptions: { throttleMs: 0 },
       });
     }
+  },
+  setLanguage(language) {
+    commitState(patchLanguage(language));
   },
   updateCollectionFilters(partialFilters) {
     feedback.trigger(FEEDBACK_EVENTS.filterChange);
@@ -731,8 +751,8 @@ const actions = {
             ...currentState.session.reward,
             reveal: {
               type: "blocked",
-              title: "No active cards available",
-              detail: "A parent needs to enable a category or card before rewards can reveal vocabulary again.",
+              titleKey: "emptyState.noActiveCardsTitle",
+              detailKey: "reward.contentPausedHint",
             },
             phase: "revealed",
           },
@@ -919,14 +939,15 @@ function renderShell({ progress, parentSummary, currentRoute, audioSettings, nav
           <div class="brand-lockup brand-lockup--parent">
             <span class="brand-mark" aria-hidden="true"></span>
             <span class="brand-copy">
-              <strong>${APP_NAME} Parent Mode</strong>
-              <span>Manage content, rewards, progress, and backups.</span>
+              <strong>${APP_NAME} ${t("shell.parentMode")}</strong>
+              <span>${t("shell.parentModeSubtitle")}</span>
             </span>
           </div>
           <div class="topbar-status topbar-status--parent">
-            <span class="status-pill"><strong>${parentSummary.unlockedAllCount}</strong><span>unlocked</span></span>
-            <span class="status-pill"><strong>${progress.rewardBoxes}</strong><span>stash</span></span>
-            <button class="ghost-button" type="button" data-parent-exit-shell="true">Exit Parent Mode</button>
+            <span class="status-pill"><strong>${parentSummary.unlockedAllCount}</strong><span>${t("shell.unlocked")}</span></span>
+            <span class="status-pill"><strong>${progress.rewardBoxes}</strong><span>${t("shell.stash")}</span></span>
+            ${renderLanguageSelector(languageManager.getLanguage())}
+            <button class="ghost-button" type="button" data-parent-exit-shell="true">${t("shell.exitParentMode")}</button>
           </div>
         </header>
         <main class="shell-main shell-main--${navMotion}" data-route="${currentRoute.path}">
@@ -944,36 +965,37 @@ function renderShell({ progress, parentSummary, currentRoute, audioSettings, nav
           <span class="brand-mark" aria-hidden="true"></span>
           <span class="brand-copy">
             <strong>${APP_NAME}</strong>
-            <span>Loot boxes turn into English word cards.</span>
+            <span>${t("shell.tagline")}</span>
           </span>
         </a>
         <div class="topbar-status">
-          <span class="status-pill"><strong>${progress.rewardBoxes}</strong><span>boxes</span></span>
-          <span class="status-pill"><strong>${progress.totalUnlocked}</strong><span>cards</span></span>
+          <span class="status-pill"><strong>${progress.rewardBoxes}</strong><span>${t("shell.boxes")}</span></span>
+          <span class="status-pill"><strong>${progress.totalUnlocked}</strong><span>${t("shell.cards")}</span></span>
           <a
             class="ghost-button parent-entry-button"
             href="${buildRoute(ROUTES.parent, { section: DEFAULT_PARENT_SECTION })}"
             data-ui-click="true"
           >
-            Parent
+            ${t("shell.parentMode")}
           </a>
+          ${renderLanguageSelector(languageManager.getLanguage())}
           <div class="audio-controls" aria-label="Audio controls">
             <button class="mute-toggle ${audioSettings.muted ? "is-muted" : ""}" type="button" data-toggle-mute="true">
-              ${audioSettings.muted ? "Sound Off" : "Sound On"}
+              ${audioSettings.muted ? t("shell.soundOff") : t("shell.soundOn")}
             </button>
             <button
               class="mute-toggle mute-toggle--sub ${audioSettings.musicEnabled ? "is-on" : "is-off"}"
               type="button"
               data-toggle-audio="music"
             >
-              Music ${audioSettings.musicEnabled ? "On" : "Off"}
+              ${audioSettings.musicEnabled ? t("shell.musicOn") : t("shell.musicOff")}
             </button>
             <button
               class="mute-toggle mute-toggle--sub ${audioSettings.sfxEnabled ? "is-on" : "is-off"}"
               type="button"
               data-toggle-audio="sfx"
             >
-              SFX ${audioSettings.sfxEnabled ? "On" : "Off"}
+              ${audioSettings.sfxEnabled ? t("shell.sfxOn") : t("shell.sfxOff")}
             </button>
           </div>
         </div>
@@ -986,11 +1008,11 @@ function renderShell({ progress, parentSummary, currentRoute, audioSettings, nav
 
     <nav class="shell-nav" aria-label="Primary navigation">
       ${[
-        { route: ROUTES.home, label: "Home", tag: "Hub" },
-        { route: ROUTES.play, label: "Play", tag: "Games", params: { game: currentRoute.game } },
-        { route: ROUTES.reward, label: "Reward", tag: "Boxes" },
-        { route: ROUTES.collection, label: "Collection", tag: "Cards" },
-        { route: ROUTES.learn, label: "Learn", tag: "Review" },
+        { route: ROUTES.home, label: t("shell.nav.home.label"), tag: t("shell.nav.home.tag") },
+        { route: ROUTES.play, label: t("shell.nav.play.label"), tag: t("shell.nav.play.tag"), params: { game: currentRoute.game } },
+        { route: ROUTES.reward, label: t("shell.nav.reward.label"), tag: t("shell.nav.reward.tag") },
+        { route: ROUTES.collection, label: t("shell.nav.collection.label"), tag: t("shell.nav.collection.tag") },
+        { route: ROUTES.learn, label: t("shell.nav.learn.label"), tag: t("shell.nav.learn.tag") },
       ]
         .map(
           (item) => `
@@ -1009,6 +1031,8 @@ function renderApp() {
   const currentRoute = store.getState().route.path;
   safeDestroyScreen(activeScreen, { routePath: currentRoute });
   activeScreen = null;
+  cleanupLanguageSelector();
+  cleanupLanguageSelector = () => {};
   clearLastAppError();
 
   let derived;
@@ -1040,6 +1064,7 @@ function renderApp() {
     reviewDeck.find((card) => card.id === state.session.learnSelectedCardId) ?? reviewDeck[0] ?? null;
 
   try {
+    languageManager.setLanguage(state.profile.settings.language);
     document.body.dataset.route = state.route.path;
 
     root.innerHTML = renderShell({
@@ -1058,6 +1083,18 @@ function renderApp() {
 
     root.querySelector("[data-parent-exit-shell]")?.addEventListener("click", () => {
       actions.exitParentMode();
+    });
+
+    cleanupLanguageSelector = wireLanguageSelector(root, {
+      currentLanguage: state.profile.settings.language,
+      onSelect(language) {
+        actions.setLanguage(language);
+      },
+      onOpen() {
+        feedback.trigger(FEEDBACK_EVENTS.buttonClick, {
+          audioOptions: { throttleMs: 0 },
+        });
+      },
     });
 
     root.querySelectorAll("[data-toggle-audio]").forEach((button) => {
@@ -1084,12 +1121,13 @@ function renderApp() {
     const screenRoot = root.querySelector("#screen-root");
     const renderer = SCREEN_RENDERERS[state.route.path] ?? SCREEN_RENDERERS[ROUTES.home];
 
-    activeScreen = renderScreenSafely({
+      activeScreen = renderScreenSafely({
       container: screenRoot,
       renderer,
       routePath: state.route.path,
-      context: {
-        route: state.route,
+        context: {
+          language: state.profile.settings.language,
+          route: state.route,
         allCards,
         cards,
         parentSummary,
@@ -1172,9 +1210,13 @@ document.addEventListener("keydown", primeAudioFromInteraction, {
   capture: true,
 });
 
+languageManager.apply();
+
 window.render_game_to_text = () => {
   const { state, allCards, cards, parentSummary, progress } = deriveState();
   return JSON.stringify({
+    language: state.profile.settings.language,
+    direction: languageManager.getDirection(),
     route: state.route.path,
     routeGame: state.route.game,
     routeSection: state.route.section,
@@ -1228,6 +1270,7 @@ window.advanceTime = (milliseconds) => {
 
 window.addEventListener("beforeunload", () => {
   clearRewardRevealTimeout();
+  cleanupLanguageSelector();
   uiEffects.destroy();
   feedback.destroy();
   eventBus.clear();
