@@ -84,7 +84,7 @@ export const DEFAULT_LEARN_FILTERS = {
 
 export const BOX_TAP_COUNT = 3;
 export const FALLBACK_STARS = 50;
-export const REWARD_REVEAL_DELAY_MS = 780;
+export const REWARD_REVEAL_DELAY_MS = 1000;
 export const RECENT_CARD_LIMIT = 4;
 
 export const GAME_CONFIG = {

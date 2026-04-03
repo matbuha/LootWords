@@ -31,5 +31,5 @@ Drop final music and sound files into these folders when they are ready:
 Current MVP behavior:
 
 - The game does not require these files to run.
-- `lootwords/scripts/data/config.js` keeps the expected asset manifest.
-- `lootwords/scripts/core/audio-manager.js` uses lightweight synthesized fallback cues until real files are registered.
+- `scripts/data/config.js` keeps the expected asset manifest.
+- `scripts/core/audio-manager.js` uses lightweight synthesized fallback cues until real files are registered.

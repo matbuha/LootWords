@@ -35,7 +35,23 @@ export const TRANSLATIONS = {
   ru: {},
 };
 
-Object.assign(TRANSLATIONS.en, {
+function mergeTranslations(target, source) {
+  Object.entries(source).forEach(([key, value]) => {
+    if (value && typeof value === "object" && !Array.isArray(value)) {
+      if (!target[key] || typeof target[key] !== "object" || Array.isArray(target[key])) {
+        target[key] = {};
+      }
+      mergeTranslations(target[key], value);
+      return;
+    }
+
+    target[key] = value;
+  });
+
+  return target;
+}
+
+mergeTranslations(TRANSLATIONS.en, {
   shell: {
     tagline: "Loot boxes turn into English word cards.",
     parentMode: "Parent Mode",
@@ -228,7 +244,7 @@ Object.assign(TRANSLATIONS.en, {
   },
 });
 
-Object.assign(TRANSLATIONS.en, {
+mergeTranslations(TRANSLATIONS.en, {
   common: {
     pointsShort: "pts",
     lootCard: "{rarity} loot card",
@@ -449,7 +465,7 @@ Object.assign(TRANSLATIONS.en, {
   },
 });
 
-Object.assign(TRANSLATIONS.he, {
+mergeTranslations(TRANSLATIONS.he, {
   shell: {
     tagline: "קופסאות שלל הופכות לכרטיסי מילים באנגלית.",
     parentMode: "מצב הורה",
@@ -576,7 +592,7 @@ Object.assign(TRANSLATIONS.he, {
   },
 });
 
-Object.assign(TRANSLATIONS.he, {
+mergeTranslations(TRANSLATIONS.he, {
   emptyState: {
     noLootYetTitle: "עדיין אין שלל",
     noLootYetBody: "נצח במיני־משחק כדי לקבל את קופסת הפרס הראשונה ולהתחיל את האוסף.",
@@ -730,7 +746,7 @@ Object.assign(TRANSLATIONS.he, {
   },
 });
 
-Object.assign(TRANSLATIONS.he, {
+mergeTranslations(TRANSLATIONS.he, {
   common: {
     pointsShort: "נק'",
     lootCard: "כרטיס שלל {rarity}",
@@ -951,14 +967,14 @@ Object.assign(TRANSLATIONS.he, {
   },
 });
 
-Object.assign(TRANSLATIONS.en, {
+mergeTranslations(TRANSLATIONS.en, {
   home: {
     eyebrow: "Treasure room online",
-    title: "Quick loot runs, bigger streaks, and one more reward box waiting after every win.",
+    title: "reward box waiting after every win",
     body: "Jump into a mini-game, earn a box, and keep growing a collectible English word album that feels earned.",
-    recommended: "Recommended: {game}",
+    recommended: "{game}",
     startLootRun: "Start a loot run",
-    random: "Random: {game}",
+    random: "{game}",
     randomGame: "Random game",
     openMyBox: "Open my box",
     seeRewardRoom: "See reward room",
@@ -1130,7 +1146,7 @@ Object.assign(TRANSLATIONS.en, {
   },
 });
 
-Object.assign(TRANSLATIONS.ru, {
+mergeTranslations(TRANSLATIONS.ru, {
   shell: {
     tagline: "Лутбоксы превращаются в английские карточки-слова.",
     parentMode: "Режим родителя",
@@ -1328,7 +1344,7 @@ Object.assign(TRANSLATIONS.ru, {
   },
 });
 
-Object.assign(TRANSLATIONS.ru, {
+mergeTranslations(TRANSLATIONS.ru, {
   home: {
     eyebrow: "Комната сокровищ открыта",
     title: "Быстрые лут-забеги, большие серии и ещё один бокс награды после каждой победы.",
@@ -1529,7 +1545,7 @@ Object.assign(TRANSLATIONS.ru, {
   },
 });
 
-Object.assign(TRANSLATIONS.ru, {
+mergeTranslations(TRANSLATIONS.ru, {
   parent: {
     settings: {
       eyebrow: "Настройки родителя",

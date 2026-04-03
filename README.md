@@ -37,7 +37,7 @@ https://matbuha.github.io/LootWords/
 
 ## Visual identity and living UI pass
 
-- The UI now uses additive theme and animation layers in `lootwords/styles/theme.css` and `lootwords/styles/animations.css` instead of burying more overrides inside the main stylesheet.
+- The UI now uses additive theme and animation layers in `styles/theme.css` and `styles/animations.css` instead of burying more overrides inside the main stylesheet.
 - Buttons, game picks, stat cards, collection cards, and reward boxes now share a tactile interaction model:
   - pointer tilt
   - glow tracking
@@ -50,7 +50,7 @@ https://matbuha.github.io/LootWords/
   - lid-pop opening beat
   - flash/trail/card-launch reveal
 - Card reveals now stage the reward as a launch toward the viewer with spin, shadow growth, aura, and a more readable settle state.
-- The visual assumptions for future art are documented in [Visual language](C:\Users\ariel\Projects\LootWords\lootwords\docs\visual-language.md).
+- The visual assumptions for future art are documented in [Visual language](docs/visual-language.md).
 
 ## Replayability and progression pass
 
@@ -86,7 +86,7 @@ https://matbuha.github.io/LootWords/
   - filter changes
   - progress milestones
   - new-card unlocks
-- The current asset workflow is documented in [lootwords/assets/audio/README.md](C:\Users\ariel\Projects\LootWords\lootwords\assets\audio\README.md). Final files can be dropped into the listed paths later without changing the gameplay flow.
+- The current asset workflow is documented in [assets/audio/README.md](assets/audio/README.md). Final files can be dropped into the listed paths later without changing the gameplay flow.
 
 ## Content foundation
 
@@ -148,37 +148,37 @@ These pack ids are already part of every card, so future parent-controlled pack 
 
 ## Architecture
 
-- `lootwords/index.html`: static shell and module entry.
-- `lootwords/styles/main.css`: global theme, layout, responsive rules, and game/reward animations.
-- `lootwords/scripts/app.js`: app bootstrap, shared shell, state actions, persistence wiring, and debug hooks.
-- `lootwords/scripts/router.js`: hash-based screen routing.
-- `lootwords/scripts/storage.js`: profile initialization, normalization, and localStorage persistence.
-- `lootwords/scripts/data/categories.js`: category metadata, pack metadata, and legacy category aliases.
-- `lootwords/scripts/data/cards.js`: 140-card visual noun dataset with stable ids, packs, tags, and placeholder icon art.
-- `lootwords/scripts/data/config.js`: routes, rarity labels, filter options, game config, and shared constants.
-- `lootwords/scripts/core/card-utils.js`: card validation, slug creation, shared sorting, and category grouping helpers.
-- `lootwords/scripts/core/audio-manager.js`: safe audio startup, synth fallback cues, music track control, and asset registration.
-- `lootwords/scripts/core/feedback-manager.js`: event-to-feedback mapping for sounds and route-level visual pulses.
-- `lootwords/scripts/core/settings-manager.js`: normalized audio settings and persistence helpers.
-- `lootwords/scripts/core/event-bus.js`: lightweight pub/sub for future event-driven systems.
-- `lootwords/scripts/core/game-session-manager.js`: per-game stat normalization, recommended/random game logic, and progression milestone helpers.
-- `lootwords/scripts/core/parent-mode.js`: parent settings normalization, active-card filtering, and parent dashboard summaries.
-- `lootwords/scripts/core/content-validator.js`: validation for imported admin data and content-related state.
-- `lootwords/scripts/core/import-export-manager.js`: JSON export/import helpers for the browser profile.
-- `lootwords/scripts/core/reset-manager.js`: confirmed reset actions for child progress, collection, rewards, and settings.
-- `lootwords/scripts/core/`: state, rarity, progression, rewards, and supporting gameplay systems.
-- `lootwords/scripts/games/game-registry.js`: single registration point for playable mini-games.
-- `lootwords/scripts/games/`: Memory Match, Treasure Match, Flash Find, and Loot Pop.
-- `lootwords/scripts/ui/parent-screen.js`: parent/admin dashboard shell and section routing.
-- `lootwords/scripts/ui/parent-sections/`: content, category, progression, progress, import/export, and reset admin panels.
-- `lootwords/scripts/ui/`: screen rendering for home, collection, reward, learn, play, and parent hosting.
+- `index.html`: static shell and module entry.
+- `styles/main.css`: global theme, layout, responsive rules, and game/reward animations.
+- `scripts/app.js`: app bootstrap, shared shell, state actions, persistence wiring, and debug hooks.
+- `scripts/router.js`: hash-based screen routing.
+- `scripts/storage.js`: profile initialization, normalization, and localStorage persistence.
+- `scripts/data/categories.js`: category metadata, pack metadata, and legacy category aliases.
+- `scripts/data/cards.js`: 140-card visual noun dataset with stable ids, packs, tags, and placeholder icon art.
+- `scripts/data/config.js`: routes, rarity labels, filter options, game config, and shared constants.
+- `scripts/core/card-utils.js`: card validation, slug creation, shared sorting, and category grouping helpers.
+- `scripts/core/audio-manager.js`: safe audio startup, synth fallback cues, music track control, and asset registration.
+- `scripts/core/feedback-manager.js`: event-to-feedback mapping for sounds and route-level visual pulses.
+- `scripts/core/settings-manager.js`: normalized audio settings and persistence helpers.
+- `scripts/core/event-bus.js`: lightweight pub/sub for future event-driven systems.
+- `scripts/core/game-session-manager.js`: per-game stat normalization, recommended/random game logic, and progression milestone helpers.
+- `scripts/core/parent-mode.js`: parent settings normalization, active-card filtering, and parent dashboard summaries.
+- `scripts/core/content-validator.js`: validation for imported admin data and content-related state.
+- `scripts/core/import-export-manager.js`: JSON export/import helpers for the browser profile.
+- `scripts/core/reset-manager.js`: confirmed reset actions for child progress, collection, rewards, and settings.
+- `scripts/core/`: state, rarity, progression, rewards, and supporting gameplay systems.
+- `scripts/games/game-registry.js`: single registration point for playable mini-games.
+- `scripts/games/`: Memory Match, Treasure Match, Flash Find, and Loot Pop.
+- `scripts/ui/parent-screen.js`: parent/admin dashboard shell and section routing.
+- `scripts/ui/parent-sections/`: content, category, progression, progress, import/export, and reset admin panels.
+- `scripts/ui/`: screen rendering for home, collection, reward, learn, play, and parent hosting.
 
 ## Docs
 
-- [Architecture](C:\Users\ariel\Projects\LootWords\lootwords\docs\architecture.md)
-- [Content model](C:\Users\ariel\Projects\LootWords\lootwords\docs\content-model.md)
-- [Future roadmap](C:\Users\ariel\Projects\LootWords\lootwords\docs\future-roadmap.md)
-- [Visual language](C:\Users\ariel\Projects\LootWords\lootwords\docs\visual-language.md)
+- [Architecture](docs/architecture.md)
+- [Content model](docs/content-model.md)
+- [Future roadmap](docs/future-roadmap.md)
+- [Visual language](docs/visual-language.md)
 
 ## QA and hardening notes
 
@@ -343,8 +343,8 @@ These pack ids are already part of every card, so future parent-controlled pack 
 
 ## Optional improvements
 
-- Replace icon placeholders with custom generated art in `lootwords/assets/images/cards/`.
-- Drop in final music and sound files using the manifest in `lootwords/scripts/data/config.js` and `lootwords/assets/audio/README.md`.
+- Replace icon placeholders with custom generated art in `assets/images/cards/`.
+- Drop in final music and sound files using the manifest in `scripts/data/config.js` and `assets/audio/README.md`.
 - Add per-screen music mixing, more layered stingers, and optional ambience on top of the current synthesized placeholders.
 - Add progression layers such as streaks, achievements, and themed packs.
 - Add a dedicated quiz mode that reuses only unlocked cards.

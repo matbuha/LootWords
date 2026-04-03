@@ -2,7 +2,7 @@
 
 ## Card dataset
 
-The starter library lives in `lootwords/scripts/data/cards.js` and currently contains 140 visual English noun cards.
+The starter library lives in `scripts/data/cards.js` and currently contains 140 visual English noun cards.
 
 Each base card entry defines stable content metadata:
 
@@ -26,7 +26,7 @@ Runtime hydration adds:
 
 ## Categories
 
-Category metadata is defined in `lootwords/scripts/data/categories.js`.
+Category metadata is defined in `scripts/data/categories.js`.
 
 Current categories:
 
@@ -82,7 +82,7 @@ This keeps future pack activation and seasonal content filter-based instead of h
 
 ### Add new cards
 
-1. Add entries to `lootwords/scripts/data/cards.js`.
+1. Add entries to `scripts/data/cards.js`.
 2. Reuse an existing category or add the new category metadata first.
 3. Keep ids stable and slug-like.
 4. Reload and verify filters, reward reveals, and validation still work.
@@ -97,4 +97,4 @@ This keeps future pack activation and seasonal content filter-based instead of h
 
 - Placeholder art is currently icon-backed.
 - Future custom art can replace the `image` paths while keeping the same card ids.
-- Audio replacement paths are documented in `lootwords/assets/audio/README.md`.
+- Audio replacement paths are documented in `assets/audio/README.md`.

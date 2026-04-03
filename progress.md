@@ -577,7 +577,7 @@ Latest prompt: Implement a complete multilingual UI system with Hebrew, English,
 ## Notes
 
 - MVP card art uses embedded icon-based placeholders so the app is playable before custom images are added.
-- The browser verification used a local static server at `http://127.0.0.1:8123/lootwords/`.
+- The browser verification used a simple local static server during development.
 - Audio file paths are now documented in `lootwords/assets/audio/README.md`, while the live app stays on synthesized fallback cues until real files are added.
 - The card library now uses category-backed starter packs:
   - `starter-daily`: home, clothes, school, kitchen, bathroom
