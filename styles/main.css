@@ -715,6 +715,16 @@ a {
   color: inherit;
 }
 
+.tile-button {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: 100%;
+  border-radius: inherit;
+  cursor: pointer;
+}
+
 .detail-modal {
   position: fixed;
   inset: 0;
@@ -756,7 +766,9 @@ body.is-modal-open {
   justify-items: center;
 }
 
-.screen-stack--play {
+.screen-stack--play,
+.screen-stack--play-selection,
+.screen-stack--play-active {
   gap: 16px;
 }
 
@@ -863,6 +875,93 @@ body.is-modal-open {
   min-height: 640px;
 }
 
+.arena-panel--game-focus {
+  min-height: min(88vh, 980px);
+}
+
+.play-active__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+
+.play-active__back {
+  min-width: 160px;
+}
+
+.arena-summary--focus {
+  margin-bottom: 14px;
+}
+
+.play-active__game-wrap {
+  position: relative;
+  min-height: min(72vh, 760px);
+  border-radius: 28px;
+}
+
+#game-host {
+  min-height: 100%;
+}
+
+#game-host > .arena-frame,
+#game-host > .empty-state {
+  min-height: 100%;
+}
+
+.game-countdown {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  gap: 10px;
+  padding: 24px;
+  border-radius: 28px;
+  background:
+    radial-gradient(circle at center, rgba(255, 220, 138, 0.18), transparent 42%),
+    rgba(10, 8, 25, 0.76);
+  backdrop-filter: blur(8px);
+  z-index: 2;
+  transition: opacity 180ms ease, transform 180ms ease;
+}
+
+.game-countdown.is-hidden {
+  opacity: 0;
+  pointer-events: none;
+  transform: scale(1.02);
+}
+
+.game-countdown__halo {
+  position: absolute;
+  width: min(24rem, 62vw);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 223, 124, 0.16), transparent 72%);
+  filter: blur(6px);
+  animation: anticipationPulse 1.3s ease-in-out infinite;
+}
+
+.game-countdown__value {
+  position: relative;
+  z-index: 1;
+  font-family: "Fredoka", sans-serif;
+  font-size: clamp(4rem, 12vw, 7rem);
+  line-height: 0.9;
+  color: var(--text-strong);
+  text-shadow: 0 10px 28px rgba(12, 10, 32, 0.34);
+}
+
+.game-countdown__copy {
+  position: relative;
+  z-index: 1;
+  color: var(--text-main);
+  text-align: center;
+  max-width: 24rem;
+}
+
 .game-surface {
   padding: 18px;
   border-radius: 28px;
@@ -880,6 +979,9 @@ body.is-modal-open {
   position: relative;
   aspect-ratio: 1 / 1;
   border-radius: 24px;
+  min-height: 120px;
+  overflow: hidden;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.03);
 }
 
 .tile-face {
@@ -994,10 +1096,12 @@ body.is-modal-open {
 }
 
 .game-overlay {
-  margin-top: 16px;
+  position: absolute;
+  inset: 0;
   padding: 24px;
   border-radius: 26px;
   border: 1px solid var(--line);
+  z-index: 3;
 }
 
 .game-overlay.is-win {
@@ -2178,8 +2282,9 @@ body.is-feedback-legendary .route-glow::after {
 }
 
 .game-overlay {
-  position: relative;
   overflow: hidden;
+  display: grid;
+  align-content: center;
 }
 
 .game-overlay__sparkles span {
@@ -2430,6 +2535,19 @@ body.is-feedback-legendary .route-glow::after {
     min-height: 360px;
   }
 
+  .play-active__top {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .play-active__back {
+    min-width: 0;
+  }
+
+  .play-active__game-wrap {
+    min-height: 64vh;
+  }
+
   .learn-spotlight__top,
   .card-title-row {
     align-items: flex-start;
@@ -2443,6 +2561,10 @@ body.is-feedback-legendary .route-glow::after {
 @media (max-width: 540px) {
   .reward-box-button {
     width: min(300px, 92%);
+  }
+
+  .play-active__game-wrap {
+    min-height: 58vh;
   }
 
   .victory-chip-row {

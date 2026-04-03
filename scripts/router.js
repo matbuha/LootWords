@@ -12,7 +12,7 @@ export function parseRoute(hashValue = window.location.hash) {
 
   return {
     path: normalizedPath,
-    game: params.get("game") ?? DEFAULT_ROUTE.game,
+    game: params.get("game") ?? null,
     section: params.get("section") ?? null,
   };
 }
@@ -31,7 +31,7 @@ export function createRouter(onChange) {
   }
 
   if (!window.location.hash) {
-    window.location.hash = buildRoute(DEFAULT_ROUTE.path, { game: DEFAULT_ROUTE.game });
+    window.location.hash = buildRoute(DEFAULT_ROUTE.path);
   }
 
   window.addEventListener("hashchange", handleChange);

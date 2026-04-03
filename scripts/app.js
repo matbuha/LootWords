@@ -96,7 +96,7 @@ function createParentSession() {
 
 const store = createStore({
   profile: loadProfile(),
-  route: { path: ROUTES.home, game: "memory-match" },
+  route: { path: ROUTES.home, game: null },
   session: {
     reward: createRewardSession(),
     gameResult: null,
@@ -1036,7 +1036,7 @@ function renderShell({
     <nav class="shell-nav" aria-label="Primary navigation">
       ${[
         { route: ROUTES.home, label: t("shell.nav.home.label"), tag: t("shell.nav.home.tag") },
-        { route: ROUTES.play, label: t("shell.nav.play.label"), tag: t("shell.nav.play.tag"), params: { game: currentRoute.game } },
+        { route: ROUTES.play, label: t("shell.nav.play.label"), tag: t("shell.nav.play.tag") },
         { route: ROUTES.reward, label: t("shell.nav.reward.label"), tag: t("shell.nav.reward.tag") },
         { route: ROUTES.collection, label: t("shell.nav.collection.label"), tag: t("shell.nav.collection.tag") },
         { route: ROUTES.learn, label: t("shell.nav.learn.label"), tag: t("shell.nav.learn.tag") },
@@ -1204,7 +1204,7 @@ function renderApp() {
 
 router = createRouter((route) => {
   const previousState = store.getState();
-  const nextGame = route.game in GAME_CONFIG ? route.game : "memory-match";
+  const nextGame = route.path === ROUTES.play && route.game in GAME_CONFIG ? route.game : null;
   const navMotion = getRouteMotion(previousState.route.path, route.path);
   const nextSection = normalizeParentSection(route.section ?? previousState.session.parent.section);
 
@@ -1224,7 +1224,7 @@ router = createRouter((route) => {
       navMotion,
       modalCardId: route.path === ROUTES.collection ? currentState.session.modalCardId : null,
       gameResult:
-        route.path === ROUTES.play && currentState.session.gameResult?.gameId === nextGame
+        route.path === ROUTES.play && nextGame && currentState.session.gameResult?.gameId === nextGame
           ? currentState.session.gameResult
           : null,
       reward: route.path === ROUTES.reward ? currentState.session.reward : createRewardSession(),

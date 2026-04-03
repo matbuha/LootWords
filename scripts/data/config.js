@@ -33,7 +33,7 @@ export const ROUTE_SEQUENCE = [
 
 export const DEFAULT_ROUTE = {
   path: ROUTES.home,
-  game: "memory-match",
+  game: null,
 };
 
 export const RARITY_ORDER = [

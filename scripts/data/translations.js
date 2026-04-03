@@ -1767,3 +1767,36 @@ mergeTranslations(TRANSLATIONS.ru, {
     flashTargetHidden: "Карта цели теперь скрыта",
   },
 });
+
+mergeTranslations(TRANSLATIONS.en, {
+  play: {
+    backToGames: "Back to games",
+    selectionBody: "Pick one game, get ready, and jump into a focused round.",
+    countdownLabel: "Get ready",
+    countdownBody: "The round starts after the countdown.",
+    countdownStart: "Start",
+    countdownGo: "Go for it",
+  },
+});
+
+mergeTranslations(TRANSLATIONS.he, {
+  play: {
+    backToGames: "חזרה למשחקים",
+    selectionBody: "בחר משחק אחד, התכונן, וקפוץ לסיבוב ממוקד.",
+    countdownLabel: "מתכוננים",
+    countdownBody: "הסיבוב מתחיל אחרי הספירה לאחור.",
+    countdownStart: "התחל",
+    countdownGo: "קדימה",
+  },
+});
+
+mergeTranslations(TRANSLATIONS.ru, {
+  play: {
+    backToGames: "Назад к играм",
+    selectionBody: "Выбери одну игру, приготовься и войди в отдельный раунд.",
+    countdownLabel: "Приготовься",
+    countdownBody: "Раунд начнётся после отсчёта.",
+    countdownStart: "Старт",
+    countdownGo: "Поехали",
+  },
+});
