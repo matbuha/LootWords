@@ -126,67 +126,18 @@ export function renderGameScreen(container, { route, cards, result, progress, ac
   const noActiveContent = progress.totalCards === 0;
 
   container.innerHTML = `
-    <div class="game-layout">
-      <section class="section-panel section-panel--compact section-panel--play-hub">
-        <div class="screen-header">
-          <div>
-            <span class="small-label">${t("play.playLab")}</span>
-            <h2 class="section-title">${t("play.title")}</h2>
-          </div>
-          <p class="screen-note">${t("play.note")}</p>
-        </div>
-
-        <div class="session-strip">
-          <article class="session-chip session-chip--glow">
-            <span>${t("home.currentStreak")}</span>
-            <strong data-count-to="${progress.currentStreak}" data-count-key="game-current-streak">${progress.currentStreak}</strong>
-            <small>${t("common.bestValue", { value: progress.bestStreak })}</small>
-          </article>
-          <article class="session-chip">
-            <span>${t("play.gamesTried")}</span>
-            <strong>${playSummary.gamesTried}/${playSummary.gameProgress.length}</strong>
-            <small>${t("play.totalRounds", { count: playSummary.totalPlays })}</small>
-          </article>
-          <article class="session-chip">
-            <span>${t("play.nextMilestone")}</span>
-            <strong data-count-to="${playSummary.nextMilestoneTarget}" data-count-key="game-next-milestone">${playSummary.nextMilestoneTarget}</strong>
-            <small>${t("play.winsToGo", { count: playSummary.winsUntilMilestone })}</small>
-          </article>
-          <article class="session-chip">
-            <span>${t("play.favoriteGame")}</span>
-            <strong>${favoriteLabel}</strong>
-            <small>${t("play.boxesEarnedSoFar", { count: progress.rewardBoxesEarned })}</small>
-          </article>
-        </div>
-
-        <div class="play-quick-row">
-          <button class="primary-button" type="button" data-play-recommended="${gameId}" ${noActiveContent ? "disabled" : ""}>
-            ${recommendedGame ? t("play.playRecommended", { game: gameText(recommendedGame.id, "shortLabel") }) : t("home.playRecommended")}
-          </button>
-          <button class="secondary-button" type="button" data-play-random="${gameId}" ${noActiveContent ? "disabled" : ""}>
-            ${randomGame ? t("play.playRandom", { game: gameText(randomGame.id, "shortLabel") }) : t("home.randomGame")}
-          </button>
-          <button class="ghost-button" type="button" data-route="reward">
-            ${progress.rewardBoxes > 0 ? t("play.openBoxes", { count: progress.rewardBoxes }) : t("play.rewardRoom")}
-          </button>
-        </div>
-
-        <div class="game-switcher game-switcher--grid">
-          ${playSummary.gameProgress.map((game) => renderGameChoice(game, gameId)).join("")}
-        </div>
-      </section>
-
+    <div class="screen-stack screen-stack--play">
       <section class="arena-panel arena-panel--game">
         <div class="arena-summary">
           <div>
-            <span class="small-label">${gameMeta.icon} ${gameText(gameMeta.id, "energyLabel")}</span>
+            <span class="small-label">${t("play.playLab")}</span>
             <h3 class="section-title">${gameText(gameMeta.id, "label")}</h3>
             <p class="screen-note">${gameText(gameMeta.id, "description")}</p>
           </div>
           <div class="arena-summary__stats">
-            <span class="arena-stat">${gameMeta.stats.wins}/${gameMeta.stats.plays}</span>
+            <span class="arena-stat">${gameMeta.icon} ${gameText(gameMeta.id, "energyLabel")}</span>
             <span class="arena-stat">${gameText(gameMeta.id, "lengthLabel")}</span>
-            <span class="arena-stat">${gameMeta.isFirstWinAvailable ? t("play.firstWinBonus", { count: playSummary.firstWinBonusBoxes }) : t("play.bonusClaimed")}</span>
+            <span class="arena-stat">${gameMeta.stats.wins}/${gameMeta.stats.plays}</span>
           </div>
         </div>
         <div id="game-host"></div>
@@ -224,6 +175,43 @@ export function renderGameScreen(container, { route, cards, result, progress, ac
             `
             : ""
         }
+      </section>
+
+      <section class="section-panel section-panel--compact section-panel--play-hub section-panel--play-hub-compact">
+        <div class="screen-header screen-header--compact">
+          <div>
+            <span class="small-label">${t("play.title")}</span>
+            <h2 class="section-title">${favoriteLabel}</h2>
+          </div>
+          <div class="button-row button-row--wrap">
+            <button class="primary-button" type="button" data-play-recommended="${gameId}" ${noActiveContent ? "disabled" : ""}>
+              ${recommendedGame ? t("play.playRecommended", { game: gameText(recommendedGame.id, "shortLabel") }) : t("home.playRecommended")}
+            </button>
+            <button class="secondary-button" type="button" data-play-random="${gameId}" ${noActiveContent ? "disabled" : ""}>
+              ${randomGame ? t("play.playRandom", { game: gameText(randomGame.id, "shortLabel") }) : t("home.randomGame")}
+            </button>
+            <button class="ghost-button" type="button" data-route="reward">
+              ${progress.rewardBoxes > 0 ? t("play.openBoxes", { count: progress.rewardBoxes }) : t("play.rewardRoom")}
+            </button>
+          </div>
+        </div>
+
+        <div class="session-strip session-strip--compact">
+          <article class="session-chip session-chip--glow">
+            <span>${t("home.currentStreak")}</span>
+            <strong data-count-to="${progress.currentStreak}" data-count-key="game-current-streak">${progress.currentStreak}</strong>
+            <small>${t("common.bestValue", { value: progress.bestStreak })}</small>
+          </article>
+          <article class="session-chip">
+            <span>${t("play.nextMilestone")}</span>
+            <strong data-count-to="${playSummary.nextMilestoneTarget}" data-count-key="game-next-milestone">${playSummary.nextMilestoneTarget}</strong>
+            <small>${t("play.winsToGo", { count: playSummary.winsUntilMilestone })}</small>
+          </article>
+        </div>
+
+        <div class="game-switcher game-switcher--grid game-switcher--compact">
+          ${playSummary.gameProgress.map((game) => renderGameChoice(game, gameId)).join("")}
+        </div>
       </section>
     </div>
   `;

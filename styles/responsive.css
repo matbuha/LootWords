@@ -36,6 +36,25 @@
     --nav-height: 78px;
   }
 
+  .shell-topbar {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .topbar-status {
+    width: 100%;
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: max-content;
+    gap: 8px;
+    align-items: center;
+    justify-content: start;
+    overflow-x: auto;
+    overflow-y: hidden;
+    flex-wrap: nowrap;
+    padding-bottom: 2px;
+  }
+
   .app-shell {
     padding-top: calc(14px + var(--safe-top));
     padding-bottom: calc(var(--nav-height) + 18px + var(--safe-bottom));
@@ -115,6 +134,10 @@
   .collection-grid,
   .learn-list {
     grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  }
+
+  .parent-entry-button__label {
+    display: none;
   }
 
   .parent-layout {
@@ -356,6 +379,13 @@
     grid-template-columns: 1fr;
   }
 
+  .button-row--wrap,
+  .screen-header--compact {
+    display: grid;
+    grid-template-columns: 1fr;
+    justify-items: stretch;
+  }
+
   .hero-stats,
   .collection-dashboard,
   .session-strip,
@@ -456,6 +486,10 @@
 
   .target-card {
     gap: 12px;
+  }
+
+  .session-strip--compact {
+    grid-template-columns: 1fr;
   }
 
   .target-card__icon {
@@ -668,6 +702,10 @@
     grid-template-columns: 1fr;
   }
 
+  .hero-panel--home .hero-stats {
+    grid-template-columns: 1fr;
+  }
+
   .collection-dashboard {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -789,6 +827,18 @@
 
   .parent-nav__tabs {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 420px) {
+  .status-pill {
+    min-width: 44px;
+    justify-content: center;
+    padding-inline: 9px;
+  }
+
+  .status-pill span {
+    display: none;
   }
 }
 

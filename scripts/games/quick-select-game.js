@@ -38,7 +38,6 @@ export function mountFlashFindGame(container, { cards, onWin, onLose, playSound 
   };
 
   let loopHandle = 0;
-  let lastTick = performance.now();
   let finalized = false;
 
   function finalize(status) {
@@ -81,9 +80,12 @@ export function mountFlashFindGame(container, { cards, onWin, onLose, playSound 
 
   function tick(deltaMs) {
     if (state.status !== "playing") {
-      return;
+      return false;
     }
 
+    const previousSecond = Math.ceil(state.timerMs / 1000);
+    const previousPhase = state.currentRound.phase;
+    const previousRoundIndex = state.roundIndex;
     const nextTimer = Math.max(0, state.timerMs - deltaMs);
     const currentRound =
       state.currentRound.phase === "preview"
@@ -130,6 +132,13 @@ export function mountFlashFindGame(container, { cards, onWin, onLose, playSound 
     if (state.timerMs <= 0) {
       finalize(state.roundIndex > state.totalRounds ? "won" : "lost");
     }
+
+    return (
+      Math.ceil(state.timerMs / 1000) !== previousSecond ||
+      state.currentRound.phase !== previousPhase ||
+      state.roundIndex !== previousRoundIndex ||
+      state.status !== "playing"
+    );
   }
 
   function renderOptions() {
@@ -243,20 +252,18 @@ export function mountFlashFindGame(container, { cards, onWin, onLose, playSound 
     render();
   }
 
-  function runLoop(now) {
-    const deltaMs = now - lastTick;
-    lastTick = now;
-    tick(deltaMs);
-    render();
-    loopHandle = window.requestAnimationFrame(runLoop);
+  function runLoop() {
+    if (tick(100)) {
+      render();
+    }
   }
 
   render();
-  loopHandle = window.requestAnimationFrame(runLoop);
+  loopHandle = window.setInterval(runLoop, 100);
 
   return {
     destroy() {
-      window.cancelAnimationFrame(loopHandle);
+      window.clearInterval(loopHandle);
     },
     advanceTime(milliseconds) {
       tick(milliseconds);

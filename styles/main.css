@@ -204,6 +204,10 @@ a {
   justify-content: flex-end;
 }
 
+.topbar-status {
+  justify-content: flex-end;
+}
+
 .status-pill,
 .arena-stat,
 .card-category,
@@ -350,6 +354,10 @@ a {
 .collection-grid,
 .learn-list {
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+}
+
+.hero-panel--home .hero-stats {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
 .stat-card,
@@ -627,6 +635,12 @@ a {
     rgba(255, 255, 255, 0.06);
 }
 
+.mute-toggle--icon {
+  min-width: 44px;
+  padding: 0 12px;
+  justify-content: center;
+}
+
 .mute-toggle--sub {
   min-height: 44px;
   padding: 0 14px;
@@ -699,6 +713,19 @@ a {
 .two-column,
 .detail-grid {
   grid-template-columns: minmax(0, 1fr) minmax(300px, 0.95fr);
+}
+
+.reward-layout {
+  align-items: stretch;
+}
+
+.reward-box-stage,
+.reward-reveal {
+  align-content: start;
+}
+
+.screen-stack--play {
+  gap: 16px;
 }
 
 .reward-box-wrap {
@@ -778,6 +805,11 @@ a {
 
 .reward-reveal__card {
   animation: cardBurst 420ms ease both;
+}
+
+.reward-reveal__header {
+  display: grid;
+  gap: 6px;
 }
 
 .game-switcher {
@@ -1279,16 +1311,24 @@ body.is-feedback-legendary .route-glow::after {
 }
 
 .parent-entry-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
   min-height: 44px;
   padding: 0 14px;
   border-radius: 16px;
   font-size: 0.88rem;
   letter-spacing: 0.04em;
   text-transform: uppercase;
+  white-space: nowrap;
   background:
     linear-gradient(180deg, rgba(125, 214, 255, 0.16), rgba(125, 214, 255, 0.06)),
     rgba(255, 255, 255, 0.07);
   border-color: rgba(125, 214, 255, 0.28);
+}
+
+.parent-entry-button__label {
+  display: inline-block;
 }
 
 .nav-link {
@@ -1887,6 +1927,10 @@ body.is-feedback-legendary .route-glow::after {
 
 .reward-stage-list {
   grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.reward-actions {
+  justify-content: flex-start;
 }
 
 .reward-stage {
@@ -2701,6 +2745,11 @@ body.is-feedback-legendary .route-glow::after {
   overflow: hidden;
 }
 
+.section-panel--play-hub-compact {
+  display: grid;
+  gap: 16px;
+}
+
 .section-panel--play-hub::before {
   content: "";
   position: absolute;
@@ -2738,6 +2787,11 @@ body.is-feedback-legendary .route-glow::after {
 
 .session-strip {
   margin-bottom: 18px;
+}
+
+.session-strip--compact {
+  margin-bottom: 0;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .session-chip,
@@ -2786,10 +2840,14 @@ body.is-feedback-legendary .route-glow::after {
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
 }
 
+.game-switcher--compact {
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+}
+
 .game-choice--rich {
   display: grid;
   gap: 12px;
-  min-height: 208px;
+  min-height: 188px;
   padding: 18px;
   border-radius: 24px;
   border: 1px solid rgba(255, 255, 255, 0.08);
@@ -2854,6 +2912,10 @@ body.is-feedback-legendary .route-glow::after {
 .arena-summary {
   margin-bottom: 18px;
   justify-content: space-between;
+}
+
+.screen-header--compact {
+  align-items: center;
 }
 
 .arena-summary__stats {

@@ -23,7 +23,6 @@ export function mountReactionGame(container, { onWin, onLose, playSound }) {
   };
 
   let loopHandle = 0;
-  let lastTick = performance.now();
   let finalized = false;
 
   function finalize(status) {
@@ -61,9 +60,12 @@ export function mountReactionGame(container, { onWin, onLose, playSound }) {
 
   function tick(deltaMs) {
     if (state.status !== "playing") {
-      return;
+      return false;
     }
 
+    const previousSecond = Math.ceil(state.timerMs / 1000);
+    const previousActivePad = state.activePad;
+    const previousPulseBucket = state.pulseMs > 0;
     state = {
       ...state,
       timerMs: Math.max(0, state.timerMs - deltaMs),
@@ -88,6 +90,13 @@ export function mountReactionGame(container, { onWin, onLose, playSound }) {
     if (state.timerMs <= 0) {
       finalize(state.hits >= state.goalHits ? "won" : "lost");
     }
+
+    return (
+      Math.ceil(state.timerMs / 1000) !== previousSecond ||
+      state.activePad !== previousActivePad ||
+      (previousPulseBucket && state.pulseMs === 0) ||
+      state.status !== "playing"
+    );
   }
 
   function render() {
@@ -174,20 +183,18 @@ export function mountReactionGame(container, { onWin, onLose, playSound }) {
     render();
   }
 
-  function runLoop(now) {
-    const deltaMs = now - lastTick;
-    lastTick = now;
-    tick(deltaMs);
-    render();
-    loopHandle = window.requestAnimationFrame(runLoop);
+  function runLoop() {
+    if (tick(100)) {
+      render();
+    }
   }
 
   render();
-  loopHandle = window.requestAnimationFrame(runLoop);
+  loopHandle = window.setInterval(runLoop, 100);
 
   return {
     destroy() {
-      window.cancelAnimationFrame(loopHandle);
+      window.clearInterval(loopHandle);
     },
     advanceTime(milliseconds) {
       tick(milliseconds);

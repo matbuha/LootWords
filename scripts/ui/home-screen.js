@@ -19,27 +19,6 @@ function renderGamePickup(game, actionsLabel, disabled = false) {
   `;
 }
 
-function renderGameChoice(game, disabled = false) {
-  return `
-    <button class="game-choice game-choice--home game-choice--rich" type="button" data-route="play" data-game="${game.id}" ${disabled ? "disabled" : ""}>
-      <div class="game-choice__topline">
-        <span class="game-choice__icon" aria-hidden="true">${game.icon}</span>
-        <span class="small-label">${gameText(game.id, "lengthLabel")}</span>
-      </div>
-      <strong>${gameText(game.id, "label")}</strong>
-      <span>${gameText(game.id, "description")}</span>
-      <div class="game-choice__meta">
-        <span>${gameText(game.id, "energyLabel")}</span>
-        <span>${t("home.gamesTried", { current: game.stats.wins, total: game.stats.plays })}</span>
-      </div>
-      <div class="game-choice__footer">
-        <span class="small-label">${gameText(game.id, "rewardText")}</span>
-        <span class="game-choice__bonus">${game.isFirstWinAvailable ? t("play.bonusReady") : t("play.lootRunReady")}</span>
-      </div>
-    </button>
-  `;
-}
-
 export function renderHomeScreen(container, { progress, actions, newestCard }) {
   const noActiveContent = progress.totalCards === 0;
   const stashLabel =
@@ -96,11 +75,6 @@ export function renderHomeScreen(container, { progress, actions, newestCard }) {
               <strong data-count-to="${progress.currentStreak}" data-count-key="home-current-streak">${progress.currentStreak}</strong>
               <small>${t("common.bestValue", { value: progress.bestStreak })}</small>
             </div>
-            <div class="stat-card">
-              <span>${t("home.boxesEarned")}</span>
-              <strong data-count-to="${progress.rewardBoxesEarned}" data-count-key="home-boxes-earned">${progress.rewardBoxesEarned}</strong>
-              <small>${t("home.nextMilestoneWins", { count: playSummary.winsUntilMilestone })}</small>
-            </div>
           </div>
         </div>
         <div class="hero-art">
@@ -133,7 +107,6 @@ export function renderHomeScreen(container, { progress, actions, newestCard }) {
         <div class="section-panel">
           <div class="screen-header">
             <div>
-              <span class="small-label">Play next</span>
               <span class="small-label">${t("home.playNext")}</span>
               <h2 class="section-title">${t("home.quickPicks")}</h2>
             </div>
@@ -150,6 +123,7 @@ export function renderHomeScreen(container, { progress, actions, newestCard }) {
               <span class="small-label">${t("home.latestReveal")}</span>
               <h2 class="section-title">${t("home.newestCard")}</h2>
             </div>
+            <button class="ghost-button" type="button" data-route="collection">${t("common.openAlbum")}</button>
           </div>
           ${newestMarkup}
         </div>
@@ -157,67 +131,29 @@ export function renderHomeScreen(container, { progress, actions, newestCard }) {
 
       <section class="section-panel section-panel--compact">
         <div class="screen-header">
-            <div>
-              <span class="small-label">${t("home.gameShelf")}</span>
-              <h2 class="section-title">${t("home.chooseLootRun")}</h2>
-            </div>
-          <p class="screen-note">${t("home.gameShelfNote")}</p>
-        </div>
-        <div class="game-switcher game-switcher--grid">
-          ${playSummary.gameProgress.map((game) => renderGameChoice(game, noActiveContent)).join("")}
-        </div>
-      </section>
-
-      <section class="two-column">
-        <div class="section-panel">
-          <div class="screen-header">
-            <div>
-              <span class="small-label">${t("home.progress")}</span>
-              <h2 class="section-title">${t("home.albumProgressByCategory")}</h2>
-            </div>
+          <div>
+            <span class="small-label">${t("home.progress")}</span>
+            <h2 class="section-title">${t("home.albumProgressByCategory")}</h2>
+          </div>
+          <div class="button-row">
+            <button class="ghost-button" type="button" data-route="play" data-game="${recommendedGame?.id ?? playSummary.gameProgress[0]?.id ?? "memory-match"}" ${noActiveContent ? "disabled" : ""}>${t("home.playRecommended")}</button>
             <button class="ghost-button" type="button" data-route="learn">${t("common.reviewWords")}</button>
           </div>
-          <div class="category-progress">
-            ${progress.categoryCounts
-              .map(
-                (entry) => `
-                  <article class="progress-chip">
-                    <strong>${categoryLabel(entry.id)}</strong>
-                    <span>${t("home.activeInView", { unlocked: entry.unlocked, total: entry.total })}</span>
-                    <div class="progress-bar">
-                      <div class="progress-bar__fill" data-progress-fill="${(entry.percent / 100).toFixed(3)}" style="--progress-target:${(entry.percent / 100).toFixed(3)}"></div>
-                    </div>
-                  </article>
-                `,
-              )
-              .join("")}
-          </div>
         </div>
-        <div class="section-panel">
-          <div class="screen-header">
-            <div>
-              <span class="small-label">${t("home.replayLoop")}</span>
-              <h2 class="section-title">${t("home.replayLoopTitle")}</h2>
-            </div>
-          </div>
-          <div class="session-loop">
-            <article class="progress-chip">
-              <strong>${t("home.rewardBoxesEarned")}</strong>
-              <span>${t("common.totalSuffix", { value: progress.rewardBoxesEarned })}</span>
-            </article>
-            <article class="progress-chip">
-              <strong>${t("home.gamesWonAtLeastOnce")}</strong>
-              <span>${playSummary.gamesWon}/${playSummary.gameProgress.length}</span>
-            </article>
-            <article class="progress-chip">
-              <strong>${t("home.bonusStars")}</strong>
-              <span>${t("common.totalSuffix", { value: progress.bonusStars })}</span>
-            </article>
-            <article class="progress-chip">
-              <strong>${t("home.nextMilestonePrize")}</strong>
-              <span>${t("home.milestoneStars", { count: playSummary.milestoneBonusStars, target: playSummary.nextMilestoneTarget })}</span>
-            </article>
-          </div>
+        <div class="category-progress">
+          ${progress.categoryCounts
+            .map(
+              (entry) => `
+                <article class="progress-chip">
+                  <strong>${categoryLabel(entry.id)}</strong>
+                  <span>${t("home.activeInView", { unlocked: entry.unlocked, total: entry.total })}</span>
+                  <div class="progress-bar">
+                    <div class="progress-bar__fill" data-progress-fill="${(entry.percent / 100).toFixed(3)}" style="--progress-target:${(entry.percent / 100).toFixed(3)}"></div>
+                  </div>
+                </article>
+              `,
+            )
+            .join("")}
         </div>
       </section>
     </div>

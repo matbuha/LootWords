@@ -975,27 +975,21 @@ function renderShell({ progress, parentSummary, currentRoute, audioSettings, nav
             class="ghost-button parent-entry-button"
             href="${buildRoute(ROUTES.parent, { section: DEFAULT_PARENT_SECTION })}"
             data-ui-click="true"
+            aria-label="${t("shell.parentMode")}"
           >
-            ${t("shell.parentMode")}
+            <span aria-hidden="true">🛡</span>
+            <span class="parent-entry-button__label">${t("shell.parentMode")}</span>
           </a>
           ${renderLanguageSelector(languageManager.getLanguage())}
           <div class="audio-controls" aria-label="Audio controls">
-            <button class="mute-toggle ${audioSettings.muted ? "is-muted" : ""}" type="button" data-toggle-mute="true">
-              ${audioSettings.muted ? t("shell.soundOff") : t("shell.soundOn")}
-            </button>
             <button
-              class="mute-toggle mute-toggle--sub ${audioSettings.musicEnabled ? "is-on" : "is-off"}"
+              class="mute-toggle mute-toggle--icon ${audioSettings.muted ? "is-muted" : ""}"
               type="button"
-              data-toggle-audio="music"
+              data-toggle-mute="true"
+              aria-label="${audioSettings.muted ? t("shell.soundOff") : t("shell.soundOn")}"
+              title="${audioSettings.muted ? t("shell.soundOff") : t("shell.soundOn")}"
             >
-              ${audioSettings.musicEnabled ? t("shell.musicOn") : t("shell.musicOff")}
-            </button>
-            <button
-              class="mute-toggle mute-toggle--sub ${audioSettings.sfxEnabled ? "is-on" : "is-off"}"
-              type="button"
-              data-toggle-audio="sfx"
-            >
-              ${audioSettings.sfxEnabled ? t("shell.sfxOn") : t("shell.sfxOff")}
+              <span aria-hidden="true">${audioSettings.muted ? "🔇" : "🔊"}</span>
             </button>
           </div>
         </div>

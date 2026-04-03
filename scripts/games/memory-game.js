@@ -34,7 +34,6 @@ export function mountMemoryGame(container, { cards, onWin, onLose, playSound }) 
   };
 
   let loopHandle = 0;
-  let lastTick = performance.now();
   let finalized = false;
 
   function finalizeGame(status) {
@@ -74,9 +73,11 @@ export function mountMemoryGame(container, { cards, onWin, onLose, playSound }) 
 
   function tick(deltaMs) {
     if (state.status !== "playing") {
-      return;
+      return false;
     }
 
+    const previousSecond = Math.ceil(state.timerMs / 1000);
+    const hadMismatch = Boolean(state.pendingMismatch);
     state = {
       ...state,
       timerMs: Math.max(0, state.timerMs - deltaMs),
@@ -93,6 +94,12 @@ export function mountMemoryGame(container, { cards, onWin, onLose, playSound }) 
     if (state.timerMs <= 0) {
       finalizeGame("lost");
     }
+
+    return (
+      Math.ceil(state.timerMs / 1000) !== previousSecond ||
+      (hadMismatch && !state.pendingMismatch) ||
+      state.status !== "playing"
+    );
   }
 
   function render() {
@@ -200,20 +207,18 @@ export function mountMemoryGame(container, { cards, onWin, onLose, playSound }) 
     render();
   }
 
-  function runLoop(now) {
-    const deltaMs = now - lastTick;
-    lastTick = now;
-    tick(deltaMs);
-    render();
-    loopHandle = window.requestAnimationFrame(runLoop);
+  function runLoop() {
+    if (tick(100)) {
+      render();
+    }
   }
 
   render();
-  loopHandle = window.requestAnimationFrame(runLoop);
+  loopHandle = window.setInterval(runLoop, 100);
 
   return {
     destroy() {
-      window.cancelAnimationFrame(loopHandle);
+      window.clearInterval(loopHandle);
     },
     advanceTime(milliseconds) {
       tick(milliseconds);

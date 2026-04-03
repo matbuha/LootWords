@@ -98,22 +98,6 @@ export function renderRewardScreen(container, { rewardState, rewardCard, rewardB
             ? "reward-box--tap-1"
             : "reward-box--idle";
 
-  const stageMarkup = [
-    { step: 1, label: t("reward.wake"), detail: t("reward.glowAndShake") },
-    { step: 2, label: t("reward.charge"), detail: t("reward.cracksSpread") },
-    { step: 3, label: t("reward.burst"), detail: t("reward.revealCard") },
-  ]
-    .map(
-      (entry) => `
-        <div class="reward-stage ${rewardState.clicks >= entry.step ? "is-complete" : ""} ${rewardState.clicks + 1 === entry.step && !rewardState.reveal ? "is-current" : ""}">
-          <strong>${entry.step}</strong>
-          <span>${entry.label}</span>
-          <small>${entry.detail}</small>
-        </div>
-      `,
-    )
-    .join("");
-
   let revealMarkup = renderEmptyState(
     t("emptyState.waitingRevealTitle"),
     t("emptyState.waitingRevealBody"),
@@ -186,7 +170,7 @@ export function renderRewardScreen(container, { rewardState, rewardCard, rewardB
               <span class="small-label">${phaseCopy.eyebrow}</span>
               <h2 class="reward-title">${phaseCopy.title}</h2>
             </div>
-            <div class="hero-stats">
+            <div class="hero-stats hero-stats--compact">
               <div class="stat-card stat-card--glow">
                 <span>${t("reward.boxesReady")}</span>
                 <strong>${rewardBoxes}</strong>
@@ -248,14 +232,11 @@ export function renderRewardScreen(container, { rewardState, rewardCard, rewardB
             </button>
           </div>
 
-          <div class="reward-stage-list">
-            ${stageMarkup}
-          </div>
           <div class="reward-meter">
             ${meter.map((filled) => `<span class="${filled ? "is-filled" : ""}"></span>`).join("")}
           </div>
           <p class="reward-hint">${phaseCopy.hint}</p>
-          <div class="cta-stack">
+          <div class="button-row button-row--wrap reward-actions">
             ${
               rewardState.reveal
                 ? `<button class="primary-button" type="button" data-reset-box="true">${rewardBoxes > 0 ? t("reward.queueNextBox") : t("reward.resetRewardRoom")}</button>`
@@ -266,7 +247,7 @@ export function renderRewardScreen(container, { rewardState, rewardCard, rewardB
         </div>
 
         <div class="reward-reveal reward-reveal--${revealPhase}">
-          <div>
+          <div class="reward-reveal__header">
             <span class="small-label">${t("reward.lootSpotlight")}</span>
             <h3 class="section-title">${t("reward.makeRewardSpecial")}</h3>
           </div>

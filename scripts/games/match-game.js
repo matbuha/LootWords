@@ -33,7 +33,6 @@ export function mountMatchGame(container, { cards, onWin, onLose, playSound }) {
   };
 
   let loopHandle = 0;
-  let lastTick = performance.now();
   let finalized = false;
 
   function finalize(status) {
@@ -60,9 +59,12 @@ export function mountMatchGame(container, { cards, onWin, onLose, playSound }) {
 
   function tick(deltaMs) {
     if (state.status !== "playing") {
-      return;
+      return false;
     }
 
+    const previousSecond = Math.ceil(state.timerMs / 1000);
+    const previousFeedbackMs = state.feedbackMs;
+    const previousRoundIndex = state.roundIndex;
     let nextState = {
       ...state,
       timerMs: Math.max(0, state.timerMs - deltaMs),
@@ -99,6 +101,13 @@ export function mountMatchGame(container, { cards, onWin, onLose, playSound }) {
     if (state.timerMs <= 0 || state.hearts <= 0) {
       finalize("lost");
     }
+
+    return (
+      Math.ceil(state.timerMs / 1000) !== previousSecond ||
+      (previousFeedbackMs > 0 && state.feedbackMs === 0) ||
+      state.roundIndex !== previousRoundIndex ||
+      state.status !== "playing"
+    );
   }
 
   function render() {
@@ -198,20 +207,18 @@ export function mountMatchGame(container, { cards, onWin, onLose, playSound }) {
     render();
   }
 
-  function runLoop(now) {
-    const deltaMs = now - lastTick;
-    lastTick = now;
-    tick(deltaMs);
-    render();
-    loopHandle = window.requestAnimationFrame(runLoop);
+  function runLoop() {
+    if (tick(100)) {
+      render();
+    }
   }
 
   render();
-  loopHandle = window.requestAnimationFrame(runLoop);
+  loopHandle = window.setInterval(runLoop, 100);
 
   return {
     destroy() {
-      window.cancelAnimationFrame(loopHandle);
+      window.clearInterval(loopHandle);
     },
     advanceTime(milliseconds) {
       tick(milliseconds);
