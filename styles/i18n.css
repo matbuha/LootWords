@@ -48,7 +48,7 @@
 
 .voice-selector__label,
 .voice-option__label {
-  max-width: 12rem;
+  max-width: 9.5rem;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;

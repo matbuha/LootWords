@@ -51,8 +51,11 @@ export function createSpeechManager(initialSettings = {}) {
   let englishVoices = [];
   let selectedVoice = null;
   let preferredVoiceId = typeof initialSettings.voiceURI === "string" ? initialSettings.voiceURI : null;
+  let bootstrapAttempts = 0;
+  let bootstrapHandle = 0;
   let lastWord = "";
   let lastSpokenAt = 0;
+  const listeners = new Set();
   let lastRequest = {
     word: null,
     lang: null,
@@ -65,9 +68,11 @@ export function createSpeechManager(initialSettings = {}) {
     if (!synth) {
       englishVoices = [];
       selectedVoice = null;
-      return;
+      return false;
     }
 
+    const previousVoiceIds = englishVoices.map(getVoiceId).join("|");
+    const previousSelectedVoiceId = getVoiceId(selectedVoice);
     englishVoices = synth.getVoices().filter(isEnglishVoice);
     selectedVoice =
       englishVoices.find((voice) => getVoiceId(voice) === preferredVoiceId) ??
@@ -75,13 +80,48 @@ export function createSpeechManager(initialSettings = {}) {
         .slice()
         .sort((left, right) => rankVoice(right) - rankVoice(left))[0] ??
       null;
+    const nextVoiceIds = englishVoices.map(getVoiceId).join("|");
+    const nextSelectedVoiceId = getVoiceId(selectedVoice);
+
+    return previousVoiceIds !== nextVoiceIds || previousSelectedVoiceId !== nextSelectedVoiceId;
+  }
+
+  function notifyListeners() {
+    listeners.forEach((listener) => {
+      try {
+        listener();
+      } catch (error) {
+        console.warn("LootWords speech listener failed.", error);
+      }
+    });
+  }
+
+  function scheduleBootstrapRefresh() {
+    if (!synth || bootstrapAttempts >= 8) {
+      return;
+    }
+
+    bootstrapHandle = window.setTimeout(() => {
+      bootstrapAttempts += 1;
+      const changed = refreshVoices();
+      if (changed) {
+        notifyListeners();
+      }
+
+      if (!englishVoices.length) {
+        scheduleBootstrapRefresh();
+      }
+    }, bootstrapAttempts < 2 ? 120 : 320);
   }
 
   function handleVoicesChanged() {
-    refreshVoices();
+    if (refreshVoices()) {
+      notifyListeners();
+    }
   }
 
   refreshVoices();
+  scheduleBootstrapRefresh();
   synth?.addEventListener?.("voiceschanged", handleVoicesChanged);
 
   return {
@@ -96,6 +136,16 @@ export function createSpeechManager(initialSettings = {}) {
     },
     getSelectedVoiceId() {
       return getVoiceId(selectedVoice);
+    },
+    subscribe(listener) {
+      if (typeof listener !== "function") {
+        return () => {};
+      }
+
+      listeners.add(listener);
+      return () => {
+        listeners.delete(listener);
+      };
     },
     speakWordInEnglish(rawWord) {
       const word = normalizeWord(rawWord);
@@ -162,6 +212,8 @@ export function createSpeechManager(initialSettings = {}) {
       };
     },
     destroy() {
+      window.clearTimeout(bootstrapHandle);
+      listeners.clear();
       synth?.removeEventListener?.("voiceschanged", handleVoicesChanged);
       synth?.cancel?.();
     },

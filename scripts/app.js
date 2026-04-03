@@ -121,6 +121,9 @@ let router = null;
 let rewardRevealTimeout = 0;
 let cleanupLanguageSelector = () => {};
 let cleanupVoiceSelector = () => {};
+const cleanupSpeechSubscription = speech.subscribe(() => {
+  renderApp();
+});
 
 function clearRewardRevealTimeout() {
   if (rewardRevealTimeout) {
@@ -1319,6 +1322,7 @@ window.addEventListener("beforeunload", () => {
   clearRewardRevealTimeout();
   cleanupLanguageSelector();
   cleanupVoiceSelector();
+  cleanupSpeechSubscription();
   uiEffects.destroy();
   feedback.destroy();
   speech.destroy();

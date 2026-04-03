@@ -8,6 +8,8 @@ export function renderCollectionScreen(container, { cards, filters, progress, ac
   const recentCardIds = new Set(progress.recentCardIds);
   const categoryCountById = new Map(progress.categoryCounts.map((entry) => [entry.id, entry]));
   const categoryOptions = progress.categoryCounts;
+  const overlayRoot = document.createElement("div");
+  overlayRoot.className = "detail-modal-root";
 
   container.innerHTML = `
     <section class="collection-panel">
@@ -162,55 +164,56 @@ export function renderCollectionScreen(container, { cards, filters, progress, ac
       }
     </section>
 
-    ${
-      modalCard
-        ? `
-          <div class="detail-modal" data-close-modal="overlay">
-            <div class="detail-modal__dialog" role="dialog" aria-modal="true" aria-label="${t("collection.cardDetail")}">
-              <div class="detail-modal__top">
-                <div>
-                  <span class="small-label">${t("collection.cardDetail")}</span>
-                  <h3 class="section-title">${escapeHtml(modalCard.unlocked ? modalCard.word : t("common.mysteryCard"))}</h3>
-                </div>
-                <button class="secondary-button" type="button" data-close-modal="button">${t("common.close")}</button>
-              </div>
-              <div class="detail-grid">
-                ${renderDetailCard(modalCard, { isNew: recentCardIds.has(modalCard.id) })}
-                <div class="detail-copy detail-copy--album">
-                  <p class="section-copy">
-                    ${
-                      modalCard.unlocked
-                        ? t("collection.thisCardBelongs", { category: categoryLabel(modalCard.category), pack: packLabel(modalCard.packId ?? "starter") })
-                        : t("collection.silhouetteWaiting")
-                    }
-                  </p>
-                  <ul>
-                    <li>${modalCard.unlocked ? `${t("common.rarity")}: ${rarityLabel(modalCard.rarity)}` : t("collection.rarityHidden")}</li>
-                    <li>${modalCard.unlocked ? `${t("common.points")}: ${formatPoints(modalCard.points)}` : t("collection.pointsHidden")}</li>
-                    <li>${modalCard.unlocked ? `${t("common.difficulty")}: ${difficultyLabel(modalCard.difficultyLevel)}` : t("collection.difficultyHidden")}</li>
-                    <li>${modalCard.unlocked && modalCard.discoveredAt ? `${t("common.discovered")}: ${formatDate(modalCard.discoveredAt)}` : t("collection.playToEarnMore")}</li>
-                  </ul>
-                  ${
-                    modalCard.unlocked
-                      ? `
-                        <div class="pill-row">
-                          ${modalCard.tags.slice(0, 4).map((tag) => `<span class="card-category">${escapeHtml(tag.replace(/-/g, " "))}</span>`).join("")}
-                        </div>
-                      `
-                      : ""
-                  }
-                  <div class="cta-stack">
-                    <button class="primary-button" type="button" data-route="play" data-game="memory-match">${t("common.playForMoreLoot")}</button>
-                    <button class="ghost-button" type="button" data-route="reward">${t("common.openRewardRoom")}</button>
-                  </div>
-                </div>
+  `;
+
+  if (modalCard) {
+    overlayRoot.innerHTML = `
+      <div class="detail-modal" data-close-modal="overlay">
+        <div class="detail-modal__dialog" role="dialog" aria-modal="true" aria-label="${t("collection.cardDetail")}">
+          <div class="detail-modal__top">
+            <div>
+              <span class="small-label">${t("collection.cardDetail")}</span>
+              <h3 class="section-title">${escapeHtml(modalCard.unlocked ? modalCard.word : t("common.mysteryCard"))}</h3>
+            </div>
+            <button class="secondary-button" type="button" data-close-modal="button">${t("common.close")}</button>
+          </div>
+          <div class="detail-grid">
+            ${renderDetailCard(modalCard, { isNew: recentCardIds.has(modalCard.id) })}
+            <div class="detail-copy detail-copy--album">
+              <p class="section-copy">
+                ${
+                  modalCard.unlocked
+                    ? t("collection.thisCardBelongs", { category: categoryLabel(modalCard.category), pack: packLabel(modalCard.packId ?? "starter") })
+                    : t("collection.silhouetteWaiting")
+                }
+              </p>
+              <ul>
+                <li>${modalCard.unlocked ? `${t("common.rarity")}: ${rarityLabel(modalCard.rarity)}` : t("collection.rarityHidden")}</li>
+                <li>${modalCard.unlocked ? `${t("common.points")}: ${formatPoints(modalCard.points)}` : t("collection.pointsHidden")}</li>
+                <li>${modalCard.unlocked ? `${t("common.difficulty")}: ${difficultyLabel(modalCard.difficultyLevel)}` : t("collection.difficultyHidden")}</li>
+                <li>${modalCard.unlocked && modalCard.discoveredAt ? `${t("common.discovered")}: ${formatDate(modalCard.discoveredAt)}` : t("collection.playToEarnMore")}</li>
+              </ul>
+              ${
+                modalCard.unlocked
+                  ? `
+                    <div class="pill-row">
+                      ${modalCard.tags.slice(0, 4).map((tag) => `<span class="card-category">${escapeHtml(tag.replace(/-/g, " "))}</span>`).join("")}
+                    </div>
+                  `
+                  : ""
+              }
+              <div class="cta-stack">
+                <button class="primary-button" type="button" data-route="play" data-game="memory-match">${t("common.playForMoreLoot")}</button>
+                <button class="ghost-button" type="button" data-route="reward">${t("common.openRewardRoom")}</button>
               </div>
             </div>
           </div>
-        `
-        : ""
-    }
-  `;
+        </div>
+      </div>
+    `;
+    document.body.appendChild(overlayRoot);
+    document.body.classList.add("is-modal-open");
+  }
 
   container.querySelectorAll("[data-filter-key]").forEach((select) => {
     select.addEventListener("change", () => {
@@ -226,7 +229,7 @@ export function renderCollectionScreen(container, { cards, filters, progress, ac
     });
   });
 
-  container.querySelectorAll("[data-close-modal]").forEach((element) => {
+  overlayRoot.querySelectorAll("[data-close-modal]").forEach((element) => {
     element.addEventListener("click", (event) => {
       if (element.dataset.closeModal === "button" || event.target === element) {
         actions.closeCardModal();
@@ -234,14 +237,17 @@ export function renderCollectionScreen(container, { cards, filters, progress, ac
     });
   });
 
-  container.querySelectorAll("[data-route]").forEach((button) => {
+  overlayRoot.querySelectorAll("[data-route]").forEach((button) => {
     button.addEventListener("click", () => {
       actions.navigate(button.dataset.route, { game: button.dataset.game });
     });
   });
 
   return {
-    destroy() {},
+    destroy() {
+      overlayRoot.remove();
+      document.body.classList.remove("is-modal-open");
+    },
     getDebugState() {
       return {
         screen: "collection",

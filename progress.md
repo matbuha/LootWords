@@ -20,6 +20,8 @@ Latest prompt: Fix the reward reveal framing, move the game picker above the act
 
 Latest prompt: Refine card speech so only truly visible cards can speak, add selectable English voice styles, fix Flash Find preview hiding and Loot Pop hit detection, and redesign cards so the image dominates while only the word and points remain visible.
 
+Latest prompt: Fix voice list initialization after refresh, center collection card modals in the current viewport, keep the Russian top bar on one line, and replace the Memory Match plus sign with a real anonymous card-back state.
+
 ### Latest verified pass
 - Reward reveal framing was corrected so the revealed card now settles fully inside the spotlight area instead of appearing clipped or edge-on.
 - The Game tab hierarchy was adjusted so the game picker renders above the active arena on all routes where the play screen is shown.
@@ -30,6 +32,10 @@ Latest prompt: Refine card speech so only truly visible cards can speak, add sel
 - Added a top-bar English voice selector with persisted browser-voice choice and safe fallback if a preferred voice disappears later.
 - Flash Find now swaps from a real preview card to a hidden placeholder state, and Loot Pop now uses direct target timeouts plus pointer input for more reliable hit registration.
 - Simplified the shared card presentation so the artwork dominates and only the English word plus points remain in the visible info strip.
+- Speech voices now repopulate on fresh page load without needing a route change, using an async voice bootstrap plus live rerender when the browser voice list arrives.
+- Collection card details now render in a body-level fixed overlay, so the modal stays centered in the visible viewport even when the album is deeply scrolled.
+- Desktop Russian top bar now stays on one line by tightening no-wrap header sizing and truncating long secondary labels instead of wrapping the shell.
+- Memory Match hidden tiles now use a centered mystery card back with a large question mark instead of the old misplaced plus-sign placeholder.
 
 ## Progress Checklist
 
