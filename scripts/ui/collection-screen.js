@@ -137,7 +137,7 @@ export function renderCollectionScreen(container, { cards, filters, progress, ac
                         ${section.cards
                           .map(
                             (card) => `
-                              <button class="collection-card-button" type="button" data-card-id="${card.id}" data-speak-word="${escapeHtml(card.word)}" lang="en">
+                              <button class="collection-card-button" type="button" data-card-id="${card.id}">
                                 ${renderCard(card, {
                                   compact: true,
                                   isNew: recentCardIds.has(card.id),

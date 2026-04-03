@@ -1734,3 +1734,36 @@ mergeTranslations(TRANSLATIONS.ru, {
     },
   },
 });
+
+mergeTranslations(TRANSLATIONS.en, {
+  speechSelector: {
+    aria: "English voice selector",
+    defaultVoice: "Default",
+    unavailable: "No English voices",
+  },
+  play: {
+    flashTargetHidden: "The target is hidden now",
+  },
+});
+
+mergeTranslations(TRANSLATIONS.he, {
+  speechSelector: {
+    aria: "בחירת קול באנגלית",
+    defaultVoice: "ברירת מחדל",
+    unavailable: "אין קולות באנגלית",
+  },
+  play: {
+    flashTargetHidden: "הכרטיס הוסתר עכשיו",
+  },
+});
+
+mergeTranslations(TRANSLATIONS.ru, {
+  speechSelector: {
+    aria: "Выбор английского голоса",
+    defaultVoice: "По умолчанию",
+    unavailable: "Нет английских голосов",
+  },
+  play: {
+    flashTargetHidden: "Карта цели теперь скрыта",
+  },
+});

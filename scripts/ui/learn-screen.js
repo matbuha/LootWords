@@ -1,5 +1,5 @@
-import { CATEGORY_META, DIFFICULTY_META, LEARN_SORTS, PACK_META, RARITY_META } from "../data/config.js";
-import { categoryLabel, difficultyLabel, learnSortLabel, packLabel, rarityLabel, t } from "../core/i18n.js";
+import { LEARN_SORTS } from "../data/config.js";
+import { categoryLabel, learnSortLabel, t } from "../core/i18n.js";
 import { renderCard, renderDetailCard, renderEmptyState, escapeHtml, formatPoints } from "./ui-kit.js";
 
 export function renderLearnScreen(container, { unlockedCards, selectedCard, progress, learnFilters, actions }) {
@@ -38,16 +38,6 @@ export function renderLearnScreen(container, { unlockedCards, selectedCard, prog
           })}
           <div class="learn-guide">
             <p class="section-copy">${t("learn.sayWordHint")}</p>
-            <div class="pill-row">
-              <span class="card-category">${categoryLabel(selectedCard.category)}</span>
-              <span class="card-points">${t("common.pointsValue", { value: formatPoints(selectedCard.points) })}</span>
-              <span class="rarity-badge rarity-badge--inline">${rarityLabel(selectedCard.rarity)}</span>
-              <span class="card-scoreline">${difficultyLabel(selectedCard.difficultyLevel)}</span>
-            </div>
-            <div class="pill-row">
-              <span class="card-category">${packLabel(selectedCard.packId ?? "starter-pack")}</span>
-              ${selectedCard.tags.slice(0, 3).map((tag) => `<span class="card-category">${escapeHtml(tag.replace(/-/g, " "))}</span>`).join("")}
-            </div>
             <div class="cta-stack">
               <button class="secondary-button" type="button" data-learn-step="-1">${t("common.previous")}</button>
               <button class="primary-button" type="button" data-learn-step="1">${t("common.nextCard")}</button>
@@ -66,7 +56,7 @@ export function renderLearnScreen(container, { unlockedCards, selectedCard, prog
             ${unlockedCards
               .map(
                 (card) => `
-                  <button type="button" data-learn-card="${card.id}" data-speak-word="${escapeHtml(card.word)}" lang="en">
+                  <button type="button" data-learn-card="${card.id}">
                     ${renderCard(card, {
                       compact: true,
                       locked: false,

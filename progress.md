@@ -18,12 +18,18 @@ Latest prompt: Implement a complete multilingual UI system with Hebrew, English,
 
 Latest prompt: Fix the reward reveal framing, move the game picker above the active game, and add English-only click-to-hear pronunciation for any visible word card without breaking gameplay or language switching.
 
+Latest prompt: Refine card speech so only truly visible cards can speak, add selectable English voice styles, fix Flash Find preview hiding and Loot Pop hit detection, and redesign cards so the image dominates while only the word and points remain visible.
+
 ### Latest verified pass
 - Reward reveal framing was corrected so the revealed card now settles fully inside the spotlight area instead of appearing clipped or edge-on.
 - The Game tab hierarchy was adjusted so the game picker renders above the active arena on all routes where the play screen is shown.
 - Added a centralized browser speech-synthesis manager that always speaks the card's English word, independent of the current UI language.
 - Wired pronunciation to shared card renderers plus reward, collection, learn, and visible card-based mini-game surfaces.
 - Verified reward reveal framing, game-tab ordering, and English speech behavior in live browser runs across Hebrew, Russian, and English UI modes.
+- Tightened speech rules so locked collection cards and unrevealed Memory Match tiles stay silent, while visible revealed cards still speak.
+- Added a top-bar English voice selector with persisted browser-voice choice and safe fallback if a preferred voice disappears later.
+- Flash Find now swaps from a real preview card to a hidden placeholder state, and Loot Pop now uses direct target timeouts plus pointer input for more reliable hit registration.
+- Simplified the shared card presentation so the artwork dominates and only the English word plus points remain in the visible info strip.
 
 ## Progress Checklist
 

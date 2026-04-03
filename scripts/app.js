@@ -42,7 +42,7 @@ import { openRewardBox, recordGameLoss, recordGameWin } from "./core/rewards.js"
 import { createSpeechManager } from "./core/speech-manager.js";
 import { createStore } from "./core/state.js";
 import { createUiEffects } from "./core/ui-effects.js";
-import { updateAudioSettings, updateLanguageSettings } from "./core/settings-manager.js";
+import { updateAudioSettings, updateLanguageSettings, updateSpeechSettings } from "./core/settings-manager.js";
 import { getRandomGameId } from "./games/game-registry.js";
 import { createRouter, buildRoute } from "./router.js";
 import { loadProfile, saveProfile } from "./storage.js";
@@ -53,6 +53,7 @@ import { renderLearnScreen } from "./ui/learn-screen.js";
 import { renderLanguageSelector, wireLanguageSelector } from "./ui/language-selector.js";
 import { renderParentScreen } from "./ui/parent-screen.js";
 import { renderRewardScreen } from "./ui/reward-screen.js";
+import { renderVoiceSelector, wireVoiceSelector } from "./ui/voice-selector.js";
 
 const root = document.querySelector("#app");
 
@@ -109,7 +110,7 @@ const store = createStore({
 const audio = createAudioManager({
   settings: store.getState().profile.settings.audio,
 });
-const speech = createSpeechManager();
+const speech = createSpeechManager(store.getState().profile.settings.speech);
 const languageManager = createLanguageManager(store.getState().profile.settings.language);
 const eventBus = createEventBus();
 const feedback = createFeedbackManager({ audio, eventBus });
@@ -119,6 +120,7 @@ let activeScreen = null;
 let router = null;
 let rewardRevealTimeout = 0;
 let cleanupLanguageSelector = () => {};
+let cleanupVoiceSelector = () => {};
 
 function clearRewardRevealTimeout() {
   if (rewardRevealTimeout) {
@@ -213,6 +215,16 @@ function patchLanguage(language) {
     profile: {
       ...currentState.profile,
       settings: updateLanguageSettings(currentState.profile.settings, language),
+    },
+  });
+}
+
+function patchSpeechSettings(partialSpeech) {
+  return (currentState) => ({
+    ...currentState,
+    profile: {
+      ...currentState.profile,
+      settings: updateSpeechSettings(currentState.profile.settings, partialSpeech),
     },
   });
 }
@@ -657,6 +669,10 @@ const actions = {
   setLanguage(language) {
     commitState(patchLanguage(language));
   },
+  setSpeechVoice(voiceURI) {
+    speech.setPreferredVoice(voiceURI);
+    commitState(patchSpeechSettings({ voiceURI }));
+  },
   updateCollectionFilters(partialFilters) {
     feedback.trigger(FEEDBACK_EVENTS.filterChange);
     commitState((currentState) => ({
@@ -932,7 +948,15 @@ const SCREEN_RENDERERS = {
   [ROUTES.parent]: (container, context) => renderParentScreen(container, context),
 };
 
-function renderShell({ progress, parentSummary, currentRoute, audioSettings, navMotion }) {
+function renderShell({
+  progress,
+  parentSummary,
+  currentRoute,
+  audioSettings,
+  navMotion,
+  speechOptions,
+  selectedVoiceId,
+}) {
   if (currentRoute.path === ROUTES.parent) {
     return `
       <div class="app-shell app-shell--parent">
@@ -983,6 +1007,10 @@ function renderShell({ progress, parentSummary, currentRoute, audioSettings, nav
             <span class="parent-entry-button__label">${t("shell.parentMode")}</span>
           </a>
           ${renderLanguageSelector(languageManager.getLanguage())}
+          ${renderVoiceSelector({
+            selectedVoiceId,
+            voiceOptions: speechOptions,
+          })}
           <div class="audio-controls" aria-label="Audio controls">
             <button
               class="mute-toggle mute-toggle--icon ${audioSettings.muted ? "is-muted" : ""}"
@@ -1029,6 +1057,8 @@ function renderApp() {
   activeScreen = null;
   cleanupLanguageSelector();
   cleanupLanguageSelector = () => {};
+  cleanupVoiceSelector();
+  cleanupVoiceSelector = () => {};
   clearLastAppError();
 
   let derived;
@@ -1061,6 +1091,7 @@ function renderApp() {
 
   try {
     languageManager.setLanguage(state.profile.settings.language);
+    speech.setPreferredVoice(state.profile.settings.speech?.voiceURI ?? null);
     document.body.dataset.route = state.route.path;
 
     root.innerHTML = renderShell({
@@ -1069,6 +1100,8 @@ function renderApp() {
       currentRoute: state.route,
       audioSettings: state.profile.settings.audio,
       navMotion: state.session.navMotion,
+      speechOptions: speech.getVoiceOptions(),
+      selectedVoiceId: state.profile.settings.speech?.voiceURI ?? speech.getSelectedVoiceId(),
     });
 
     feedback.syncRoute(state.route.path);
@@ -1090,6 +1123,13 @@ function renderApp() {
         feedback.trigger(FEEDBACK_EVENTS.buttonClick, {
           audioOptions: { throttleMs: 0 },
         });
+      },
+    });
+
+    cleanupVoiceSelector = wireVoiceSelector(root, {
+      currentVoiceId: state.profile.settings.speech?.voiceURI ?? speech.getSelectedVoiceId(),
+      onSelect(voiceId) {
+        actions.setSpeechVoice(voiceId);
       },
     });
 
@@ -1278,6 +1318,7 @@ window.advanceTime = (milliseconds) => {
 window.addEventListener("beforeunload", () => {
   clearRewardRevealTimeout();
   cleanupLanguageSelector();
+  cleanupVoiceSelector();
   uiEffects.destroy();
   feedback.destroy();
   speech.destroy();

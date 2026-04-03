@@ -29,10 +29,28 @@ function rankVoice(voice) {
   return score;
 }
 
-export function createSpeechManager() {
+function getVoiceId(voice) {
+  return voice?.voiceURI || voice?.name || null;
+}
+
+function buildVoiceOptions(voices) {
+  return voices
+    .slice()
+    .sort((left, right) => rankVoice(right) - rankVoice(left))
+    .map((voice) => ({
+      id: getVoiceId(voice),
+      label: voice.name,
+      lang: voice.lang,
+      default: Boolean(voice.default),
+      localService: Boolean(voice.localService),
+    }));
+}
+
+export function createSpeechManager(initialSettings = {}) {
   const synth = window.speechSynthesis ?? null;
   let englishVoices = [];
   let selectedVoice = null;
+  let preferredVoiceId = typeof initialSettings.voiceURI === "string" ? initialSettings.voiceURI : null;
   let lastWord = "";
   let lastSpokenAt = 0;
   let lastRequest = {
@@ -51,9 +69,12 @@ export function createSpeechManager() {
     }
 
     englishVoices = synth.getVoices().filter(isEnglishVoice);
-    selectedVoice = englishVoices
-      .slice()
-      .sort((left, right) => rankVoice(right) - rankVoice(left))[0] ?? null;
+    selectedVoice =
+      englishVoices.find((voice) => getVoiceId(voice) === preferredVoiceId) ??
+      englishVoices
+        .slice()
+        .sort((left, right) => rankVoice(right) - rankVoice(left))[0] ??
+      null;
   }
 
   function handleVoicesChanged() {
@@ -64,6 +85,18 @@ export function createSpeechManager() {
   synth?.addEventListener?.("voiceschanged", handleVoicesChanged);
 
   return {
+    getVoiceOptions() {
+      refreshVoices();
+      return buildVoiceOptions(englishVoices);
+    },
+    setPreferredVoice(voiceId) {
+      preferredVoiceId = typeof voiceId === "string" && voiceId.trim() ? voiceId.trim() : null;
+      refreshVoices();
+      return preferredVoiceId;
+    },
+    getSelectedVoiceId() {
+      return getVoiceId(selectedVoice);
+    },
     speakWordInEnglish(rawWord) {
       const word = normalizeWord(rawWord);
       if (!synth || !word) {
@@ -123,6 +156,8 @@ export function createSpeechManager() {
         supported: Boolean(synth),
         englishVoiceCount: englishVoices.length,
         selectedVoice: selectedVoice?.name ?? null,
+        selectedVoiceId: getVoiceId(selectedVoice),
+        preferredVoiceId,
         lastRequest,
       };
     },

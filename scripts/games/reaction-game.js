@@ -23,6 +23,7 @@ export function mountReactionGame(container, { onWin, onLose, playSound }) {
   };
 
   let loopHandle = 0;
+  let targetTimeoutHandle = 0;
   let finalized = false;
 
   function finalize(status) {
@@ -31,6 +32,7 @@ export function mountReactionGame(container, { onWin, onLose, playSound }) {
     }
 
     finalized = true;
+    window.clearTimeout(targetTimeoutHandle);
     state = { ...state, status };
 
     if (status === "won") {
@@ -50,12 +52,27 @@ export function mountReactionGame(container, { onWin, onLose, playSound }) {
   }
 
   function spawnNextTarget() {
+    window.clearTimeout(targetTimeoutHandle);
     state = {
       ...state,
       activePad: randomPadIndex(state.activePad),
       targetTtlMs: 860,
       pulseMs: 220,
     };
+
+    targetTimeoutHandle = window.setTimeout(() => {
+      if (state.status !== "playing") {
+        return;
+      }
+
+      state = {
+        ...state,
+        combo: 0,
+        misses: state.misses + 1,
+      };
+      spawnNextTarget();
+      render();
+    }, 860);
   }
 
   function tick(deltaMs) {
@@ -76,15 +93,6 @@ export function mountReactionGame(container, { onWin, onLose, playSound }) {
     if (state.hits >= state.goalHits) {
       finalize("won");
       return;
-    }
-
-    if (state.targetTtlMs === 0) {
-      state = {
-        ...state,
-        combo: 0,
-        misses: state.misses + 1,
-      };
-      spawnNextTarget();
     }
 
     if (state.timerMs <= 0) {
@@ -148,7 +156,8 @@ export function mountReactionGame(container, { onWin, onLose, playSound }) {
     `;
 
     container.querySelectorAll("[data-pad-index]").forEach((button) => {
-      button.addEventListener("click", () => {
+      button.addEventListener("pointerdown", (event) => {
+        event.preventDefault();
         handleTap(Number(button.dataset.padIndex));
       });
     });
@@ -164,6 +173,7 @@ export function mountReactionGame(container, { onWin, onLose, playSound }) {
       return;
     }
 
+    window.clearTimeout(targetTimeoutHandle);
     playSound("success");
     const nextCombo = state.combo + 1;
     state = {
@@ -189,12 +199,14 @@ export function mountReactionGame(container, { onWin, onLose, playSound }) {
     }
   }
 
+  spawnNextTarget();
   render();
   loopHandle = window.setInterval(runLoop, 100);
 
   return {
     destroy() {
       window.clearInterval(loopHandle);
+      window.clearTimeout(targetTimeoutHandle);
     },
     advanceTime(milliseconds) {
       tick(milliseconds);

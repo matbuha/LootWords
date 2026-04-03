@@ -34,13 +34,26 @@ function normalizeLanguage(language) {
   return SUPPORTED_LANGUAGES.includes(language) ? language : DEFAULT_LANGUAGE;
 }
 
+function normalizeSpeechSettings(rawSettings = {}) {
+  const rawSpeech = rawSettings.speech && typeof rawSettings.speech === "object" ? rawSettings.speech : {};
+  const voiceURI = typeof rawSpeech.voiceURI === "string" && rawSpeech.voiceURI.trim()
+    ? rawSpeech.voiceURI.trim()
+    : null;
+
+  return {
+    voiceURI,
+  };
+}
+
 export function normalizeSettings(rawSettings = {}) {
   const audio = normalizeAudioSettings(rawSettings);
+  const speech = normalizeSpeechSettings(rawSettings);
 
   return {
     language: normalizeLanguage(rawSettings.language),
     audioMuted: audio.muted,
     audio,
+    speech,
   };
 }
 
@@ -66,5 +79,15 @@ export function updateLanguageSettings(currentSettings = {}, language) {
   return normalizeSettings({
     ...currentSettings,
     language,
+  });
+}
+
+export function updateSpeechSettings(currentSettings = {}, partialSpeech = {}) {
+  return normalizeSettings({
+    ...currentSettings,
+    speech: {
+      ...(currentSettings.speech ?? {}),
+      ...partialSpeech,
+    },
   });
 }

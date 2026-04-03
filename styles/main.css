@@ -526,7 +526,8 @@ a {
 .detail-card {
   position: relative;
   display: grid;
-  gap: 14px;
+  grid-template-rows: minmax(0, 1fr) auto;
+  gap: 10px;
   min-height: 250px;
   padding: 18px;
   border-radius: 24px;
@@ -1626,23 +1627,6 @@ body.is-feedback-legendary .route-glow::after {
   transform: rotate(18deg);
 }
 
-.card-chip-row,
-.card-score-stack,
-.card-title-row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-
-.card-chip-row {
-  align-items: flex-start;
-}
-
-.card-score-stack {
-  justify-content: flex-end;
-}
-
 .card-fanfare {
   display: inline-flex;
   align-items: center;
@@ -1658,6 +1642,13 @@ body.is-feedback-legendary .route-glow::after {
   box-shadow: 0 10px 18px rgba(255, 165, 90, 0.22);
 }
 
+.card-fanfare--corner {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 3;
+}
+
 .card-points,
 .card-category,
 .card-tag,
@@ -1665,17 +1656,16 @@ body.is-feedback-legendary .route-glow::after {
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
-.rarity-badge,
-.rarity-badge--inline {
-  background: var(--rarity-badge-bg);
-  color: var(--rarity-badge-text);
-  box-shadow: 0 10px 18px var(--rarity-shadow);
-}
-
 .card-art {
   position: relative;
   overflow: hidden;
   min-height: 132px;
+}
+
+.card-art--hero {
+  min-height: 0;
+  height: 100%;
+  border-radius: 22px;
 }
 
 .card-art__backdrop,
@@ -1697,6 +1687,7 @@ body.is-feedback-legendary .route-glow::after {
   display: grid;
   place-items: center;
   min-height: 132px;
+  height: 100%;
 }
 
 .card-art__burst {
@@ -1710,31 +1701,40 @@ body.is-feedback-legendary .route-glow::after {
   z-index: 1;
   text-shadow: 0 10px 24px rgba(0, 0, 0, 0.24);
   animation: iconBob 3.6s ease-in-out infinite;
+  font-size: clamp(4rem, 7vw, 6rem);
 }
 
-.card-title-row {
+.card-info-row {
+  display: flex;
+  align-items: center;
   justify-content: space-between;
-  align-items: baseline;
+  gap: 12px;
+  min-height: 46px;
+  padding: 10px 12px;
+  border-radius: 18px;
+  background: rgba(7, 12, 32, 0.42);
+  border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-.card-scoreline {
+.card-points--compact {
   min-height: 30px;
-  padding: 0 12px;
+  padding: 0 10px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.12);
   color: var(--text-strong);
   font-size: 0.8rem;
+  white-space: nowrap;
 }
 
-.detail-card__body,
-.loot-card__body {
-  display: grid;
-  gap: 10px;
-  align-content: start;
+.card-art__locked {
+  align-content: center;
 }
 
-.detail-card__body .card-scoreline {
-  background: rgba(255, 255, 255, 0.1);
+.card-art__locked strong {
+  width: 84px;
+  height: 84px;
+  border-radius: 26px;
+  font-size: 2.6rem;
 }
 
 .rarity-chip[data-rarity="common"] {
@@ -2972,8 +2972,8 @@ body.is-feedback-legendary .route-glow::after {
 }
 
 .flash-find-stage__spotlight.is-hidden {
-  opacity: 0.28;
-  transform: scale(0.96);
+  opacity: 1;
+  transform: none;
 }
 
 .flash-find-stage__spotlight.is-preview .target-card--spotlight {
@@ -2981,6 +2981,15 @@ body.is-feedback-legendary .route-glow::after {
     0 0 0 1px rgba(255, 222, 136, 0.2),
     0 20px 34px rgba(15, 11, 38, 0.28),
     0 0 28px rgba(255, 211, 112, 0.18);
+}
+
+.target-card--hidden {
+  opacity: 0.88;
+}
+
+.target-card--hidden .target-card__icon {
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(255, 255, 255, 0.72);
 }
 
 .flash-find-stage__prompt {

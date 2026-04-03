@@ -188,15 +188,29 @@ export function mountFlashFindGame(container, { cards, onWin, onLose, playSound 
         <div class="game-surface">
           <div class="flash-find-stage">
             <div class="flash-find-stage__spotlight ${previewPhase ? "is-preview" : "is-hidden"}">
-              <div class="target-card target-card--spotlight" data-speak-word="${state.currentRound.target.word}" lang="en">
-                <div class="target-card__icon" aria-hidden="true">${state.currentRound.target.icon}</div>
-                <div class="target-card__copy">
-                  <span class="small-label">${t("common.rememberThis")}</span>
-                  <strong>${state.currentRound.target.word}</strong>
-                  <span>${t("common.pointsValue", { value: formatPoints(state.currentRound.target.points) })}</span>
-                </div>
-                <div class="target-card__meta">${previewPhase ? t("common.preview") : t("common.hiddenLabel")}</div>
-              </div>
+              ${
+                previewPhase
+                  ? `
+                    <div class="target-card target-card--spotlight" data-speak-word="${state.currentRound.target.word}" lang="en">
+                      <div class="target-card__icon" aria-hidden="true">${state.currentRound.target.icon}</div>
+                      <div class="target-card__copy">
+                        <span class="small-label">${t("common.rememberThis")}</span>
+                        <strong>${state.currentRound.target.word}</strong>
+                        <span>${t("common.pointsValue", { value: formatPoints(state.currentRound.target.points) })}</span>
+                      </div>
+                      <div class="target-card__meta">${t("common.preview")}</div>
+                    </div>
+                  `
+                  : `
+                    <div class="target-card target-card--spotlight target-card--hidden" aria-hidden="true">
+                      <div class="target-card__icon" aria-hidden="true">?</div>
+                      <div class="target-card__copy">
+                        <span class="small-label">${t("common.hiddenLabel")}</span>
+                        <strong>${t("play.flashTargetHidden")}</strong>
+                      </div>
+                    </div>
+                  `
+              }
             </div>
 
             <div class="flash-find-stage__prompt">
