@@ -16,6 +16,15 @@ Latest prompt: Define and implement the visual identity, animation language, tac
 
 Latest prompt: Implement a complete multilingual UI system with Hebrew, English, and Russian, including a top language selector, persisted language settings, proper RTL/LTR switching, and stable flag placement that does not flip under direction changes.
 
+Latest prompt: Fix the reward reveal framing, move the game picker above the active game, and add English-only click-to-hear pronunciation for any visible word card without breaking gameplay or language switching.
+
+### Latest verified pass
+- Reward reveal framing was corrected so the revealed card now settles fully inside the spotlight area instead of appearing clipped or edge-on.
+- The Game tab hierarchy was adjusted so the game picker renders above the active arena on all routes where the play screen is shown.
+- Added a centralized browser speech-synthesis manager that always speaks the card's English word, independent of the current UI language.
+- Wired pronunciation to shared card renderers plus reward, collection, learn, and visible card-based mini-game surfaces.
+- Verified reward reveal framing, game-tab ordering, and English speech behavior in live browser runs across Hebrew, Russian, and English UI modes.
+
 ## Progress Checklist
 
 ### Phase 1: Foundation

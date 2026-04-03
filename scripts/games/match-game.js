@@ -128,7 +128,7 @@ export function mountMatchGame(container, { cards, onWin, onLose, playSound }) {
         </div>
         <div class="game-surface">
           <div class="match-stage">
-            <div class="target-card">
+            <div class="target-card" data-speak-word="${target.word}" lang="en">
               <div class="target-card__icon" aria-hidden="true">${target.icon}</div>
               <div class="target-card__copy">
                 <span class="small-label">${t("common.targetCard")}</span>
@@ -148,7 +148,7 @@ export function mountMatchGame(container, { cards, onWin, onLose, playSound }) {
                         : "";
 
                   return `
-                    <button class="match-option ${optionState}" type="button" data-card-id="${option.id}">
+                    <button class="match-option ${optionState}" type="button" data-card-id="${option.id}" data-speak-word="${option.word}" lang="en">
                       <span class="tile-card">
                         <span class="tile-card__icon" aria-hidden="true">${option.icon}</span>
                         <span class="tile-card__word">${option.word}</span>

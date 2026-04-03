@@ -152,7 +152,7 @@ export function mountFlashFindGame(container, { cards, onWin, onLose, playSound 
               : "";
 
         return `
-          <button class="match-option flash-option ${optionState}" type="button" data-card-id="${card.id}">
+          <button class="match-option flash-option ${optionState}" type="button" data-card-id="${card.id}" data-speak-word="${card.word}" lang="en">
             <span class="tile-card">
               <span class="tile-card__icon" aria-hidden="true">${card.icon}</span>
               <span class="tile-card__word">${card.word}</span>
@@ -188,7 +188,7 @@ export function mountFlashFindGame(container, { cards, onWin, onLose, playSound 
         <div class="game-surface">
           <div class="flash-find-stage">
             <div class="flash-find-stage__spotlight ${previewPhase ? "is-preview" : "is-hidden"}">
-              <div class="target-card target-card--spotlight">
+              <div class="target-card target-card--spotlight" data-speak-word="${state.currentRound.target.word}" lang="en">
                 <div class="target-card__icon" aria-hidden="true">${state.currentRound.target.icon}</div>
                 <div class="target-card__copy">
                   <span class="small-label">${t("common.rememberThis")}</span>

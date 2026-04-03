@@ -543,6 +543,10 @@ a {
   transform: translateY(-4px) rotateX(4deg);
 }
 
+[data-speak-word] {
+  cursor: pointer;
+}
+
 .loot-card[data-rarity="common"],
 .detail-card[data-rarity="common"] { background: linear-gradient(160deg, rgba(83, 196, 255, 0.16), rgba(42, 28, 99, 0.95)); }
 .loot-card[data-rarity="rare"],
@@ -722,6 +726,10 @@ a {
 .reward-box-stage,
 .reward-reveal {
   align-content: start;
+}
+
+.reward-reveal {
+  justify-items: center;
 }
 
 .screen-stack--play {
@@ -2031,10 +2039,24 @@ body.is-feedback-legendary .route-glow::after {
   position: relative;
   display: grid;
   gap: 18px;
+  width: 100%;
+}
+
+.reward-reveal__spin {
+  display: block;
+  width: 100%;
 }
 
 .reward-reveal__card--showcase .detail-card {
+  width: 100%;
+  max-width: none;
+  transform: none;
+  transform-style: flat;
   animation: rewardCardReveal 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.reward-reveal__card--showcase .detail-card:hover {
+  transform: none;
 }
 
 .reward-reveal__burst {

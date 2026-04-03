@@ -122,7 +122,7 @@ export function mountMemoryGame(container, { cards, onWin, onLose, playSound }) 
               .map(
                 (tile) => `
                   <div class="memory-tile ${tile.revealed ? "is-revealed" : ""} ${tile.matched ? "is-matched" : ""}">
-                    <button class="tile-button" type="button" data-tile-id="${tile.tileId}" aria-label="${t("common.memoryTileAria")}">
+                    <button class="tile-button" type="button" data-tile-id="${tile.tileId}" data-speak-word="${tile.card.word}" lang="en" aria-label="${t("common.memoryTileAria")}">
                       <span class="tile-face tile-face--back"></span>
                       <span class="tile-face tile-face--front">
                         <span class="tile-card">

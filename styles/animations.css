@@ -95,24 +95,24 @@
 }
 
 @keyframes rewardCardSpinCommon {
-  0% { transform: rotateZ(-28deg) rotateY(-30deg); }
-  100% { transform: rotateZ(0deg) rotateY(0deg); }
+  0% { transform: rotateZ(-24deg) scale(0.94); }
+  100% { transform: rotateZ(0deg) scale(1); }
 }
 
 @keyframes rewardCardSpinRare {
-  0% { transform: rotateZ(-180deg) rotateY(-150deg); }
-  100% { transform: rotateZ(0deg) rotateY(0deg); }
+  0% { transform: rotateZ(-220deg) scale(0.9); }
+  100% { transform: rotateZ(0deg) scale(1); }
 }
 
 @keyframes rewardCardSpinEpic {
-  0% { transform: rotateZ(-360deg) rotateY(-320deg); }
-  100% { transform: rotateZ(0deg) rotateY(0deg); }
+  0% { transform: rotateZ(-420deg) scale(0.88); }
+  100% { transform: rotateZ(0deg) scale(1); }
 }
 
 @keyframes rewardCardSpinLegendary {
-  0% { transform: rotateZ(-620deg) rotateY(-540deg) scale(0.88); }
-  70% { transform: rotateZ(24deg) rotateY(14deg) scale(1.04); }
-  100% { transform: rotateZ(0deg) rotateY(0deg) scale(1); }
+  0% { transform: rotateZ(-620deg) scale(0.82); }
+  70% { transform: rotateZ(18deg) scale(1.04); }
+  100% { transform: rotateZ(0deg) scale(1); }
 }
 
 @keyframes rewardShadowGrow {

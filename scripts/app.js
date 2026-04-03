@@ -39,6 +39,7 @@ import {
   resetSettingsState,
 } from "./core/reset-manager.js";
 import { openRewardBox, recordGameLoss, recordGameWin } from "./core/rewards.js";
+import { createSpeechManager } from "./core/speech-manager.js";
 import { createStore } from "./core/state.js";
 import { createUiEffects } from "./core/ui-effects.js";
 import { updateAudioSettings, updateLanguageSettings } from "./core/settings-manager.js";
@@ -108,6 +109,7 @@ const store = createStore({
 const audio = createAudioManager({
   settings: store.getState().profile.settings.audio,
 });
+const speech = createSpeechManager();
 const languageManager = createLanguageManager(store.getState().profile.settings.language);
 const eventBus = createEventBus();
 const feedback = createFeedbackManager({ audio, eventBus });
@@ -1196,6 +1198,15 @@ function primeAudioFromInteraction() {
   feedback.prime();
 }
 
+function handleCardSpeech(event) {
+  const speakableTarget = event.target.closest?.("[data-speak-word]");
+  if (!speakableTarget || !root.contains(speakableTarget)) {
+    return;
+  }
+
+  speech.speakWordInEnglish(speakableTarget.dataset.speakWord);
+}
+
 document.addEventListener("pointerdown", primeAudioFromInteraction, {
   passive: true,
   capture: true,
@@ -1203,6 +1214,7 @@ document.addEventListener("pointerdown", primeAudioFromInteraction, {
 document.addEventListener("keydown", primeAudioFromInteraction, {
   capture: true,
 });
+root.addEventListener("click", handleCardSpeech, true);
 
 languageManager.apply();
 
@@ -1238,6 +1250,7 @@ window.render_game_to_text = () => {
       sfxEnabled: state.profile.settings.audio.sfxEnabled,
       debug: feedback.getDebugState(),
     },
+    speech: speech.getDebugState(),
     reward: {
       clicks: state.session.reward.clicks,
       phase: state.session.reward.phase,
@@ -1267,6 +1280,7 @@ window.addEventListener("beforeunload", () => {
   cleanupLanguageSelector();
   uiEffects.destroy();
   feedback.destroy();
+  speech.destroy();
   eventBus.clear();
 });
 

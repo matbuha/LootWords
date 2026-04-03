@@ -504,6 +504,11 @@
     padding: 10px;
   }
 
+  .reward-panel--revealed .reward-reveal,
+  .reward-panel--opening .reward-reveal {
+    order: -1;
+  }
+
   .reward-box-button {
     width: min(230px, 78%);
   }

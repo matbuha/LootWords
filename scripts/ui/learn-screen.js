@@ -66,7 +66,7 @@ export function renderLearnScreen(container, { unlockedCards, selectedCard, prog
             ${unlockedCards
               .map(
                 (card) => `
-                  <button type="button" data-learn-card="${card.id}">
+                  <button type="button" data-learn-card="${card.id}" data-speak-word="${escapeHtml(card.word)}" lang="en">
                     ${renderCard(card, {
                       compact: true,
                       locked: false,

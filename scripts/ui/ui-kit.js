@@ -17,6 +17,9 @@ function renderCardShell(card, { locked, compact, spotlight, isNew }) {
   const rarityText = rarityLabel(card.rarity);
   const cardName = locked ? t("common.mysteryCard") : card.word;
   const subtitle = locked ? t("common.unlockToRevealWord") : t("common.lootCard", { rarity: rarityText });
+  const speakAttributes = !locked && card.word
+    ? ` data-speak-word="${escapeHtml(card.word)}" lang="en" `
+    : "";
 
   return `
     <article
@@ -26,6 +29,7 @@ function renderCardShell(card, { locked, compact, spotlight, isNew }) {
       data-pack="${escapeHtml(card.packId ?? "starter-pack")}"
       data-difficulty="${escapeHtml(card.difficultyLevel ?? 1)}"
       data-image-mode="${escapeHtml(card.imageMode ?? "placeholder-icon")}"
+      ${speakAttributes}
     >
       <div class="card-halo" aria-hidden="true">
         <span class="card-halo__ring"></span>

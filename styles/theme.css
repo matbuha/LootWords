@@ -503,6 +503,9 @@ body::after {
   position: relative;
   min-height: 420px;
   perspective: 1500px;
+  width: min(100%, 360px);
+  margin-inline: auto;
+  overflow: visible;
 }
 
 .reward-reveal__flash-disk {
@@ -525,11 +528,13 @@ body::after {
 
 .reward-reveal__launch {
   position: absolute;
-  inset: 8% 50% auto 50%;
-  width: min(310px, 74vw);
+  top: 8%;
+  left: 50%;
+  width: min(280px, calc(100% - 24px));
   transform: translate(-50%, 160px) scale(0.42);
   opacity: 0;
   transform-style: preserve-3d;
+  transform-origin: center center;
 }
 
 .reward-reveal__spin {
@@ -550,7 +555,7 @@ body::after {
 }
 
 .reward-reveal__card--showcase {
-  max-width: min(100%, 310px);
+  max-width: min(100%, 280px);
   margin: 0 auto;
 }
 
@@ -627,6 +632,6 @@ body::after {
   }
 
   .reward-reveal__launch {
-    width: min(280px, 78vw);
+    width: min(250px, calc(100% - 20px));
   }
 }

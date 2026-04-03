@@ -16,7 +16,7 @@ function renderRewardCardShowcase(card, { isNew = false } = {}) {
           <span></span>
           <span></span>
         </div>
-        <div class="reward-reveal__launch">
+        <div class="reward-reveal__launch" data-rarity="${card.rarity}">
           <div class="reward-reveal__spin">
             ${renderDetailCard(card, { locked: false, isNew })}
           </div>
