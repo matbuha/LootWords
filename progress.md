@@ -499,6 +499,14 @@ Latest prompt: Fix voice list initialization after refresh, center collection ca
   - correct ordered taps clear rounds and a wrong tap cleanly loses the run
   - the three-round run pays out reward boxes through the normal win path
   - the phone layout was compressed so the status area plus 2x2 board stay inside the initial viewport
+- 2026-04-04: Added a new progressive-guessing game, `image-reveal`, that uncovers a target picture step by step behind a 3x3 tile mask while the player chooses from a small image-first answer set.
+- 2026-04-04: Integrated `image-reveal` into the shared active-game flow, including the universal 3-second countdown, post-answer English speech reinforcement, replay/back behavior, and normal reward payout after a successful five-round run.
+- 2026-04-04: Verified in-browser after the Image Reveal pass:
+  - the new game appears in the Play selection view and opens through the focused active-game route
+  - the reveal mask opens in clear steps and does not leak the answer through speech before guessing
+  - correct guesses speak the English target word after resolution, and wrong/time-out rounds also reveal the answer with English speech
+  - the five-round run wins at 4+ correct guesses and loses below that threshold
+  - the phone layout was compressed so the reveal area plus answer row fit inside the first viewport in Hebrew, Russian, and English UI modes
 
 - 2026-03-30: Read the repo baseline and loaded the local frontend/game workflow skills.
 - 2026-03-30: Created the requested directory structure under `lootwords/`.
@@ -630,7 +638,7 @@ Latest prompt: Fix voice list initialization after refresh, center collection ca
   - `starter-daily`: home, clothes, school, kitchen, bathroom
   - `starter-world`: animals, food, nature, city, people/jobs
   - `starter-adventure`: vehicles, toys, fantasy, sports
-- Replayability now uses a registry-driven game layer with seven active mini-games:
+- Replayability now uses a registry-driven game layer with eight active mini-games:
   - `memory-match`
   - `picture-match`
   - `flash-find`
@@ -638,6 +646,7 @@ Latest prompt: Fix voice list initialization after refresh, center collection ca
   - `tap-the-word`
   - `repeat-after-me`
   - `sequence-memory`
+  - `image-reveal`
 - Parent Mode now uses a dedicated admin layer with these main modules:
   - `lootwords/scripts/core/parent-mode.js`
   - `lootwords/scripts/core/content-validator.js`

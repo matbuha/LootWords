@@ -1,5 +1,6 @@
 import { GAME_CONFIG } from "../data/config.js";
 import { mountFlashFindGame } from "./quick-select-game.js";
+import { mountImageRevealGame } from "./image-reveal-game.js";
 import { mountMatchGame } from "./match-game.js";
 import { mountMemoryGame } from "./memory-game.js";
 import { mountReactionGame } from "./reaction-game.js";
@@ -11,6 +12,7 @@ const GAME_MOUNTS = {
   "memory-match": mountMemoryGame,
   "picture-match": mountMatchGame,
   "flash-find": mountFlashFindGame,
+  "image-reveal": mountImageRevealGame,
   "loot-pop": mountReactionGame,
   "repeat-after-me": mountRepeatAfterMeGame,
   "sequence-memory": mountSequenceMemoryGame,

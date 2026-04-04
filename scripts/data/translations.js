@@ -2049,3 +2049,90 @@ mergeTranslations(TRANSLATIONS.ru, {
     sequenceMemoryUnavailableBody: "Открой или включи ещё несколько карточек, чтобы собрать полный раунд последовательности.",
   },
 });
+
+mergeTranslations(TRANSLATIONS.en, {
+  games: {
+    "image-reveal": {
+      label: "Image Reveal",
+      shortLabel: "Reveal",
+      lengthLabel: "5 rounds",
+      energyLabel: "Visual clues",
+      description: "Watch the hidden picture appear step by step, then guess the right card.",
+      rewardText: "Win the run for one reward box",
+    },
+  },
+  play: {
+    imageRevealTitle: "Image Reveal",
+    imageRevealBody: "Watch the picture appear, then pick the right card as early as you can.",
+    imageRevealEyebrow: "Look carefully",
+    imageRevealWatch: "Watch the picture appear",
+    imageRevealGuess: "Make your guess",
+    imageRevealCorrect: "You found it",
+    imageRevealMissed: "The picture was {word}",
+    imageRevealWatchBody: "More of the picture will appear in a moment.",
+    imageRevealGuessBody: "You can answer now or wait for a few more clues.",
+    imageRevealCorrectBody: "That was {word}. Nice early guess.",
+    imageRevealMissedBody: "The correct card was {word}.",
+    imageRevealClue: "Clue: {value}",
+    imageRevealUnavailableTitle: "Image Reveal needs more cards",
+    imageRevealUnavailableBody: "Unlock or enable a few more cards to build a full reveal round.",
+  },
+});
+
+mergeTranslations(TRANSLATIONS.he, {
+  games: {
+    "image-reveal": {
+      label: "חשיפת תמונה",
+      shortLabel: "חשיפה",
+      lengthLabel: "5 סיבובים",
+      energyLabel: "רמזים חזותיים",
+      description: "צפה בתמונה הנסתרת נחשפת צעד אחר צעד, ואז נחש את הכרטיס הנכון.",
+      rewardText: "נצח בריצה וקבל קופסת פרס",
+    },
+  },
+  play: {
+    imageRevealTitle: "חשיפת תמונה",
+    imageRevealBody: "צפה בתמונה נחשפת, ואז בחר את הכרטיס הנכון מוקדם ככל שאפשר.",
+    imageRevealEyebrow: "מסתכלים היטב",
+    imageRevealWatch: "צפה בתמונה נחשפת",
+    imageRevealGuess: "זה הזמן לנחש",
+    imageRevealCorrect: "זיהית נכון",
+    imageRevealMissed: "התמונה הייתה {word}",
+    imageRevealWatchBody: "עוד חלק מהתמונה ייחשף בעוד רגע.",
+    imageRevealGuessBody: "אפשר לענות עכשיו או לחכות לעוד כמה רמזים.",
+    imageRevealCorrectBody: "זו הייתה {word}. ניחוש מצוין.",
+    imageRevealMissedBody: "הכרטיס הנכון היה {word}.",
+    imageRevealClue: "רמז: {value}",
+    imageRevealUnavailableTitle: "צריך עוד כרטיסים",
+    imageRevealUnavailableBody: "פתח או הפעל עוד כמה כרטיסים כדי לבנות סיבוב חשיפה מלא.",
+  },
+});
+
+mergeTranslations(TRANSLATIONS.ru, {
+  games: {
+    "image-reveal": {
+      label: "Открытие картинки",
+      shortLabel: "Открытие",
+      lengthLabel: "5 раундов",
+      energyLabel: "Визуальные подсказки",
+      description: "Смотри, как скрытая картинка открывается шаг за шагом, а потом угадай правильную карточку.",
+      rewardText: "Победи в забеге и получи один бокс",
+    },
+  },
+  play: {
+    imageRevealTitle: "Открытие картинки",
+    imageRevealBody: "Смотри, как появляется картинка, и выбери правильную карточку как можно раньше.",
+    imageRevealEyebrow: "Смотри внимательно",
+    imageRevealWatch: "Смотри, как появляется картинка",
+    imageRevealGuess: "Теперь угадывай",
+    imageRevealCorrect: "Ты угадал",
+    imageRevealMissed: "Это была {word}",
+    imageRevealWatchBody: "Сейчас откроется ещё немного картинки.",
+    imageRevealGuessBody: "Можно отвечать уже сейчас или подождать ещё пару подсказок.",
+    imageRevealCorrectBody: "Это было {word}. Отличное раннее угадывание.",
+    imageRevealMissedBody: "Правильная карточка была {word}.",
+    imageRevealClue: "Подсказка: {value}",
+    imageRevealUnavailableTitle: "Нужно больше карточек",
+    imageRevealUnavailableBody: "Открой или включи ещё несколько карточек, чтобы собрать полный раунд открытия.",
+  },
+});

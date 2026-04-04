@@ -49,11 +49,11 @@ Suggested status labels:
 - Notes: keep it clear, rhythmic, and image-first. Good follow-up work includes preview pacing polish, stronger phase transitions, and optional harder sequence modes.
 
 ### Image Reveal
-- Status: `Idea only`
-- Why it matters: strong fit for image-first vocabulary learning.
-- Idea: gradually reveal part of a card image, then ask the child to identify the correct word card.
+- Status: `Partial`
+- Why it matters: strong fit for image-first vocabulary learning and a different pacing style from the memory and listening games.
+- Idea: the MVP now exists as a real selectable reveal-and-guess game. The next work is polish, reveal-mode variety, and tuning rather than first implementation.
 - Suggested area: `scripts/games/`, `styles/`, card render helpers
-- Notes: prioritize clear, readable visuals over effects.
+- Notes: prioritize clear, readable visuals over effects. Good follow-up work includes alternate reveal styles, stronger reward for earlier guesses, and smarter distractor tuning.
 
 ---
 
