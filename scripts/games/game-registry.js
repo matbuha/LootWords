@@ -3,12 +3,14 @@ import { mountFlashFindGame } from "./quick-select-game.js";
 import { mountMatchGame } from "./match-game.js";
 import { mountMemoryGame } from "./memory-game.js";
 import { mountReactionGame } from "./reaction-game.js";
+import { mountTapTheWordGame } from "./tap-the-word-game.js";
 
 const GAME_MOUNTS = {
   "memory-match": mountMemoryGame,
   "picture-match": mountMatchGame,
   "flash-find": mountFlashFindGame,
   "loot-pop": mountReactionGame,
+  "tap-the-word": mountTapTheWordGame,
 };
 
 export function getGameEntries() {

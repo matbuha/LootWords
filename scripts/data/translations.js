@@ -1800,3 +1800,90 @@ mergeTranslations(TRANSLATIONS.ru, {
     countdownGo: "Поехали",
   },
 });
+
+mergeTranslations(TRANSLATIONS.en, {
+  games: {
+    "tap-the-word": {
+      label: "Tap the Word",
+      shortLabel: "Tap",
+      lengthLabel: "40 sec",
+      energyLabel: "Sound + image",
+      description: "Hear the word, then tap the matching picture card before the round moves on.",
+      rewardText: "Win one reward box",
+    },
+  },
+  play: {
+    tapWordTitle: "Tap the Word",
+    tapWordBody: "Listen first, then tap the card that matches the spoken English word.",
+    tapWordListenPrompt: "Listen and tap",
+    tapWordPromptTitle: "Find the card you hear",
+    tapWordProgress: "Round {current} • Need {needed} correct to win",
+    tapWordRepeat: "Hear it again",
+    tapWordCorrect: "Nice match!",
+    tapWordWrong: "The correct card was {word}.",
+    tapWordHint: "Tap the picture that matches the spoken word.",
+    tapWordUnavailableTitle: "Tap the Word needs more cards",
+    tapWordUnavailableBody: "Unlock or enable a few more cards to build a full listening round.",
+    correctAnswersLabel: "Correct answers",
+    totalRoundsLabel: "Rounds in run",
+    statCorrect: "Correct: {current}/{total}",
+  },
+});
+
+mergeTranslations(TRANSLATIONS.he, {
+  games: {
+    "tap-the-word": {
+      label: "הקש על המילה",
+      shortLabel: "הקש",
+      lengthLabel: "40 שנ׳",
+      energyLabel: "צליל + תמונה",
+      description: "שמע את המילה, ואז הקש על כרטיס התמונה המתאים לפני שהסיבוב מתקדם.",
+      rewardText: "נצח וזכה בקופסת פרס",
+    },
+  },
+  play: {
+    tapWordTitle: "הקש על המילה",
+    tapWordBody: "קודם מקשיבים, ואז מקישים על הכרטיס שמתאים למילה באנגלית.",
+    tapWordListenPrompt: "מקשיבים ובוחרים",
+    tapWordPromptTitle: "מצא את הכרטיס ששמעת",
+    tapWordProgress: "סיבוב {current} • צריך {needed} נכונות לניצחון",
+    tapWordRepeat: "השמע שוב",
+    tapWordCorrect: "בחירה מעולה!",
+    tapWordWrong: "הכרטיס הנכון היה {word}.",
+    tapWordHint: "הקש על התמונה שמתאימה למילה ששמעת.",
+    tapWordUnavailableTitle: "צריך עוד כרטיסים",
+    tapWordUnavailableBody: "פתח או הפעל עוד כמה כרטיסים כדי לבנות סיבוב האזנה מלא.",
+    correctAnswersLabel: "תשובות נכונות",
+    totalRoundsLabel: "סיבובים בריצה",
+    statCorrect: "נכון: {current}/{total}",
+  },
+});
+
+mergeTranslations(TRANSLATIONS.ru, {
+  games: {
+    "tap-the-word": {
+      label: "Нажми слово",
+      shortLabel: "Нажми",
+      lengthLabel: "40 сек",
+      energyLabel: "Звук + картинка",
+      description: "Слушай слово и нажимай на карточку с подходящей картинкой, пока раунд не закончился.",
+      rewardText: "Победа даёт один бокс",
+    },
+  },
+  play: {
+    tapWordTitle: "Нажми слово",
+    tapWordBody: "Сначала слушай, потом нажимай на карточку, которая подходит к английскому слову.",
+    tapWordListenPrompt: "Слушай и нажимай",
+    tapWordPromptTitle: "Найди карточку, которую ты слышишь",
+    tapWordProgress: "Раунд {current} • Нужно {needed} верных ответов для победы",
+    tapWordRepeat: "Повтори слово",
+    tapWordCorrect: "Верно!",
+    tapWordWrong: "Правильная карточка: {word}.",
+    tapWordHint: "Нажми на картинку, которая подходит к услышанному слову.",
+    tapWordUnavailableTitle: "Нужно больше карточек",
+    tapWordUnavailableBody: "Открой или включи ещё несколько карточек, чтобы собрать полный аудио-раунд.",
+    correctAnswersLabel: "Верные ответы",
+    totalRoundsLabel: "Раундов в забеге",
+    statCorrect: "Верно: {current}/{total}",
+  },
+});

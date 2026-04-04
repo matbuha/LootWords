@@ -474,6 +474,16 @@ Latest prompt: Fix voice list initialization after refresh, center collection ca
 
 ## Work Log
 
+- 2026-04-04: Added a new registry-driven mini-game, `tap-the-word`, that speaks an English target word and asks the player to tap the matching visible card from a short image-first choice set.
+- 2026-04-04: Integrated `tap-the-word` into the shared active-game flow, including the universal 3-second countdown, replay/back behavior, reward payout on run success, and cross-language UI labels while keeping spoken words English-only.
+- 2026-04-04: Verified in-browser after the Tap the Word pass:
+  - the new game appears in the Play selection view and opens through the focused active-game route
+  - target words are spoken in English in English, Hebrew, and Russian UI modes
+  - repeat pronunciation works inside the round
+  - five-round win and loss paths both complete cleanly
+  - a successful run awards reward boxes through the existing progression pipeline
+  - Tap the Word remains playable on a phone-sized viewport with compact prompt and answer-card layout
+
 - 2026-03-30: Read the repo baseline and loaded the local frontend/game workflow skills.
 - 2026-03-30: Created the requested directory structure under `lootwords/`.
 - 2026-03-30: Implemented the SPA shell, route handling, localStorage profile normalization, and modular screen/game architecture.
@@ -604,11 +614,12 @@ Latest prompt: Fix voice list initialization after refresh, center collection ca
   - `starter-daily`: home, clothes, school, kitchen, bathroom
   - `starter-world`: animals, food, nature, city, people/jobs
   - `starter-adventure`: vehicles, toys, fantasy, sports
-- Replayability now uses a registry-driven game layer with four active mini-games:
+- Replayability now uses a registry-driven game layer with five active mini-games:
   - `memory-match`
   - `picture-match`
   - `flash-find`
   - `loot-pop`
+  - `tap-the-word`
 - Parent Mode now uses a dedicated admin layer with these main modules:
   - `lootwords/scripts/core/parent-mode.js`
   - `lootwords/scripts/core/content-validator.js`

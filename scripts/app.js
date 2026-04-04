@@ -1189,6 +1189,9 @@ function renderApp() {
         playSound(soundId, options) {
           feedback.playSound(soundId, options);
         },
+        speakEnglishWord(word) {
+          speech.speakWordInEnglish(word);
+        },
       },
     });
 

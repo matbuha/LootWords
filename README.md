@@ -35,11 +35,12 @@ Use these docs before starting work:
 ## What already exists
 
 - Browser-based SPA in plain HTML, CSS, and JavaScript
-- Four internal mini-games:
+- Five internal mini-games:
   - Memory Match
   - Treasure Match
   - Flash Find
   - Loot Pop
+  - Tap the Word
 - Reward box flow with staged three-tap opening
 - Collectible English noun cards with persisted random points and rarity
 - English pronunciation playback for visible/open cards

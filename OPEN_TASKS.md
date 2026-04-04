@@ -24,11 +24,11 @@ Suggested status labels:
 ## Tier S
 
 ### Tap the Word
-- Status: `Not started`
-- Why it matters: direct image-to-word recognition is one of the strongest next learning loops for this project.
-- Idea: show a spoken English prompt or visible target word, then let the child tap the matching card/image.
+- Status: `Partial`
+- Why it matters: direct image-to-word recognition is one of the strongest learning loops in the project, especially for children who rely on sound + image more than reading.
+- Idea: the MVP now exists as a full selectable mini-game. The next contribution area is polish, tuning, and extension rather than first implementation.
 - Suggested area: `scripts/games/`, `scripts/ui/game-screen.js`, `scripts/core/speech-manager.js`
-- Notes: should stay low-text and touch-friendly.
+- Notes: keep it low-text, touch-friendly, and sound-led. Good follow-up work includes difficulty tuning, stronger feedback, and smarter distractor selection.
 
 ### Repeat After Me
 - Status: `Idea only`

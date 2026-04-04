@@ -16,6 +16,8 @@ function formatVictoryLabel(key) {
     bestCombo: t("play.bestComboLabel"),
     moves: t("play.movesLabel"),
     matches: t("play.matchesLabel"),
+    correctAnswers: t("play.correctAnswersLabel"),
+    totalRounds: t("play.totalRoundsLabel"),
     roundIndex: t("play.roundsClearedLabel"),
     misses: t("play.missesLabel"),
   };
@@ -217,7 +219,7 @@ function renderSelectionView(container, { playSummary, progress, actions }) {
   };
 }
 
-export function renderGameScreen(container, { route, cards, result, progress, actions, playSound }) {
+export function renderGameScreen(container, { route, cards, result, progress, actions, playSound, speakEnglishWord }) {
   const playSummary = progress.playSummary;
   const gameId = route.game ? getGameDefinition(route.game).id : null;
 
@@ -358,6 +360,7 @@ export function renderGameScreen(container, { route, cards, result, progress, ac
     mountedGame = gameMeta.mount(gameHost, {
       cards: playableCards,
       playSound,
+      speakEnglishWord,
       onWin(details) {
         actions.finishGame({ status: "won", gameId, details });
       },
