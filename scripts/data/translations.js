@@ -1965,3 +1965,87 @@ mergeTranslations(TRANSLATIONS.ru, {
     repeatAfterMeUnavailableBody: "Открой или включи ещё несколько карточек, чтобы собрать полноценный речевой забег.",
   },
 });
+
+mergeTranslations(TRANSLATIONS.en, {
+  games: {
+    "sequence-memory": {
+      label: "Sequence Memory",
+      shortLabel: "Sequence",
+      lengthLabel: "3 rounds",
+      energyLabel: "Memory order",
+      description: "Watch the order, then tap the same cards back from memory.",
+      rewardText: "Clear all rounds for one reward box",
+    },
+  },
+  play: {
+    sequenceMemoryTitle: "Sequence Memory",
+    sequenceMemoryBody: "Watch the order carefully, then tap the same picture cards back in sequence.",
+    sequenceMemoryEyebrow: "Watch, then repeat",
+    sequenceMemoryWatch: "Watch the sequence",
+    sequenceMemoryRepeat: "Now repeat it",
+    sequenceMemoryWrong: "That broke the sequence",
+    sequenceMemoryRoundClear: "Round cleared",
+    sequenceMemoryWatchBody: "The cards will light up one by one. Wait for the preview to finish.",
+    sequenceMemoryRepeatBody: "Tap step {current} of {total} in the same order.",
+    sequenceMemoryLength: "Length: {value}",
+    sequenceMemoryStep: "Step: {current}/{total}",
+    sequenceMemoryUnavailableTitle: "Sequence Memory needs more cards",
+    sequenceMemoryUnavailableBody: "Unlock or enable a few more cards to build a full sequence round.",
+  },
+});
+
+mergeTranslations(TRANSLATIONS.he, {
+  games: {
+    "sequence-memory": {
+      label: "זיכרון רצף",
+      shortLabel: "רצף",
+      lengthLabel: "3 סיבובים",
+      energyLabel: "סדר בזיכרון",
+      description: "צפה בסדר, ואז הקש בחזרה על אותם הכרטיסים לפי הרצף מהזיכרון.",
+      rewardText: "נקה את כל הסיבובים וקבל קופסת פרס",
+    },
+  },
+  play: {
+    sequenceMemoryTitle: "זיכרון רצף",
+    sequenceMemoryBody: "צפה בסדר בקפידה, ואז הקש בחזרה על אותם כרטיסי תמונה לפי הרצף.",
+    sequenceMemoryEyebrow: "צופים ואז חוזרים",
+    sequenceMemoryWatch: "צפה ברצף",
+    sequenceMemoryRepeat: "עכשיו חזור עליו",
+    sequenceMemoryWrong: "הרצף נשבר",
+    sequenceMemoryRoundClear: "הסיבוב הושלם",
+    sequenceMemoryWatchBody: "הכרטיסים יידלקו אחד אחרי השני. המתן עד שההדגמה תסתיים.",
+    sequenceMemoryRepeatBody: "הקש על שלב {current} מתוך {total} באותו סדר.",
+    sequenceMemoryLength: "אורך: {value}",
+    sequenceMemoryStep: "שלב: {current}/{total}",
+    sequenceMemoryUnavailableTitle: "צריך עוד כרטיסים",
+    sequenceMemoryUnavailableBody: "פתח או הפעל עוד כמה כרטיסים כדי לבנות סיבוב רצף מלא.",
+  },
+});
+
+mergeTranslations(TRANSLATIONS.ru, {
+  games: {
+    "sequence-memory": {
+      label: "Память порядка",
+      shortLabel: "Порядок",
+      lengthLabel: "3 раунда",
+      energyLabel: "Память на порядок",
+      description: "Посмотри порядок, потом нажми те же карточки в той же последовательности по памяти.",
+      rewardText: "Пройди все раунды и получи один бокс",
+    },
+  },
+  play: {
+    sequenceMemoryTitle: "Память порядка",
+    sequenceMemoryBody: "Внимательно смотри порядок, потом нажимай те же карточки-картинки в той же последовательности.",
+    sequenceMemoryEyebrow: "Смотри, потом повторяй",
+    sequenceMemoryWatch: "Смотри последовательность",
+    sequenceMemoryRepeat: "Теперь повтори её",
+    sequenceMemoryWrong: "Последовательность сломалась",
+    sequenceMemoryRoundClear: "Раунд пройден",
+    sequenceMemoryWatchBody: "Карточки будут подсвечиваться по одной. Дождись конца показа.",
+    sequenceMemoryRepeatBody: "Нажми шаг {current} из {total} в том же порядке.",
+    sequenceMemoryLength: "Длина: {value}",
+    sequenceMemoryStep: "Шаг: {current}/{total}",
+    sequenceMemoryUnavailableTitle: "Нужно больше карточек",
+    sequenceMemoryUnavailableBody: "Открой или включи ещё несколько карточек, чтобы собрать полный раунд последовательности.",
+  },
+});

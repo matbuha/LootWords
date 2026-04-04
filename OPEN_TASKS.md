@@ -42,11 +42,11 @@ Suggested status labels:
 ## Tier A
 
 ### Sequence Memory
-- Status: `Idea only`
-- Why it matters: strengthens memory using the existing card pool without needing heavy new mechanics.
-- Idea: flash a short sequence of visible cards, then ask the child to tap them in order.
+- Status: `Partial`
+- Why it matters: strengthens visual order memory and sound + image recall using the existing card pool.
+- Idea: the MVP now exists as a real selectable sequence-recall game. The next contribution area is polish, tuning, and difficulty expansion rather than first implementation.
 - Suggested area: `scripts/games/`, `scripts/ui/game-screen.js`
-- Notes: should work with the shared countdown flow and reward pipeline.
+- Notes: keep it clear, rhythmic, and image-first. Good follow-up work includes preview pacing polish, stronger phase transitions, and optional harder sequence modes.
 
 ### Image Reveal
 - Status: `Idea only`

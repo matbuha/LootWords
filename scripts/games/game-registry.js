@@ -4,6 +4,7 @@ import { mountMatchGame } from "./match-game.js";
 import { mountMemoryGame } from "./memory-game.js";
 import { mountReactionGame } from "./reaction-game.js";
 import { mountRepeatAfterMeGame } from "./repeat-after-me-game.js";
+import { mountSequenceMemoryGame } from "./sequence-memory-game.js";
 import { mountTapTheWordGame } from "./tap-the-word-game.js";
 
 const GAME_MOUNTS = {
@@ -12,6 +13,7 @@ const GAME_MOUNTS = {
   "flash-find": mountFlashFindGame,
   "loot-pop": mountReactionGame,
   "repeat-after-me": mountRepeatAfterMeGame,
+  "sequence-memory": mountSequenceMemoryGame,
   "tap-the-word": mountTapTheWordGame,
 };
 

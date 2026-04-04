@@ -490,6 +490,15 @@ Latest prompt: Fix voice list initialization after refresh, center collection ca
   - automatic and replay speech both use English in Hebrew, Russian, and English UI modes
   - the five-round manual-continue run completes cleanly and pays out reward boxes through the normal win path
   - the game remains usable on a phone viewport after a dedicated mobile compression pass, though very short mobile heights still have limited spare vertical space
+- 2026-04-04: Added a new image-first memory game, `sequence-memory`, that previews a short ordered sequence of visible cards, then asks the player to reproduce the same order by tapping the cards in sequence.
+- 2026-04-04: Integrated `sequence-memory` into the shared active-game flow, including the universal 3-second countdown, English preview-step speech, replay/back behavior, and normal reward payout after all three rounds are cleared.
+- 2026-04-04: Verified in-browser after the Sequence Memory pass:
+  - the new game appears in the Play selection view and opens through the focused active-game route
+  - preview cards highlight one by one and speak English words while the UI can remain Hebrew, Russian, or English
+  - taps during preview are ignored and do not corrupt the round state
+  - correct ordered taps clear rounds and a wrong tap cleanly loses the run
+  - the three-round run pays out reward boxes through the normal win path
+  - the phone layout was compressed so the status area plus 2x2 board stay inside the initial viewport
 
 - 2026-03-30: Read the repo baseline and loaded the local frontend/game workflow skills.
 - 2026-03-30: Created the requested directory structure under `lootwords/`.
@@ -621,13 +630,14 @@ Latest prompt: Fix voice list initialization after refresh, center collection ca
   - `starter-daily`: home, clothes, school, kitchen, bathroom
   - `starter-world`: animals, food, nature, city, people/jobs
   - `starter-adventure`: vehicles, toys, fantasy, sports
-- Replayability now uses a registry-driven game layer with six active mini-games:
+- Replayability now uses a registry-driven game layer with seven active mini-games:
   - `memory-match`
   - `picture-match`
   - `flash-find`
   - `loot-pop`
   - `tap-the-word`
   - `repeat-after-me`
+  - `sequence-memory`
 - Parent Mode now uses a dedicated admin layer with these main modules:
   - `lootwords/scripts/core/parent-mode.js`
   - `lootwords/scripts/core/content-validator.js`

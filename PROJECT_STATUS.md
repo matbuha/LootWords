@@ -17,13 +17,14 @@ LootWords is an evolving MVP with a working core loop. It is no longer a bare pr
 - Reward reveal with card unlock persistence
 - Card speech for visible/open cards in English
 - Voice selection for English pronunciation when the browser exposes multiple English voices
-- Six playable mini-games:
+- Seven playable mini-games:
   - Memory Match
   - Treasure Match
   - Flash Find
   - Loot Pop
   - Tap the Word
   - Repeat After Me
+  - Sequence Memory
 - Shared 3-second countdown before game start
 - Responsive layout across desktop, tablet, and phone sizes
 - Contributor-facing collaboration docs:
@@ -54,6 +55,9 @@ LootWords is an evolving MVP with a working core loop. It is no longer a bare pr
 - Repeat After Me:
   - real playable MVP is in place
   - still open for additional speaking feedback, pacing polish, and optional future microphone-assisted validation
+- Sequence Memory:
+  - real playable MVP is in place
+  - still open for preview pacing polish, difficulty scaling, and richer sequence-feedback presentation
 
 ## What needs care
 
