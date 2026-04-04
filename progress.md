@@ -483,6 +483,13 @@ Latest prompt: Fix voice list initialization after refresh, center collection ca
   - five-round win and loss paths both complete cleanly
   - a successful run awards reward boxes through the existing progression pipeline
   - Tap the Word remains playable on a phone-sized viewport with compact prompt and answer-card layout
+- 2026-04-04: Added a second speech-led mini-game, `repeat-after-me`, that shows one large card, auto-speaks its English word, lets the child replay the audio, and advances by pressing a manual “I said it” / finish button.
+- 2026-04-04: Integrated `repeat-after-me` into the shared active-game flow, including the universal 3-second countdown, existing English voice selection, replay/back behavior, and normal reward payout after the 5-round speaking run.
+- 2026-04-04: Verified in-browser after the Repeat After Me pass:
+  - the new game appears in the Play selection view and opens through the focused active-game route
+  - automatic and replay speech both use English in Hebrew, Russian, and English UI modes
+  - the five-round manual-continue run completes cleanly and pays out reward boxes through the normal win path
+  - the game remains usable on a phone viewport after a dedicated mobile compression pass, though very short mobile heights still have limited spare vertical space
 
 - 2026-03-30: Read the repo baseline and loaded the local frontend/game workflow skills.
 - 2026-03-30: Created the requested directory structure under `lootwords/`.
@@ -614,12 +621,13 @@ Latest prompt: Fix voice list initialization after refresh, center collection ca
   - `starter-daily`: home, clothes, school, kitchen, bathroom
   - `starter-world`: animals, food, nature, city, people/jobs
   - `starter-adventure`: vehicles, toys, fantasy, sports
-- Replayability now uses a registry-driven game layer with five active mini-games:
+- Replayability now uses a registry-driven game layer with six active mini-games:
   - `memory-match`
   - `picture-match`
   - `flash-find`
   - `loot-pop`
   - `tap-the-word`
+  - `repeat-after-me`
 - Parent Mode now uses a dedicated admin layer with these main modules:
   - `lootwords/scripts/core/parent-mode.js`
   - `lootwords/scripts/core/content-validator.js`

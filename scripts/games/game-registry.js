@@ -3,6 +3,7 @@ import { mountFlashFindGame } from "./quick-select-game.js";
 import { mountMatchGame } from "./match-game.js";
 import { mountMemoryGame } from "./memory-game.js";
 import { mountReactionGame } from "./reaction-game.js";
+import { mountRepeatAfterMeGame } from "./repeat-after-me-game.js";
 import { mountTapTheWordGame } from "./tap-the-word-game.js";
 
 const GAME_MOUNTS = {
@@ -10,6 +11,7 @@ const GAME_MOUNTS = {
   "picture-match": mountMatchGame,
   "flash-find": mountFlashFindGame,
   "loot-pop": mountReactionGame,
+  "repeat-after-me": mountRepeatAfterMeGame,
   "tap-the-word": mountTapTheWordGame,
 };
 

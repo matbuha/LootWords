@@ -1887,3 +1887,81 @@ mergeTranslations(TRANSLATIONS.ru, {
     statCorrect: "Верно: {current}/{total}",
   },
 });
+
+mergeTranslations(TRANSLATIONS.en, {
+  games: {
+    "repeat-after-me": {
+      label: "Repeat After Me",
+      shortLabel: "Repeat",
+      lengthLabel: "Calm 5 rounds",
+      energyLabel: "Listen + speak",
+      description: "Hear the English word, say it aloud, and move calmly through five picture cards.",
+      rewardText: "Finish the run for one reward box",
+    },
+  },
+  play: {
+    repeatAfterMeTitle: "Repeat After Me",
+    repeatAfterMeBody: "Hear the word, look at the card, say it aloud, and move on when you are ready.",
+    repeatAfterMePromptEyebrow: "Listen, then speak",
+    repeatAfterMePromptTitle: "Say the English word aloud",
+    repeatAfterMePromptBody: "You can hear the word again before moving to the next card.",
+    repeatAfterMeHearAgain: "Hear again",
+    repeatAfterMeSaidIt: "I said it",
+    repeatAfterMeFinish: "Finish the run",
+    repeatAfterMeSpoken: "Said: {value}",
+    repeatAfterMeUnavailableTitle: "Repeat After Me needs more cards",
+    repeatAfterMeUnavailableBody: "Unlock or enable a few more cards to build a speaking run.",
+  },
+});
+
+mergeTranslations(TRANSLATIONS.he, {
+  games: {
+    "repeat-after-me": {
+      label: "חזור אחרי",
+      shortLabel: "חזור",
+      lengthLabel: "5 סיבובים רגועים",
+      energyLabel: "האזנה + דיבור",
+      description: "שמע את המילה באנגלית, אמור אותה בקול, ועבור ברוגע בין חמישה כרטיסים.",
+      rewardText: "סיים את הריצה וקבל קופסת פרס",
+    },
+  },
+  play: {
+    repeatAfterMeTitle: "חזור אחרי",
+    repeatAfterMeBody: "שמע את המילה, הסתכל על הכרטיס, אמור אותה בקול, והמשך כשאתה מוכן.",
+    repeatAfterMePromptEyebrow: "מקשיבים ואז אומרים",
+    repeatAfterMePromptTitle: "אמור את המילה באנגלית בקול",
+    repeatAfterMePromptBody: "אפשר לשמוע שוב את המילה לפני שממשיכים לכרטיס הבא.",
+    repeatAfterMeHearAgain: "השמע שוב",
+    repeatAfterMeSaidIt: "אמרתי",
+    repeatAfterMeFinish: "סיום הריצה",
+    repeatAfterMeSpoken: "נאמרו: {value}",
+    repeatAfterMeUnavailableTitle: "צריך עוד כרטיסים",
+    repeatAfterMeUnavailableBody: "פתח או הפעל עוד כמה כרטיסים כדי לבנות ריצת דיבור מלאה.",
+  },
+});
+
+mergeTranslations(TRANSLATIONS.ru, {
+  games: {
+    "repeat-after-me": {
+      label: "Повтори за мной",
+      shortLabel: "Повтори",
+      lengthLabel: "Спокойные 5 раундов",
+      energyLabel: "Слушай + говори",
+      description: "Слушай английское слово, произноси его вслух и спокойно переходи через пять карточек.",
+      rewardText: "Заверши забег и получи один бокс",
+    },
+  },
+  play: {
+    repeatAfterMeTitle: "Повтори за мной",
+    repeatAfterMeBody: "Слушай слово, смотри на карточку, произноси его вслух и переходи дальше, когда будешь готов.",
+    repeatAfterMePromptEyebrow: "Слушай и говори",
+    repeatAfterMePromptTitle: "Скажи английское слово вслух",
+    repeatAfterMePromptBody: "Можно ещё раз услышать слово перед переходом к следующей карточке.",
+    repeatAfterMeHearAgain: "Слушать снова",
+    repeatAfterMeSaidIt: "Я сказал",
+    repeatAfterMeFinish: "Завершить забег",
+    repeatAfterMeSpoken: "Сказано: {value}",
+    repeatAfterMeUnavailableTitle: "Нужно больше карточек",
+    repeatAfterMeUnavailableBody: "Открой или включи ещё несколько карточек, чтобы собрать полноценный речевой забег.",
+  },
+});

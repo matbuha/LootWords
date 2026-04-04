@@ -31,11 +31,11 @@ Suggested status labels:
 - Notes: keep it low-text, touch-friendly, and sound-led. Good follow-up work includes difficulty tuning, stronger feedback, and smarter distractor selection.
 
 ### Repeat After Me
-- Status: `Idea only`
-- Why it matters: hearing and repeating the word could strengthen pronunciation and memory.
-- Idea: play the English word, show the card clearly, and guide a simple “listen and repeat” interaction.
+- Status: `Partial`
+- Why it matters: hearing and repeating the word builds pronunciation confidence and supports children who learn mainly from sound + image.
+- Idea: the MVP now exists as a calm, trust-based speaking game with replayable English speech and manual continue flow. The next work is refinement rather than first implementation.
 - Suggested area: `scripts/core/speech-manager.js`, `scripts/ui/learn-screen.js`, possible new mini-game module
-- Notes: keep it browser-safe and optional; do not require microphone input for an MVP contribution unless scoped carefully.
+- Notes: keep it browser-safe and optional. Good follow-up work includes richer speaking feedback, pacing polish, and future-ready hooks for optional microphone validation without making it mandatory.
 
 ---
 
