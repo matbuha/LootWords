@@ -27,14 +27,14 @@ Suggested status labels:
 - Status: `Partial`
 - Why it matters: direct image-to-word recognition is one of the strongest learning loops in the project, especially for children who rely on sound + image more than reading.
 - Idea: the MVP now exists as a full selectable mini-game. The next contribution area is polish, tuning, and extension rather than first implementation.
-- Suggested area: `scripts/games/`, `scripts/ui/game-screen.js`, `scripts/core/speech-manager.js`
+- Suggested area: `public/scripts/games/`, `public/scripts/ui/game-screen.js`, `public/scripts/core/speech-manager.js`
 - Notes: keep it low-text, touch-friendly, and sound-led. Good follow-up work includes difficulty tuning, stronger feedback, and smarter distractor selection.
 
 ### Repeat After Me
 - Status: `Partial`
 - Why it matters: hearing and repeating the word builds pronunciation confidence and supports children who learn mainly from sound + image.
 - Idea: the MVP now exists as a calm, trust-based speaking game with replayable English speech and manual continue flow. The next work is refinement rather than first implementation.
-- Suggested area: `scripts/core/speech-manager.js`, `scripts/ui/learn-screen.js`, possible new mini-game module
+- Suggested area: `public/scripts/core/speech-manager.js`, `public/scripts/ui/learn-screen.js`, possible new mini-game module
 - Notes: keep it browser-safe and optional. Good follow-up work includes richer speaking feedback, pacing polish, and future-ready hooks for optional microphone validation without making it mandatory.
 
 ---
@@ -45,14 +45,14 @@ Suggested status labels:
 - Status: `Partial`
 - Why it matters: strengthens visual order memory and sound + image recall using the existing card pool.
 - Idea: the MVP now exists as a real selectable sequence-recall game. The next contribution area is polish, tuning, and difficulty expansion rather than first implementation.
-- Suggested area: `scripts/games/`, `scripts/ui/game-screen.js`
+- Suggested area: `public/scripts/games/`, `public/scripts/ui/game-screen.js`
 - Notes: keep it clear, rhythmic, and image-first. Good follow-up work includes preview pacing polish, stronger phase transitions, and optional harder sequence modes.
 
 ### Image Reveal
 - Status: `Partial`
 - Why it matters: strong fit for image-first vocabulary learning and a different pacing style from the memory and listening games.
 - Idea: the MVP now exists as a real selectable reveal-and-guess game. The next work is polish, reveal-mode variety, and tuning rather than first implementation.
-- Suggested area: `scripts/games/`, `styles/`, card render helpers
+- Suggested area: `public/scripts/games/`, `public/styles/`, card render helpers
 - Notes: prioritize clear, readable visuals over effects. Good follow-up work includes alternate reveal styles, stronger reward for earlier guesses, and smarter distractor tuning.
 
 ---
@@ -64,7 +64,7 @@ These are optional contribution ideas. They should not replace the core vocabula
 ### Tetris clone
 - Status: `Idea only`
 - Why it matters: highly familiar replayable game that could sit as an optional side activity.
-- Suggested area: separate module under `scripts/games/` or isolated optional integration
+- Suggested area: separate module under `public/scripts/games/` or isolated optional integration
 - Notes: if attempted, keep it isolated from the core game architecture and reward it carefully.
 
 ### 2048
@@ -90,11 +90,11 @@ These are optional contribution ideas. They should not replace the core vocabula
 ## Special Systems
 
 ### Daily Challenge
-- Status: `Not started`
+- Status: `Partial`
 - Why it matters: gives children and parents a clear reason to return regularly.
-- Idea: one small rotating challenge with a reward bonus or featured card goal.
-- Suggested area: `scripts/core/progression.js`, `scripts/app.js`, Home screen UI
-- Notes: keep it local/browser-based unless the architecture changes later.
+- Idea: the real Firebase auth foundation and guest-vs-logged-in gating now exist. The next work is building the actual daily challenge rules, per-user storage, and reward loop on top of that foundation.
+- Suggested area: `public/scripts/core/progression.js`, `public/scripts/core/auth-manager.js`, `public/scripts/app.js`, Home screen UI
+- Notes: keep guest users playable, but make challenge rewards meaningful for logged-in accounts.
 
 ### Card Evolution
 - Status: `Idea only`
@@ -111,18 +111,18 @@ These are optional contribution ideas. They should not replace the core vocabula
 - Status: `Partial`
 - Why it matters: it is a core visible game and must feel strong.
 - Idea: better pacing, stronger feedback, cleaner matching cadence, and more reliable accessibility/touch behavior.
-- Suggested area: `scripts/games/memory-game.js`, `styles/main.css`
+- Suggested area: `public/scripts/games/memory-game.js`, `public/styles/main.css`
 
 ### Improve Flash Find difficulty tuning
 - Status: `Partial`
 - Why it matters: the game now works, but preview duration, option count, and feedback pacing can still be tuned.
-- Suggested area: `scripts/games/quick-select-game.js`
+- Suggested area: `public/scripts/games/quick-select-game.js`
 
 ### Expand learning-linked mini-games
 - Status: `Not started`
 - Why it matters: the current mini-games are playable, but the project needs more game loops that directly reinforce vocabulary.
 - Idea: new games should use the unlocked card pool and image-first recognition.
-- Suggested area: `scripts/games/`, `scripts/games/game-registry.js`
+- Suggested area: `public/scripts/games/`, `public/scripts/games/game-registry.js`
 
 ---
 
@@ -132,14 +132,14 @@ These are optional contribution ideas. They should not replace the core vocabula
 - Status: `Partial`
 - Why it matters: English pronunciation is a core learning mechanic.
 - Idea: improve voice selection UX, browser fallbacks, and pronunciation responsiveness.
-- Suggested area: `scripts/core/speech-manager.js`, `scripts/ui/voice-selector.js`
+- Suggested area: `public/scripts/core/speech-manager.js`, `public/scripts/ui/voice-selector.js`
 - Notes: speech must stay English-only for card words, regardless of UI language.
 
 ### Add better pronunciation feedback in learn mode
 - Status: `Idea only`
 - Why it matters: the Learn screen is a natural place for repeated listening.
 - Idea: clearer replay controls, guided listening patterns, or lightweight “listen again” interactions.
-- Suggested area: `scripts/ui/learn-screen.js`
+- Suggested area: `public/scripts/ui/learn-screen.js`
 
 ---
 
@@ -149,7 +149,7 @@ These are optional contribution ideas. They should not replace the core vocabula
 - Status: `Partial`
 - Why it matters: the project is image-driven, and current visuals still rely partly on placeholder/icon art.
 - Idea: define a cleaner art pipeline for replacing placeholders with real illustrations.
-- Suggested area: `assets/images/cards/`, `scripts/data/cards.js`, card rendering helpers
+- Suggested area: `public/assets/images/cards/`, `public/scripts/data/cards.js`, card rendering helpers
 
 ### Improve reward animations and reveal polish
 - Status: `Partial`
@@ -161,7 +161,7 @@ These are optional contribution ideas. They should not replace the core vocabula
 - Status: `Partial`
 - Why it matters: browsing the collection should feel rewarding, not administrative.
 - Idea: better album feel, milestones, featured sets, recent pulls, or stronger card-detail presentation.
-- Suggested area: `scripts/ui/collection-screen.js`, card UI helpers
+- Suggested area: `public/scripts/ui/collection-screen.js`, card UI helpers
 
 ---
 
@@ -171,7 +171,7 @@ These are optional contribution ideas. They should not replace the core vocabula
 - Status: `Partial`
 - Why it matters: many children will use tablets or phones.
 - Idea: continue reducing layout friction, shorten interaction paths, and improve content-first screens on small devices.
-- Suggested area: `styles/responsive.css`, screen-specific UI modules
+- Suggested area: `public/styles/responsive.css`, screen-specific UI modules
 
 ### Accessibility and touch polish
 - Status: `Partial`
@@ -183,11 +183,18 @@ These are optional contribution ideas. They should not replace the core vocabula
 
 ## Parent Mode and Contributor Infrastructure
 
+### Account-based progression sync
+- Status: `Partial`
+- Why it matters: streaks, daily rewards, and future bonus systems now need a stable per-user layer instead of browser-only state.
+- Idea: build on the now-live Firebase auth and `users/{uid}` profile foundation to attach lightweight per-user progression data, account-only bonuses, and clearer logged-in dashboards.
+- Suggested area: `public/scripts/core/auth-manager.js`, future progression/profile helpers, Home screen UI
+- Notes: keep the guest flow usable and avoid turning the app into an auth wall.
+
 ### Improve Parent Mode safety and usability
 - Status: `Partial`
 - Why it matters: parents need predictable control without breaking child mode.
 - Idea: better summaries, safer import/export workflows, clearer warnings, or simpler content-management UX.
-- Suggested area: `scripts/ui/parent-screen.js`, `scripts/ui/parent-sections/`, validation and reset helpers
+- Suggested area: `public/scripts/ui/parent-screen.js`, `public/scripts/ui/parent-sections/`, validation and reset helpers
 
 ### Improve contributor infrastructure
 - Status: `Partial`

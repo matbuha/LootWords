@@ -18,7 +18,7 @@ Read these files first:
 From the repository root:
 
 ```powershell
-python -m http.server 8123 --bind 127.0.0.1
+python -m http.server 8123 --bind 127.0.0.1 --directory public
 ```
 
 Open:
@@ -26,6 +26,28 @@ Open:
 ```text
 http://127.0.0.1:8123/
 ```
+
+### Firebase auth setup
+
+The running app now reads Firebase web config from [public/firebase-config.js](public/firebase-config.js).
+The auth flow also reads reCAPTCHA config from [public/recaptcha-config.js](public/recaptcha-config.js).
+
+To test auth against your own Firebase project:
+
+1. Create your own Firebase web app.
+2. Enable Email/Password sign-in in the Firebase Console.
+3. Create a Cloud Firestore database if you plan to add per-user progression or Daily Challenge data.
+4. Replace the values in [public/firebase-config.js](public/firebase-config.js) with your project’s web config.
+5. Use [firebase-config.example.js](firebase-config.example.js) as the field reference.
+6. Replace the values in [public/recaptcha-config.js](public/recaptcha-config.js):
+   - `enabled`
+   - `provider`
+   - `siteKey`
+7. Use [recaptcha-config.example.js](recaptcha-config.example.js) as the field reference.
+8. Deploy [firestore.rules](firestore.rules) before adding any account-linked Firestore collections.
+
+Firebase web config is safe to ship to browsers. Do not add Admin SDK credentials or service-account secrets to this repo.
+The reCAPTCHA site key is also a public browser value. Do not add secret verification keys to this repo.
 
 ## How to choose work
 
@@ -46,11 +68,12 @@ http://127.0.0.1:8123/
 
 Be extra careful in:
 
-- `scripts/app.js`
-- `scripts/storage.js`
-- `scripts/core/rewards.js`
-- `scripts/ui/game-screen.js`
-- `scripts/data/translations.js`
+- `public/scripts/app.js`
+- `public/scripts/storage.js`
+- `public/scripts/core/rewards.js`
+- `public/scripts/core/auth-manager.js`
+- `public/scripts/ui/game-screen.js`
+- `public/scripts/data/translations.js`
 
 These files affect multiple screens or persistence behavior.
 

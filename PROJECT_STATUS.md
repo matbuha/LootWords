@@ -17,6 +17,7 @@ LootWords is an evolving MVP with a working core loop. It is no longer a bare pr
 - Reward reveal with card unlock persistence
 - Card speech for visible/open cards in English
 - Voice selection for English pronunciation when the browser exposes multiple English voices
+- Firebase Authentication with guest fallback, auth modal UI, session bootstrap, and logout flow
 - Eight playable mini-games:
   - Memory Match
   - Treasure Match
@@ -62,29 +63,45 @@ LootWords is an evolving MVP with a working core loop. It is no longer a bare pr
 - Image Reveal:
   - real playable MVP is in place
   - still open for reveal-mode variety, earlier-guess reward polish, and additional visual tuning
+- Auth foundation:
+  - real Firebase runtime config is now served from `public/firebase-config.js`
+  - end-to-end signup, signin, signout, and refresh persistence are verified against the current Firebase project
+  - guest mode still works as the fallback UX path if auth becomes unavailable
+  - auth submit flow now has a dedicated reCAPTCHA integration layer that can be activated later through `public/recaptcha-config.js`
+  - Firestore is prepared for future account-linked progression, but auth no longer depends on Firestore availability during bootstrap
+  - `firestore.rules` now includes a locked-down owner-only `users/{uid}` pattern for future account data
 
 ## What needs care
 
-- `scripts/app.js`
+- `public/scripts/app.js`
   - central orchestration file
   - many shared actions and route behaviors converge here
   - changes should stay focused and carefully verified
-- `scripts/ui/game-screen.js`
+- `public/scripts/ui/game-screen.js`
   - owns play selection mode, active game mode, countdown flow, and result overlays
   - game-flow regressions can affect every mini-game
-- `scripts/core/rewards.js`
+- `public/scripts/core/rewards.js`
   - reward correctness matters for unlock progression
   - duplicate or invalid reveal bugs are high-impact
-- `scripts/storage.js`
+- `public/scripts/storage.js`
   - profile normalization and recovery logic
   - unsafe edits here can corrupt saved progress
-- `scripts/data/translations.js`
+- `public/scripts/data/translations.js`
   - centralized but large
   - missing or inconsistent keys can easily surface in the UI
+- `public/scripts/core/auth-manager.js`
+  - central auth bootstrap, Firebase wiring, and future account foundation
+- `public/firebase-config.js`
+  - live browser runtime config for the current Firebase web app
+  - changes here should preserve guest fallback and public-repo safety
+- `public/recaptcha-config.js`
+  - live browser runtime config for reCAPTCHA site-key activation
+  - leave it explicit and do not commit secret verification credentials
 
 ## Known active development areas
 
 - More learning-focused mini-games
+- Daily Challenge and account-based progression on top of the new auth foundation
 - Better speech quality and voice handling
 - Better card art and image-first presentation
 - Improved mobile polish and accessibility
@@ -93,9 +110,9 @@ LootWords is an evolving MVP with a working core loop. It is no longer a bare pr
 
 ## What is intentionally lightweight right now
 
-- No backend
-- No account system
-- No real server-side content management
+- No custom backend API
+- No full profile/settings/account-management area yet
+- No real server-side content management beyond Firebase-ready account foundations
 - No secure admin authentication
 - No framework migration
 

@@ -50,6 +50,7 @@ Use these docs before starting work:
 - English, Hebrew, and Russian UI
 - Parent Mode for content, category, reward, and progress control
 - LocalStorage persistence with backup recovery
+- Real Firebase Authentication with guest fallback
 - Responsive layout across desktop, tablet, and phone sizes
 
 ## Tech stack
@@ -58,6 +59,7 @@ Use these docs before starting work:
 - Plain CSS
 - Plain JavaScript modules
 - localStorage for persistence
+- Firebase Authentication and Firestore foundation for account features
 - Browser-native speech synthesis for English card pronunciation
 - Hash-based routing
 
@@ -66,7 +68,7 @@ Use these docs before starting work:
 From the repository root:
 
 ```powershell
-python -m http.server 8123 --bind 127.0.0.1
+python -m http.server 8123 --bind 127.0.0.1 --directory public
 ```
 
 Then open:
@@ -75,15 +77,52 @@ Then open:
 http://127.0.0.1:8123/
 ```
 
+## Firebase auth setup
+
+LootWords now runs with a real Firebase web config at [public/firebase-config.js](public/firebase-config.js). The current runtime supports:
+
+- email/password sign up
+- email/password sign in
+- sign out
+- refresh persistence
+- guest vs logged-in UI
+- reCAPTCHA-ready auth submit hooks
+
+If you want to point the app at your own Firebase project:
+
+1. Create a Firebase web app in your own Firebase project.
+2. Enable Email/Password sign-in in the Firebase Console.
+3. Create a Cloud Firestore database if you plan to build per-user progression or Daily Challenge data next.
+4. Replace the values in [public/firebase-config.js](public/firebase-config.js) with your project’s web config.
+5. Use [firebase-config.example.js](firebase-config.example.js) as the field reference.
+6. Replace the values in [public/recaptcha-config.js](public/recaptcha-config.js):
+   - `enabled`
+   - `provider`
+   - `siteKey`
+   Use [recaptcha-config.example.js](recaptcha-config.example.js) as the field reference.
+7. Deploy [firestore.rules](firestore.rules) before adding any account-linked Firestore data.
+
+Notes:
+
+- Firebase web config is public client configuration, not an admin secret.
+- The reCAPTCHA site key is also public client configuration, not a server secret.
+- Do not put service-account credentials or Admin SDK keys into the frontend.
+- The app still remains playable in guest mode if auth is unavailable at runtime.
+- The current implementation collects reCAPTCHA tokens in the auth flow when enabled. If you later want strong abuse verification, add a server-side or Firebase-hosted verification path after inserting the real site key.
+
 ## Main folders
 
-- `index.html`: app shell entry point
-- `styles/`: theme, responsive rules, i18n, and animation layers
-- `scripts/app.js`: app bootstrap, actions, shell rendering, and shared wiring
-- `scripts/core/`: persistence, rewards, progression, i18n, audio, parent mode, and support systems
-- `scripts/data/`: cards, categories, config, and translations
-- `scripts/games/`: mini-game implementations and registry
-- `scripts/ui/`: screen rendering and shared UI components
+- `public/index.html`: the single browser-served app entry point
+- `public/styles/`: theme, responsive rules, i18n, and animation layers
+- `public/scripts/app.js`: app bootstrap, actions, shell rendering, and shared wiring
+- `public/scripts/core/`: persistence, rewards, progression, i18n, audio, parent mode, and support systems
+- `public/scripts/data/`: cards, categories, config, and translations
+- `public/scripts/core/auth-manager.js`: centralized Firebase auth bootstrap and session handling
+- `public/firebase-config.js`: browser-served Firebase web config used by the running app
+- `public/recaptcha-config.js`: browser-served reCAPTCHA runtime config used by the auth flow
+- `public/scripts/games/`: mini-game implementations and registry
+- `public/scripts/ui/`: screen rendering and shared UI components
+- `public/assets/`: browser-served runtime media paths
 - `docs/`: supporting architecture and design docs
 
 ## How contributors can help

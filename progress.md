@@ -22,6 +22,10 @@ Latest prompt: Refine card speech so only truly visible cards can speak, add sel
 
 Latest prompt: Fix voice list initialization after refresh, center collection card modals in the current viewport, keep the Russian top bar on one line, and replace the Memory Match plus sign with a real anonymous card-back state.
 
+Latest prompt: Reorganize the runtime web app so Firebase Hosting serves a single clean public root, with all browser-served files under public/ and non-runtime project files kept outside it.
+Latest prompt: Audit the Firebase auth infrastructure, wire the real runtime config into the actual app path, and complete production-style email/password auth verification end to end.
+Latest prompt: Prepare the authentication flow for reCAPTCHA with a real integration structure, but leave the final credentials injectable later instead of hardcoding them now.
+
 ### Latest verified pass
 - Reward reveal framing was corrected so the revealed card now settles fully inside the spotlight area instead of appearing clipped or edge-on.
 - The Game tab hierarchy was adjusted so the game picker renders above the active arena on all routes where the play screen is shown.
@@ -36,6 +40,18 @@ Latest prompt: Fix voice list initialization after refresh, center collection ca
 - Collection card details now render in a body-level fixed overlay, so the modal stays centered in the visible viewport even when the album is deeply scrolled.
 - Desktop Russian top bar now stays on one line by tightening no-wrap header sizing and truncating long secondary labels instead of wrapping the shell.
 - Memory Match hidden tiles now use a centered mystery card back with a large question mark instead of the old misplaced plus-sign placeholder.
+- Moved the actual runtime app entry from the repo root into `public/index.html` and moved the browser-served `scripts/`, `styles/`, and `assets/` trees under `public/`.
+- Removed the stale Firebase Hosting welcome page from `public/index.html`, leaving one clear app entry point for Hosting and local static serving.
+- Kept non-runtime files outside `public/`, including contributor docs, Firebase rules/indexes, and the Firebase config example.
+- Verified the app from a `python -m http.server --directory public` server root with no failed requests or console errors across Home, Play selection, launching a game, Collection, and Reward.
+- Moved the real Firebase web config into `public/firebase-config.js` so the running browser app no longer depends on blank placeholder meta tags or an unused root-only config file.
+- Kept the auth runtime path simple: `public/index.html` loads `public/firebase-config.js`, and `public/scripts/core/auth-manager.js` now boots directly from that served client config.
+- Verified real Firebase Authentication end to end in the live app: email/password sign-up, sign-in, sign-out, guest banner visibility, and refresh persistence all passed with no failed requests or console errors.
+- Removed Firestore as an auth-time dependency so account sign-in remains clean even if future per-user data storage is not available yet.
+- Tightened `firestore.rules` from the default open temporary rule set to an owner-only `users/{uid}` pattern for future account-linked data.
+- Added `public/recaptcha-config.js`, `recaptcha-config.example.js`, and a dedicated `public/scripts/core/recaptcha-manager.js` so auth submit actions now have a clean reCAPTCHA insertion point.
+- Kept the current repo safe by leaving reCAPTCHA disabled with blank placeholders until the final real site key is added later.
+- Verified the app still boots, the auth modal renders correctly, the localhost setup note is visible when reCAPTCHA is not configured, and sign-in still works without runtime errors while the site key is intentionally missing.
 
 ## Progress Checklist
 
@@ -628,6 +644,25 @@ Latest prompt: Fix voice list initialization after refresh, center collection ca
   - parent invalid-import UI still blocks malformed JSON
   - resetting settings restores all categories and removes shelved unlocks
   - browser console remained free of runtime errors
+- 2026-04-04: Added a Firebase-first auth foundation with safe guest fallback:
+  - new `scripts/core/auth-manager.js` centralizes auth bootstrap, guest/authenticated state, email/password sign-up and sign-in calls, sign-out, and future per-user profile sync
+  - auth now reads optional Firebase web config from blank `lootwords-firebase-*` meta tags in `index.html`, so the public repo stays runnable with no secrets committed
+  - the shell now renders a compact account control and auth modal with multilingual sign-in/sign-up UI, setup messaging, and authenticated account status
+  - the Home screen now shows a translated guest motivation banner and a logged-in placeholder banner for upcoming Daily Challenge/account bonuses
+  - contributor docs now describe the auth setup and note that Daily Challenge can build on this new foundation
+- 2026-04-04: Verified the auth fallback path in-browser:
+  - with no Firebase config present, the app still booted cleanly in guest mode
+  - the account button and guest-home CTA both opened the auth modal
+  - the auth modal rendered correctly in English, Hebrew, and Russian
+  - the top bar stayed stable at desktop widths after the new auth control was added
+  - mobile guest-banner signup flow opened correctly and showed validation feedback
+  - browser console remained free of runtime errors in the no-config path
+- 2026-04-04: Verified real Firebase auth against the existing project config at runtime:
+  - sign-up with email/password completed successfully
+  - sign-out returned the app cleanly to guest mode
+  - sign-in with the same account worked after logout
+  - authenticated session state persisted across refresh
+  - the current Firebase project does not yet have a Firestore database, so the optional per-user profile document hook remains best-effort until Firestore is created
 
 ## Notes
 
