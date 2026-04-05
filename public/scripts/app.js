@@ -47,7 +47,13 @@ import { createUiEffects } from "./core/ui-effects.js";
 import { updateAudioSettings, updateLanguageSettings, updateSpeechSettings } from "./core/settings-manager.js";
 import { getRandomGameId } from "./games/game-registry.js";
 import { createRouter, buildRoute } from "./router.js";
-import { loadProfile, saveProfile } from "./storage.js";
+import {
+  createInitialProfile,
+  createPersistenceDescriptor,
+  getLegacyArchiveInfo,
+  loadScopedProfile,
+  saveScopedProfile,
+} from "./storage.js";
 import { renderCollectionScreen } from "./ui/collection-screen.js";
 import { renderGameScreen } from "./ui/game-screen.js";
 import { renderHomeScreen } from "./ui/home-screen.js";
@@ -113,9 +119,13 @@ const auth = createAuthManager();
 const recaptcha = createRecaptchaManager();
 
 const store = createStore({
-  profile: loadProfile(),
+  profile: createInitialProfile(),
   auth: auth.getSnapshot(),
   recaptcha: recaptcha.getSnapshot(),
+  persistence: {
+    status: "loading",
+    ...createPersistenceDescriptor(auth.getSnapshot()),
+  },
   route: { path: ROUTES.home, game: null },
   session: {
     reward: createRewardSession(),
@@ -142,12 +152,9 @@ let router = null;
 let rewardRevealTimeout = 0;
 let cleanupLanguageSelector = () => {};
 let cleanupVoiceSelector = () => {};
+let profileLoadToken = 0;
 const cleanupAuthSubscription = auth.subscribe((authState) => {
-  store.setState((currentState) => ({
-    ...currentState,
-    auth: authState,
-  }));
-  renderApp();
+  void syncProfileForAuth(authState);
 });
 const cleanupRecaptchaSubscription = recaptcha.subscribe((recaptchaState) => {
   store.setState((currentState) => ({
@@ -210,7 +217,8 @@ function deriveState() {
 }
 
 function persistProfile(profile) {
-  saveProfile(profile);
+  const authState = store.getState().auth;
+  void saveScopedProfile(profile, authState);
   feedback.setAudioSettings(profile.settings.audio);
 }
 
@@ -223,6 +231,49 @@ function commitState(updater) {
 
 function updateSessionOnly(updater) {
   store.setState(updater);
+  renderApp();
+}
+
+async function syncProfileForAuth(authState) {
+  const nextToken = ++profileLoadToken;
+  const loadingDescriptor = createPersistenceDescriptor(authState);
+
+  store.setState((currentState) => ({
+    ...currentState,
+    auth: authState,
+    profile: createInitialProfile(),
+    persistence: {
+      status: "loading",
+      ...loadingDescriptor,
+    },
+    session: {
+      ...currentState.session,
+      reward: createRewardSession(),
+      gameResult: null,
+      modalCardId: null,
+      learnSelectedCardId: null,
+    },
+  }));
+  renderApp();
+
+  const nextProfile = await loadScopedProfile(authState);
+  if (nextToken !== profileLoadToken) {
+    return;
+  }
+  const readyDescriptor = createPersistenceDescriptor(authState);
+
+  feedback.setAudioSettings(nextProfile.settings.audio);
+  speech.setPreferredVoice(nextProfile.settings.speech?.voiceURI ?? null);
+
+  store.setState((currentState) => ({
+    ...currentState,
+    auth: authState,
+    profile: nextProfile,
+    persistence: {
+      status: "ready",
+      ...readyDescriptor,
+    },
+  }));
   renderApp();
 }
 
@@ -1589,6 +1640,8 @@ window.render_game_to_text = () => {
     speech: speech.getDebugState(),
     auth: state.auth,
     recaptcha: state.recaptcha,
+    persistence: state.persistence,
+    legacyArchive: getLegacyArchiveInfo(),
     reward: {
       clicks: state.session.reward.clicks,
       phase: state.session.reward.phase,
@@ -1627,6 +1680,25 @@ window.addEventListener("beforeunload", () => {
   eventBus.clear();
 });
 
-renderApp();
-auth.init();
-recaptcha.init();
+root.innerHTML = `
+  <div class="app-shell app-shell--loading">
+    <main class="shell-main" data-route="loading">
+      <section class="section-panel section-panel--compact" style="margin: auto; max-width: 520px;">
+        <span class="small-label">LootWords</span>
+        <h1 class="section-title">Loading your play session</h1>
+        <p class="screen-note">Preparing the correct guest or account profile before the app opens.</p>
+      </section>
+    </main>
+  </div>
+`;
+
+async function bootstrapApp() {
+  await auth.init();
+  await recaptcha.init();
+
+  if (store.getState().persistence.status !== "ready") {
+    await syncProfileForAuth(auth.getSnapshot());
+  }
+}
+
+void bootstrapApp();

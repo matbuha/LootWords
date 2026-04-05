@@ -3,6 +3,7 @@ const FIREBASE_VERSION = "10.12.5";
 export const FIREBASE_MODULE_URLS = {
   app: `https://www.gstatic.com/firebasejs/${FIREBASE_VERSION}/firebase-app.js`,
   auth: `https://www.gstatic.com/firebasejs/${FIREBASE_VERSION}/firebase-auth.js`,
+  firestore: `https://www.gstatic.com/firebasejs/${FIREBASE_VERSION}/firebase-firestore.js`,
 };
 
 function normalizeFirebaseConfig(rawConfig) {

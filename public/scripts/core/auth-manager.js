@@ -81,6 +81,7 @@ export function createAuthManager() {
   let authStateUnsubscribe = () => {};
   let initPromise = null;
   let initialized = false;
+  let initialAuthStateResolved = false;
   const listeners = new Set();
 
   function notify() {
@@ -110,6 +111,7 @@ export function createAuthManager() {
       const firebaseConfig = await loadFirebaseRuntimeConfig();
       if (!firebaseConfig) {
         initialized = true;
+        initialAuthStateResolved = true;
         setSnapshot({
           status: "ready",
           available: false,
@@ -148,16 +150,23 @@ export function createAuthManager() {
 
         await setPersistence(auth, browserLocalPersistence);
 
-        authStateUnsubscribe = onAuthStateChanged(auth, async (user) => {
-          setSnapshot({
-            status: "ready",
-            available: true,
-            configured: true,
-            mode: user ? "authenticated" : "guest",
-            user: buildUserSummary(user),
-            profile: null,
-            error: null,
-            needsSetup: false,
+        await new Promise((resolve) => {
+          authStateUnsubscribe = onAuthStateChanged(auth, async (user) => {
+            setSnapshot({
+              status: "ready",
+              available: true,
+              configured: true,
+              mode: user ? "authenticated" : "guest",
+              user: buildUserSummary(user),
+              profile: null,
+              error: null,
+              needsSetup: false,
+            });
+
+            if (!initialAuthStateResolved) {
+              initialAuthStateResolved = true;
+              resolve();
+            }
           });
         });
 
@@ -165,6 +174,7 @@ export function createAuthManager() {
         return snapshot;
       } catch (error) {
         initialized = true;
+        initialAuthStateResolved = true;
         setSnapshot({
           status: "ready",
           available: false,

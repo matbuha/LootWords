@@ -92,9 +92,9 @@ These are optional contribution ideas. They should not replace the core vocabula
 ### Daily Challenge
 - Status: `Partial`
 - Why it matters: gives children and parents a clear reason to return regularly.
-- Idea: the real Firebase auth foundation and guest-vs-logged-in gating now exist. The next work is building the actual daily challenge rules, per-user storage, and reward loop on top of that foundation.
+- Idea: the real Firebase auth foundation and guest-vs-logged-in gating now exist, and profile data is now isolated per user. The next work is building the actual daily challenge rules, backend per-user storage, and reward loop on top of that foundation.
 - Suggested area: `public/scripts/core/progression.js`, `public/scripts/core/auth-manager.js`, `public/scripts/app.js`, Home screen UI
-- Notes: keep guest users playable, but make challenge rewards meaningful for logged-in accounts.
+- Notes: keep guest users playable, but make challenge rewards meaningful for logged-in accounts. The current Firebase project still needs a real Firestore database created before backend challenge state can be stored there.
 
 ### Card Evolution
 - Status: `Idea only`
@@ -186,9 +186,9 @@ These are optional contribution ideas. They should not replace the core vocabula
 ### Account-based progression sync
 - Status: `Partial`
 - Why it matters: streaks, daily rewards, and future bonus systems now need a stable per-user layer instead of browser-only state.
-- Idea: build on the now-live Firebase auth and `users/{uid}` profile foundation to attach lightweight per-user progression data, account-only bonuses, and clearer logged-in dashboards.
+- Idea: build on the now-live Firebase auth and `users/{uid}/progress/main` profile foundation to attach lightweight per-user progression data, account-only bonuses, and clearer logged-in dashboards.
 - Suggested area: `public/scripts/core/auth-manager.js`, future progression/profile helpers, Home screen UI
-- Notes: keep the guest flow usable and avoid turning the app into an auth wall.
+- Notes: keep the guest flow usable and avoid turning the app into an auth wall. The runtime now falls back to per-user local browser storage when Firestore is unavailable, so the next backend step is turning the Firestore path on in the Firebase project and migrating account progress there cleanly.
 
 ### Improve Parent Mode safety and usability
 - Status: `Partial`

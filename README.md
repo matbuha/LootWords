@@ -49,7 +49,10 @@ Use these docs before starting work:
 - English pronunciation playback for visible/open cards
 - English, Hebrew, and Russian UI
 - Parent Mode for content, category, reward, and progress control
-- LocalStorage persistence with backup recovery
+- Isolated persistence boundaries:
+  - guest progress is session-only
+  - authenticated progress is keyed per Firebase user
+  - legacy shared local progress is archived and ignored
 - Real Firebase Authentication with guest fallback
 - Responsive layout across desktop, tablet, and phone sizes
 
@@ -58,7 +61,8 @@ Use these docs before starting work:
 - Plain HTML
 - Plain CSS
 - Plain JavaScript modules
-- localStorage for persistence
+- sessionStorage for guest progress
+- per-user localStorage fallback for authenticated progress until Firestore is live
 - Firebase Authentication and Firestore foundation for account features
 - Browser-native speech synthesis for English card pronunciation
 - Hash-based routing
@@ -92,7 +96,7 @@ If you want to point the app at your own Firebase project:
 
 1. Create a Firebase web app in your own Firebase project.
 2. Enable Email/Password sign-in in the Firebase Console.
-3. Create a Cloud Firestore database if you plan to build per-user progression or Daily Challenge data next.
+3. Create a real Cloud Firestore database in the Firebase Console. The current project code is already wired for `users/{uid}/progress/main`, but that backend path cannot work until the database exists.
 4. Replace the values in [public/firebase-config.js](public/firebase-config.js) with your project’s web config.
 5. Use [firebase-config.example.js](firebase-config.example.js) as the field reference.
 6. Replace the values in [public/recaptcha-config.js](public/recaptcha-config.js):
@@ -108,6 +112,8 @@ Notes:
 - The reCAPTCHA site key is also public client configuration, not a server secret.
 - Do not put service-account credentials or Admin SDK keys into the frontend.
 - The app still remains playable in guest mode if auth is unavailable at runtime.
+- Guest progress is intentionally temporary and session-only.
+- Authenticated progress is isolated per user. If Firestore is unavailable, the app falls back to per-user local browser storage instead of mixing users together.
 - The current implementation collects reCAPTCHA tokens in the auth flow when enabled. If you later want strong abuse verification, add a server-side or Firebase-hosted verification path after inserting the real site key.
 
 ## Main folders
@@ -115,7 +121,8 @@ Notes:
 - `public/index.html`: the single browser-served app entry point
 - `public/styles/`: theme, responsive rules, i18n, and animation layers
 - `public/scripts/app.js`: app bootstrap, actions, shell rendering, and shared wiring
-- `public/scripts/core/`: persistence, rewards, progression, i18n, audio, parent mode, and support systems
+- `public/scripts/core/`: rewards, progression, i18n, audio, parent mode, auth, and support systems
+- `public/scripts/storage.js`: guest session persistence, per-user progress loading/saving, and legacy shared-storage cleanup
 - `public/scripts/data/`: cards, categories, config, and translations
 - `public/scripts/core/auth-manager.js`: centralized Firebase auth bootstrap and session handling
 - `public/firebase-config.js`: browser-served Firebase web config used by the running app

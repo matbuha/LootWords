@@ -10,12 +10,23 @@ import {
   STORAGE_KEY,
   STORAGE_VERSION,
 } from "./data/config.js";
+import { FIREBASE_MODULE_URLS, loadFirebaseRuntimeConfig } from "./data/firebase-config.js";
 import { CARD_LIBRARY } from "./data/cards.js";
 import { normalizeGameStatsMap, createEmptyGameStatsMap } from "./core/game-session-manager.js";
 import { createDefaultParentSettings, normalizeParentSettings } from "./core/parent-mode.js";
 import { createDefaultSettings, normalizeSettings } from "./core/settings-manager.js";
 
 const STORAGE_BACKUP_KEY = `${STORAGE_KEY}:backup`;
+const LEGACY_ARCHIVE_KEY = `${STORAGE_KEY}:legacy-archive`;
+const LEGACY_ARCHIVE_BACKUP_KEY = `${STORAGE_KEY}:legacy-archive-backup`;
+const GUEST_SESSION_KEY = `${STORAGE_KEY}:guest-session`;
+const USER_LOCAL_KEY_PREFIX = `${STORAGE_KEY}:user:`;
+const USER_PROGRESS_COLLECTION = "progress";
+const USER_PROFILE_DOCUMENT = "main";
+
+let firestoreApiPromise = null;
+let pendingUserSave = Promise.resolve();
+const userStorageModes = new Map();
 
 function clampPoints(value) {
   const normalized = Number.parseInt(value, 10);
@@ -164,9 +175,9 @@ export function normalizeProfile(rawProfile) {
   };
 }
 
-function readProfileRecord(key) {
+function readLocalProfileRecord(storage, key) {
   try {
-    const rawValue = window.localStorage.getItem(key);
+    const rawValue = storage.getItem(key);
     if (!rawValue) {
       return { status: "missing", profile: null };
     }
@@ -180,45 +191,232 @@ function readProfileRecord(key) {
   }
 }
 
-function persistSerializedProfile(serializedProfile) {
-  try {
-    window.localStorage.setItem(STORAGE_KEY, serializedProfile);
-  } catch (error) {
-    console.warn("LootWords profile could not be saved to primary storage.", error);
+function getUserLocalStorageKey(uid) {
+  return `${USER_LOCAL_KEY_PREFIX}${uid}`;
+}
+
+function setUserStorageMode(uid, storage) {
+  if (!uid) {
+    return;
+  }
+
+  userStorageModes.set(uid, storage);
+}
+
+function loadLocalUserProfile(uid) {
+  if (!uid) {
+    return { status: "missing", profile: null };
+  }
+
+  return readLocalProfileRecord(window.localStorage, getUserLocalStorageKey(uid));
+}
+
+function saveLocalUserProfile(uid, profile) {
+  if (!uid) {
+    return;
   }
 
   try {
-    window.localStorage.setItem(STORAGE_BACKUP_KEY, serializedProfile);
+    window.localStorage.setItem(getUserLocalStorageKey(uid), JSON.stringify(normalizeProfile(profile)));
   } catch (error) {
-    console.warn("LootWords profile backup could not be saved.", error);
+    console.warn(`LootWords user cache could not be saved for ${uid}.`, error);
   }
 }
 
-export function loadProfile() {
-  const primary = readProfileRecord(STORAGE_KEY);
-  if (primary.status === "ok") {
-    return primary.profile;
+function archiveLegacySharedStorage() {
+  const primary = window.localStorage.getItem(STORAGE_KEY);
+  const backup = window.localStorage.getItem(STORAGE_BACKUP_KEY);
+
+  if (primary && !window.localStorage.getItem(LEGACY_ARCHIVE_KEY)) {
+    window.localStorage.setItem(LEGACY_ARCHIVE_KEY, primary);
   }
 
-  const backup = readProfileRecord(STORAGE_BACKUP_KEY);
-  if (backup.status === "ok") {
-    const serializedBackup = JSON.stringify(backup.profile);
-    persistSerializedProfile(serializedBackup);
-    console.warn("LootWords profile recovered from backup storage.");
-    return backup.profile;
+  if (backup && !window.localStorage.getItem(LEGACY_ARCHIVE_BACKUP_KEY)) {
+    window.localStorage.setItem(LEGACY_ARCHIVE_BACKUP_KEY, backup);
   }
 
-  if (primary.status === "error" || backup.status === "error") {
-    console.warn("LootWords profile reset after storage recovery failed.");
+  if (primary || backup) {
+    window.localStorage.removeItem(STORAGE_KEY);
+    window.localStorage.removeItem(STORAGE_BACKUP_KEY);
+  }
+}
+
+function loadGuestProfile() {
+  archiveLegacySharedStorage();
+
+  const guestRecord = readLocalProfileRecord(window.sessionStorage, GUEST_SESSION_KEY);
+  if (guestRecord.status === "ok") {
+    return guestRecord.profile;
+  }
+
+  if (guestRecord.status === "error") {
+    console.warn("LootWords guest profile reset after session storage recovery failed.");
   }
 
   return createInitialProfile();
 }
 
-export function saveProfile(profile) {
+function saveGuestProfile(profile) {
   try {
-    persistSerializedProfile(JSON.stringify(normalizeProfile(profile)));
+    window.sessionStorage.setItem(GUEST_SESSION_KEY, JSON.stringify(normalizeProfile(profile)));
   } catch (error) {
-    console.warn("LootWords profile could not be saved.", error);
+    console.warn("LootWords guest profile could not be saved to session storage.", error);
   }
+}
+
+async function getFirestoreApi() {
+  if (firestoreApiPromise) {
+    return firestoreApiPromise;
+  }
+
+  firestoreApiPromise = (async () => {
+    const firebaseConfig = await loadFirebaseRuntimeConfig();
+    if (!firebaseConfig) {
+      return null;
+    }
+
+    const [appModule, firestoreModule] = await Promise.all([
+      import(FIREBASE_MODULE_URLS.app),
+      import(FIREBASE_MODULE_URLS.firestore),
+    ]);
+    const { getApps, initializeApp } = appModule;
+    const { doc, getDoc, getFirestore, setDoc } = firestoreModule;
+
+    const app = getApps().find((entry) => entry.name === "lootwords") ?? initializeApp(firebaseConfig, "lootwords");
+    const db = getFirestore(app);
+
+    return { db, doc, getDoc, setDoc };
+  })();
+
+  return firestoreApiPromise;
+}
+
+function buildUserProfileReference(firestoreApi, uid) {
+  return firestoreApi.doc(firestoreApi.db, "users", uid, USER_PROGRESS_COLLECTION, USER_PROFILE_DOCUMENT);
+}
+
+async function loadUserProfile(uid) {
+  archiveLegacySharedStorage();
+
+  if (!uid) {
+    return createInitialProfile();
+  }
+
+  const localFallback = loadLocalUserProfile(uid);
+
+  try {
+    const firestoreApi = await getFirestoreApi();
+    if (!firestoreApi) {
+      const fallbackProfile = localFallback.status === "ok" ? localFallback.profile : createInitialProfile();
+      setUserStorageMode(uid, "localStorage");
+      return fallbackProfile;
+    }
+
+    const snapshot = await firestoreApi.getDoc(buildUserProfileReference(firestoreApi, uid));
+    if (!snapshot.exists()) {
+      setUserStorageMode(uid, "firestore");
+      return createInitialProfile();
+    }
+
+    const raw = snapshot.data();
+    const normalized = normalizeProfile(raw?.profile ?? raw);
+    saveLocalUserProfile(uid, normalized);
+    setUserStorageMode(uid, "firestore");
+    return normalized;
+  } catch (error) {
+    console.warn(`LootWords user profile read failed for ${uid}.`, error);
+    const fallbackProfile = localFallback.status === "ok" ? localFallback.profile : createInitialProfile();
+    setUserStorageMode(uid, "localStorage");
+    return fallbackProfile;
+  }
+}
+
+function saveUserProfile(uid, profile) {
+  if (!uid) {
+    return Promise.resolve();
+  }
+
+  const normalized = normalizeProfile(profile);
+  saveLocalUserProfile(uid, normalized);
+
+  pendingUserSave = pendingUserSave
+    .catch(() => {})
+    .then(async () => {
+      const firestoreApi = await getFirestoreApi();
+      if (!firestoreApi) {
+        setUserStorageMode(uid, "localStorage");
+        return;
+      }
+
+      await firestoreApi.setDoc(
+        buildUserProfileReference(firestoreApi, uid),
+        {
+          profile: normalized,
+          updatedAt: new Date().toISOString(),
+        },
+        { merge: true },
+      );
+      setUserStorageMode(uid, "firestore");
+    })
+    .catch((error) => {
+      console.warn(`LootWords user profile save failed for ${uid}.`, error);
+      setUserStorageMode(uid, "localStorage");
+    });
+
+  return pendingUserSave;
+}
+
+export function createPersistenceDescriptor(authState) {
+  if (authState?.mode === "authenticated" && authState.user?.uid) {
+    return {
+      kind: "user",
+      ownerId: authState.user.uid,
+      storage: userStorageModes.get(authState.user.uid) ?? "firestore",
+    };
+  }
+
+  return {
+    kind: "guest",
+    ownerId: "guest-session",
+    storage: "sessionStorage",
+  };
+}
+
+export async function loadScopedProfile(authState) {
+  const descriptor = createPersistenceDescriptor(authState);
+  return descriptor.kind === "user" ? loadUserProfile(descriptor.ownerId) : loadGuestProfile();
+}
+
+export function saveScopedProfile(profile, authState) {
+  const descriptor = createPersistenceDescriptor(authState);
+  if (descriptor.kind === "user") {
+    return saveUserProfile(descriptor.ownerId, profile);
+  }
+
+  saveGuestProfile(profile);
+  return Promise.resolve();
+}
+
+export function clearGuestProfile() {
+  try {
+    window.sessionStorage.removeItem(GUEST_SESSION_KEY);
+  } catch (error) {
+    console.warn("LootWords guest profile could not be cleared.", error);
+  }
+}
+
+export function getLegacyArchiveInfo() {
+  return {
+    primaryArchived: Boolean(window.localStorage.getItem(LEGACY_ARCHIVE_KEY)),
+    backupArchived: Boolean(window.localStorage.getItem(LEGACY_ARCHIVE_BACKUP_KEY)),
+  };
+}
+
+// Legacy exports kept temporarily for compatibility with older imports.
+export function loadProfile() {
+  return loadGuestProfile();
+}
+
+export function saveProfile(profile) {
+  saveGuestProfile(profile);
 }

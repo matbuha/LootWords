@@ -10,7 +10,8 @@ LootWords is an evolving MVP with a working core loop. It is no longer a bare pr
 
 - App boot and routing
 - Home, Play, Reward, Collection, Learn, and Parent Mode screens
-- LocalStorage persistence with backup recovery
+- Guest session persistence without shared cross-user leakage
+- Authenticated per-user progress isolation keyed by Firebase user identity
 - English, Hebrew, and Russian UI switching
 - Parent-controlled active card/category filtering
 - Reward box inventory and three-tap opening flow
@@ -67,9 +68,12 @@ LootWords is an evolving MVP with a working core loop. It is no longer a bare pr
   - real Firebase runtime config is now served from `public/firebase-config.js`
   - end-to-end signup, signin, signout, and refresh persistence are verified against the current Firebase project
   - guest mode still works as the fallback UX path if auth becomes unavailable
+  - guest progress is now temporary and session-only instead of using one shared browser profile
+  - authenticated users now load isolated per-user progress instead of sharing one global browser profile
   - auth submit flow now has a dedicated reCAPTCHA integration layer that can be activated later through `public/recaptcha-config.js`
-  - Firestore is prepared for future account-linked progression, but auth no longer depends on Firestore availability during bootstrap
+  - the runtime tries `users/{uid}/progress/main` first and falls back to per-user local browser storage if Firestore is unavailable
   - `firestore.rules` now includes a locked-down owner-only `users/{uid}` pattern for future account data
+  - the current Firebase project still needs an actual Firestore database created before backend profile storage can be verified live
 
 ## What needs care
 
@@ -84,13 +88,16 @@ LootWords is an evolving MVP with a working core loop. It is no longer a bare pr
   - reward correctness matters for unlock progression
   - duplicate or invalid reveal bugs are high-impact
 - `public/scripts/storage.js`
-  - profile normalization and recovery logic
-  - unsafe edits here can corrupt saved progress
+  - guest-vs-authenticated persistence boundaries, profile normalization, and recovery logic
+  - unsafe edits here can corrupt saved progress or leak user state across sessions
 - `public/scripts/data/translations.js`
   - centralized but large
   - missing or inconsistent keys can easily surface in the UI
 - `public/scripts/core/auth-manager.js`
   - central auth bootstrap, Firebase wiring, and future account foundation
+- `firestore.rules`
+  - ready for per-user data isolation once Firestore exists
+  - must stay aligned with the `users/{uid}/progress/main` data path
 - `public/firebase-config.js`
   - live browser runtime config for the current Firebase web app
   - changes here should preserve guest fallback and public-repo safety

@@ -663,6 +663,13 @@ Latest prompt: Prepare the authentication flow for reCAPTCHA with a real integra
   - sign-in with the same account worked after logout
   - authenticated session state persisted across refresh
   - the current Firebase project does not yet have a Firestore database, so the optional per-user profile document hook remains best-effort until Firestore is created
+- 2026-04-05: Fixed persistence isolation boundaries:
+  - removed the old shared `lootwords-profile` runtime path from active use and archive it on boot if it still exists
+  - guest progress now uses session-only storage and no longer survives as a shared pseudo-account
+  - authenticated progress is now keyed per Firebase user instead of using one shared browser profile
+  - the runtime now attempts `users/{uid}/progress/main` first and falls back to per-user local browser storage if Firestore is unavailable
+  - verified guest/session isolation and user A vs user B isolation in the browser with real auth sessions
+  - updated `firestore.rules` to the owner-only `users/{uid}` / `users/{uid}/progress/{documentId}` pattern, but the current Firebase project still needs a real Firestore database created before backend enforcement can be verified live
 
 ## Notes
 
