@@ -90,11 +90,11 @@ These are optional contribution ideas. They should not replace the core vocabula
 ## Special Systems
 
 ### Daily Challenge
-- Status: `Partial`
+- Status: `MVP shipped`
 - Why it matters: gives children and parents a clear reason to return regularly.
-- Idea: the real Firebase auth foundation and guest-vs-logged-in gating now exist, and profile data is now isolated per user. The next work is building the actual daily challenge rules, backend per-user storage, and reward loop on top of that foundation.
-- Suggested area: `public/scripts/core/progression.js`, `public/scripts/core/auth-manager.js`, `public/scripts/app.js`, Home screen UI
-- Notes: keep guest users playable, but make challenge rewards meaningful for logged-in accounts. The current Firebase project still needs a real Firestore database created before backend challenge state can be stored there.
+- Idea: the current MVP already ships one authenticated-user-only challenge per UTC calendar day, uses existing mini-games as the challenge source, stores per-user state in Firestore, and grants one extra daily reward box on first success. Next work can expand challenge variety, richer rewards, streak logic, and dedicated challenge-specific presentation.
+- Suggested area: `public/scripts/core/daily-challenge-manager.js`, `public/scripts/app.js`, `public/scripts/ui/home-screen.js`, `public/scripts/ui/game-screen.js`
+- Notes: keep guest users playable, preserve one-reward-per-day idempotency, and keep challenge generation deterministic and easy to audit.
 
 ### Card Evolution
 - Status: `Idea only`

@@ -19,7 +19,95 @@ function renderGamePickup(game, actionsLabel, disabled = false) {
   `;
 }
 
-export function renderHomeScreen(container, { progress, actions, newestCard, authState }) {
+function renderDailyChallengePanel({ dailyChallenge, authState, progress }) {
+  const definition = dailyChallenge?.definition;
+  const challengeGameLabel = definition?.gameId ? gameText(definition.gameId, "label") : t("play.stillPicking");
+  const challengeStatus = dailyChallenge?.state?.status ?? "locked";
+
+  if (authState?.mode !== "authenticated" || !authState.user) {
+    return `
+      <section class="section-panel section-panel--compact account-banner daily-challenge-panel daily-challenge-panel--guest">
+        <div>
+          <span class="small-label">${t("dailyChallenge.eyebrow")}</span>
+          <h2 class="section-title">${t("dailyChallenge.guestTitle")}</h2>
+          <p class="screen-note">${t("dailyChallenge.guestBody")}</p>
+        </div>
+        <div class="button-row button-row--wrap">
+          <button class="primary-button" type="button" data-open-auth="signup">${t("auth.createAccount")}</button>
+          <button class="secondary-button" type="button" data-open-auth="signin">${t("auth.signIn")}</button>
+        </div>
+      </section>
+    `;
+  }
+
+  if (dailyChallenge?.status === "loading") {
+    return `
+      <section class="section-panel section-panel--compact account-banner daily-challenge-panel">
+        <div>
+          <span class="small-label">${t("dailyChallenge.eyebrow")}</span>
+          <h2 class="section-title">${t("dailyChallenge.loadingTitle")}</h2>
+          <p class="screen-note">${t("dailyChallenge.loadingBody")}</p>
+        </div>
+        <div class="button-row button-row--wrap">
+          <span class="status-pill auth-banner__identity">${authState.user.email}</span>
+        </div>
+      </section>
+    `;
+  }
+
+  if (dailyChallenge?.errorKey) {
+    return `
+      <section class="section-panel section-panel--compact account-banner daily-challenge-panel daily-challenge-panel--warning">
+        <div>
+          <span class="small-label">${t("dailyChallenge.eyebrow")}</span>
+          <h2 class="section-title">${t("dailyChallenge.unavailableTitle")}</h2>
+          <p class="screen-note">${t(dailyChallenge.errorKey)}</p>
+        </div>
+        <div class="button-row button-row--wrap">
+          <span class="status-pill auth-banner__identity">${authState.user.email}</span>
+          <button class="ghost-button" type="button" data-open-auth="account">${t("auth.account")}</button>
+        </div>
+      </section>
+    `;
+  }
+
+  const statusCopy =
+    challengeStatus === "completed"
+      ? t("dailyChallenge.completedBody", { game: challengeGameLabel })
+      : challengeStatus === "in_progress"
+        ? t("dailyChallenge.inProgressBody", { game: challengeGameLabel })
+        : t("dailyChallenge.availableBody", { game: challengeGameLabel });
+
+  const actionLabel =
+    challengeStatus === "completed"
+      ? progress.rewardBoxes > 0
+        ? t("dailyChallenge.openRewards")
+        : t("dailyChallenge.doneToday")
+      : challengeStatus === "in_progress"
+        ? t("dailyChallenge.continueAction")
+        : t("dailyChallenge.startAction");
+
+  return `
+    <section class="section-panel section-panel--compact account-banner account-banner--signed-in daily-challenge-panel daily-challenge-panel--${challengeStatus}">
+      <div>
+        <span class="small-label">${t("dailyChallenge.eyebrow")}</span>
+        <h2 class="section-title">${t("dailyChallenge.title")}</h2>
+        <p class="screen-note">${statusCopy}</p>
+      </div>
+      <div class="button-row button-row--wrap">
+        <span class="status-pill"><strong>${challengeGameLabel}</strong><span>${t("dailyChallenge.rewardChip", { count: definition?.reward?.rewardBoxes ?? 1 })}</span></span>
+        ${
+          challengeStatus === "completed"
+            ? `<button class="primary-button" type="button" data-route="reward">${actionLabel}</button>`
+            : `<button class="primary-button" type="button" data-start-daily="true">${actionLabel}</button>`
+        }
+        <button class="ghost-button" type="button" data-open-auth="account">${t("auth.account")}</button>
+      </div>
+    </section>
+  `;
+}
+
+export function renderHomeScreen(container, { progress, actions, newestCard, authState, dailyChallenge }) {
   const noActiveContent = progress.totalCards === 0;
   const stashLabel =
     progress.rewardBoxes > 0
@@ -35,35 +123,6 @@ export function renderHomeScreen(container, { progress, actions, newestCard, aut
         t("emptyState.noLootYetTitle"),
         t("emptyState.noLootYetBody"),
       );
-  const accountBanner =
-    authState?.mode === "authenticated" && authState.user
-      ? `
-        <section class="section-panel section-panel--compact account-banner account-banner--signed-in">
-          <div>
-            <span class="small-label">${t("auth.accountBonuses")}</span>
-            <h2 class="section-title">${t("auth.loggedInTitle")}</h2>
-            <p class="screen-note">${t("auth.dailyChallengeReady")}</p>
-          </div>
-          <div class="button-row button-row--wrap">
-            <span class="status-pill auth-banner__identity">${authState.user.email}</span>
-            <button class="ghost-button" type="button" data-open-auth="account">${t("auth.account")}</button>
-          </div>
-        </section>
-      `
-      : `
-        <section class="section-panel section-panel--compact account-banner">
-          <div>
-            <span class="small-label">${t("auth.accountBonuses")}</span>
-            <h2 class="section-title">${t("auth.guestTitle")}</h2>
-            <p class="screen-note">${t("auth.guestBody")}</p>
-          </div>
-          <div class="button-row button-row--wrap">
-            <button class="primary-button" type="button" data-open-auth="signup">${t("auth.createAccount")}</button>
-            <button class="secondary-button" type="button" data-open-auth="signin">${t("auth.signIn")}</button>
-          </div>
-        </section>
-      `;
-
   container.innerHTML = `
     <div class="screen-stack">
       <section class="hero-panel hero-panel--home ${progress.rewardBoxes > 0 ? "hero-panel--stash-ready" : ""}">
@@ -131,7 +190,7 @@ export function renderHomeScreen(container, { progress, actions, newestCard, aut
         </div>
       </section>
 
-      ${accountBanner}
+      ${renderDailyChallengePanel({ dailyChallenge, authState, progress })}
 
       <section class="two-column two-column--play-picks">
         <div class="section-panel">
@@ -206,6 +265,11 @@ export function renderHomeScreen(container, { progress, actions, newestCard, aut
       actions.playRecommendedGame(button.dataset.playRecommended);
     });
   });
+  container.querySelectorAll("[data-start-daily]").forEach((button) => {
+    button.addEventListener("click", () => {
+      actions.startDailyChallenge();
+    });
+  });
   return {
     destroy() {},
     getDebugState() {
@@ -213,6 +277,7 @@ export function renderHomeScreen(container, { progress, actions, newestCard, aut
         screen: "home",
         rewardBoxes: progress.rewardBoxes,
         totalUnlocked: progress.totalUnlocked,
+        dailyChallengeStatus: dailyChallenge?.state?.status ?? null,
         recommendedGame: recommendedGame?.id ?? null,
         randomGame: randomGame?.id ?? null,
       };

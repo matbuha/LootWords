@@ -364,6 +364,34 @@ a {
     linear-gradient(145deg, rgba(41, 30, 98, 0.95), rgba(25, 18, 59, 0.9));
 }
 
+.daily-challenge-panel {
+  position: relative;
+  overflow: hidden;
+}
+
+.daily-challenge-panel::after {
+  content: "";
+  position: absolute;
+  inset: auto -40px -50px auto;
+  width: 160px;
+  height: 160px;
+  border-radius: 999px;
+  background: radial-gradient(circle, rgba(255, 223, 124, 0.18), transparent 68%);
+  pointer-events: none;
+}
+
+.daily-challenge-panel--guest {
+  background:
+    linear-gradient(135deg, rgba(255, 209, 102, 0.12), rgba(255, 255, 255, 0.04)),
+    linear-gradient(145deg, rgba(46, 31, 102, 0.94), rgba(25, 18, 59, 0.9));
+}
+
+.daily-challenge-panel--warning {
+  background:
+    linear-gradient(135deg, rgba(255, 123, 141, 0.12), rgba(255, 255, 255, 0.04)),
+    linear-gradient(145deg, rgba(46, 31, 102, 0.94), rgba(25, 18, 59, 0.9));
+}
+
 .auth-banner__identity {
   max-width: min(36ch, 100%);
   overflow: hidden;
@@ -1090,6 +1118,12 @@ body.is-modal-open {
 
 .arena-summary--focus {
   margin-bottom: 14px;
+}
+
+.arena-summary--focus .small-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .play-active__game-wrap {

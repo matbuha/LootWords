@@ -10,6 +10,7 @@ import {
 import { getCardById, hydrateCards } from "./data/cards.js";
 import { createAudioManager } from "./core/audio-manager.js";
 import { createAuthManager } from "./core/auth-manager.js";
+import { createDailyChallengeManager } from "./core/daily-challenge-manager.js";
 import {
   clearLastAppError,
   getLastAppError,
@@ -116,17 +117,19 @@ function createAuthUiState() {
 }
 
 const auth = createAuthManager();
+const dailyChallenge = createDailyChallengeManager();
 const recaptcha = createRecaptchaManager();
 
 const store = createStore({
   profile: createInitialProfile(),
   auth: auth.getSnapshot(),
+  dailyChallenge: dailyChallenge.getSnapshot(),
   recaptcha: recaptcha.getSnapshot(),
   persistence: {
     status: "loading",
     ...createPersistenceDescriptor(auth.getSnapshot()),
   },
-  route: { path: ROUTES.home, game: null },
+  route: { path: ROUTES.home, game: null, challenge: null },
   session: {
     reward: createRewardSession(),
     gameResult: null,
@@ -155,6 +158,13 @@ let cleanupVoiceSelector = () => {};
 let profileLoadToken = 0;
 const cleanupAuthSubscription = auth.subscribe((authState) => {
   void syncProfileForAuth(authState);
+});
+const cleanupDailyChallengeSubscription = dailyChallenge.subscribe((dailyChallengeState) => {
+  store.setState((currentState) => ({
+    ...currentState,
+    dailyChallenge: dailyChallengeState,
+  }));
+  renderApp();
 });
 const cleanupRecaptchaSubscription = recaptcha.subscribe((recaptchaState) => {
   store.setState((currentState) => ({
@@ -256,7 +266,10 @@ async function syncProfileForAuth(authState) {
   }));
   renderApp();
 
-  const nextProfile = await loadScopedProfile(authState);
+  const [nextProfile] = await Promise.all([
+    loadScopedProfile(authState),
+    dailyChallenge.syncAuthState(authState),
+  ]);
   if (nextToken !== profileLoadToken) {
     return;
   }
@@ -724,6 +737,24 @@ const actions = {
     );
     navigate(ROUTES.play, { game: nextGameId });
   },
+  async startDailyChallenge() {
+    const authState = store.getState().auth;
+    if (authState.mode !== "authenticated" || !authState.user?.uid) {
+      actions.openAuthModal("signin");
+      return;
+    }
+
+    const challengeSnapshot = await dailyChallenge.startCurrentChallenge(authState);
+    if (!challengeSnapshot.canStart || !challengeSnapshot.definition?.gameId) {
+      renderApp();
+      return;
+    }
+
+    navigate(ROUTES.play, {
+      game: challengeSnapshot.definition.gameId,
+      challenge: "daily",
+    });
+  },
   toggleMute() {
     const { settings } = store.getState().profile;
     const wasMuted = settings.audio.muted;
@@ -1174,22 +1205,52 @@ const actions = {
       },
     }));
   },
-  finishGame(result) {
+  async finishGame(result) {
+    const currentState = store.getState();
+    const isDailyChallengeRun =
+      currentState.route.challenge === "daily" &&
+      currentState.dailyChallenge.definition?.gameId === result.gameId &&
+      currentState.auth.mode === "authenticated";
+
     if (result.status === "won") {
       let winSummary = null;
+      let nextProfile = null;
+
+      const { profile: baseProfile, summary } = recordGameWin(currentState.profile, result.gameId);
+      nextProfile = baseProfile;
+      winSummary = summary;
+
+      if (isDailyChallengeRun) {
+        const dailyResult = await dailyChallenge.resolveCurrentAttempt(currentState.auth, {
+          gameId: result.gameId,
+          succeeded: true,
+          profile: baseProfile,
+        });
+
+        if (dailyResult.matched && dailyResult.profile) {
+          nextProfile = dailyResult.profile;
+          winSummary = {
+            ...summary,
+            dailyChallenge: {
+              status: dailyResult.challengeState?.status ?? "completed",
+              rewardGranted: Boolean(dailyResult.rewardGranted),
+              boxesAwarded: dailyResult.rewardGranted
+                ? dailyResult.challengeState?.rewardBoxesGranted ?? 1
+                : 0,
+            },
+          };
+        }
+      }
 
       commitState((currentState) => {
-        const { profile, summary } = recordGameWin(currentState.profile, result.gameId);
-        winSummary = summary;
-
         return {
           ...currentState,
-          profile,
+          profile: nextProfile,
           session: {
             ...currentState.session,
             gameResult: {
               ...result,
-              summary,
+              summary: winSummary,
             },
           },
         };
@@ -1202,6 +1263,14 @@ const actions = {
         });
       }
       return;
+    }
+
+    if (isDailyChallengeRun) {
+      await dailyChallenge.resolveCurrentAttempt(currentState.auth, {
+        gameId: result.gameId,
+        succeeded: false,
+        profile: currentState.profile,
+      });
     }
 
     commitState((currentState) => {
@@ -1221,8 +1290,12 @@ const actions = {
     });
     feedback.trigger(FEEDBACK_EVENTS.gameLose);
   },
-  clearGameResult() {
+  async clearGameResult() {
     feedback.trigger(FEEDBACK_EVENTS.buttonClick);
+    const currentState = store.getState();
+    if (currentState.route.challenge === "daily") {
+      await dailyChallenge.startCurrentChallenge(currentState.auth);
+    }
     commitState((currentState) => ({
       ...currentState,
       session: {
@@ -1515,6 +1588,7 @@ function renderApp() {
         unlockedCards: reviewDeck,
         selectedCard: selectedLearnCard,
         result: state.session.gameResult,
+        dailyChallenge: state.dailyChallenge,
         parentUi: state.session.parent,
         isUnlocked: state.session.parent.unlocked,
         profile: state.profile,
@@ -1549,6 +1623,7 @@ function renderApp() {
 router = createRouter((route) => {
   const previousState = store.getState();
   const nextGame = route.path === ROUTES.play && route.game in GAME_CONFIG ? route.game : null;
+  const nextChallenge = route.path === ROUTES.play ? route.challenge ?? null : null;
   const navMotion = getRouteMotion(previousState.route.path, route.path);
   const nextSection = normalizeParentSection(route.section ?? previousState.session.parent.section);
 
@@ -1561,6 +1636,7 @@ router = createRouter((route) => {
     route: {
       ...route,
       game: nextGame,
+      challenge: nextChallenge,
       section: route.path === ROUTES.parent ? nextSection : null,
     },
     session: {
@@ -1568,7 +1644,10 @@ router = createRouter((route) => {
       navMotion,
       modalCardId: route.path === ROUTES.collection ? currentState.session.modalCardId : null,
       gameResult:
-        route.path === ROUTES.play && nextGame && currentState.session.gameResult?.gameId === nextGame
+        route.path === ROUTES.play &&
+        nextGame &&
+        currentState.session.gameResult?.gameId === nextGame &&
+        (currentState.route.challenge ?? null) === nextChallenge
           ? currentState.session.gameResult
           : null,
       reward: route.path === ROUTES.reward ? currentState.session.reward : createRewardSession(),
@@ -1594,6 +1673,13 @@ function handleCardSpeech(event) {
   speech.speakWordInEnglish(speakableTarget.dataset.speakWord);
 }
 
+function refreshDailyChallengeOnFocus() {
+  const authState = auth.getSnapshot();
+  if (authState.mode === "authenticated") {
+    void dailyChallenge.refresh(authState);
+  }
+}
+
 document.addEventListener("pointerdown", primeAudioFromInteraction, {
   passive: true,
   capture: true,
@@ -1602,6 +1688,12 @@ document.addEventListener("keydown", primeAudioFromInteraction, {
   capture: true,
 });
 root.addEventListener("click", handleCardSpeech, true);
+window.addEventListener("focus", refreshDailyChallengeOnFocus);
+document.addEventListener("visibilitychange", () => {
+  if (!document.hidden) {
+    refreshDailyChallengeOnFocus();
+  }
+});
 
 languageManager.apply();
 
@@ -1612,6 +1704,7 @@ window.render_game_to_text = () => {
     direction: languageManager.getDirection(),
     route: state.route.path,
     routeGame: state.route.game,
+    routeChallenge: state.route.challenge,
     routeSection: state.route.section,
     rewardBoxes: state.profile.rewardBoxes,
     rewardBoxesEarned: state.profile.rewardBoxesEarned,
@@ -1639,6 +1732,7 @@ window.render_game_to_text = () => {
     },
     speech: speech.getDebugState(),
     auth: state.auth,
+    dailyChallenge: state.dailyChallenge,
     recaptcha: state.recaptcha,
     persistence: state.persistence,
     legacyArchive: getLegacyArchiveInfo(),
@@ -1671,12 +1765,14 @@ window.addEventListener("beforeunload", () => {
   cleanupLanguageSelector();
   cleanupVoiceSelector();
   cleanupAuthSubscription();
+  cleanupDailyChallengeSubscription();
   cleanupRecaptchaSubscription();
   cleanupSpeechSubscription();
   uiEffects.destroy();
   feedback.destroy();
   speech.destroy();
   auth.destroy();
+  dailyChallenge.destroy();
   eventBus.clear();
 });
 

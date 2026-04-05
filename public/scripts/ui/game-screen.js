@@ -80,6 +80,12 @@ function renderOutcomeSummary(result) {
       );
     }
 
+    if (result.summary.dailyChallenge?.rewardGranted) {
+      rewardChips.push(
+        `<div class="victory-chip victory-chip--bonus"><span>${t("dailyChallenge.rewardBonusLabel")}</span><strong>+${result.summary.dailyChallenge.boxesAwarded}</strong></div>`,
+      );
+    }
+
     return `
       <div class="victory-chip-row victory-chip-row--rewards">
         ${rewardChips.join("")}
@@ -219,7 +225,10 @@ function renderSelectionView(container, { playSummary, progress, actions }) {
   };
 }
 
-export function renderGameScreen(container, { route, cards, result, progress, actions, playSound, speakEnglishWord }) {
+export function renderGameScreen(
+  container,
+  { route, cards, result, progress, actions, playSound, speakEnglishWord, dailyChallenge },
+) {
   const playSummary = progress.playSummary;
   const gameId = route.game ? getGameDefinition(route.game).id : null;
 
@@ -234,6 +243,87 @@ export function renderGameScreen(container, { route, cards, result, progress, ac
   const gameMeta = playSummary.gameProgress.find((game) => game.id === gameId) ?? getGameDefinition(gameId);
   const playableCards = gameMeta.usesCardPool ? getPlayablePool(cards, gameMeta.minimumCardPool) : cards;
   const hasPlayableCardPool = !gameMeta.usesCardPool || playableCards.length > 0;
+  const isDailyChallenge = route.challenge === "daily";
+  const dailyState = dailyChallenge;
+
+  if (isDailyChallenge) {
+    const challengeUnavailable =
+      dailyState?.access !== "authenticated" ||
+      !dailyState.definition ||
+      dailyState.definition.gameId !== gameId ||
+      dailyState.errorKey;
+
+    if (challengeUnavailable) {
+      container.innerHTML = `
+        <div class="screen-stack screen-stack--play-active">
+          <section class="arena-panel arena-panel--game arena-panel--game-focus">
+            <div class="play-active__top">
+              <button class="ghost-button play-active__back" type="button" data-route="home">${t("shell.nav.home.label")}</button>
+            </div>
+            ${renderEmptyState(t("dailyChallenge.unavailableTitle"), t(dailyState?.errorKey || "dailyChallenge.lockedRouteBody"), `
+              <div class="button-row button-row--wrap">
+                <button class="primary-button" type="button" data-route="home">${t("shell.nav.home.label")}</button>
+                <button class="secondary-button" type="button" data-open-auth="signin">${t("auth.signIn")}</button>
+              </div>
+            `)}
+          </section>
+        </div>
+      `;
+
+      container.querySelectorAll("[data-route]").forEach((button) => {
+        button.addEventListener("click", () => {
+          actions.navigate(button.dataset.route);
+        });
+      });
+
+      return {
+        destroy() {},
+        advanceTime() {},
+        getDebugState() {
+          return {
+            screen: "daily-challenge-locked",
+            gameId,
+          };
+        },
+      };
+    }
+
+    if (dailyState?.state?.status === "completed" && (!result || result.gameId !== gameId)) {
+      container.innerHTML = `
+        <div class="screen-stack screen-stack--play-active">
+          <section class="arena-panel arena-panel--game arena-panel--game-focus">
+            <div class="play-active__top">
+              <button class="ghost-button play-active__back" type="button" data-route="home">${t("shell.nav.home.label")}</button>
+              <button class="ghost-button" type="button" data-route="reward">${t("dailyChallenge.openRewards")}</button>
+            </div>
+            ${renderEmptyState(t("dailyChallenge.completedTitle"), t("dailyChallenge.completedWinCopy"), `
+              <div class="button-row button-row--wrap">
+                <button class="primary-button" type="button" data-route="reward">${t("dailyChallenge.openRewards")}</button>
+                <button class="secondary-button" type="button" data-route="home">${t("dailyChallenge.backTomorrow")}</button>
+              </div>
+            `)}
+          </section>
+        </div>
+      `;
+
+      container.querySelectorAll("[data-route]").forEach((button) => {
+        button.addEventListener("click", () => {
+          actions.navigate(button.dataset.route);
+        });
+      });
+
+      return {
+        destroy() {},
+        advanceTime() {},
+        getDebugState() {
+          return {
+            screen: "daily-challenge-complete",
+            gameId,
+          };
+        },
+      };
+    }
+  }
 
   container.innerHTML = `
     <div class="screen-stack screen-stack--play-active">
@@ -247,11 +337,12 @@ export function renderGameScreen(container, { route, cards, result, progress, ac
 
         <div class="arena-summary arena-summary--focus">
           <div>
-            <span class="small-label">${t("play.playLab")}</span>
+            <span class="small-label">${isDailyChallenge ? t("dailyChallenge.eyebrow") : t("play.playLab")}</span>
             <h3 class="section-title">${gameText(gameMeta.id, "label")}</h3>
-            <p class="screen-note">${gameText(gameMeta.id, "description")}</p>
+            <p class="screen-note">${isDailyChallenge ? t("dailyChallenge.playBody") : gameText(gameMeta.id, "description")}</p>
           </div>
           <div class="arena-summary__stats">
+            ${isDailyChallenge ? `<span class="arena-stat">☀️ ${t("dailyChallenge.todayChip")}</span>` : ""}
             <span class="arena-stat">${gameMeta.icon} ${gameText(gameMeta.id, "energyLabel")}</span>
             <span class="arena-stat">${gameText(gameMeta.id, "lengthLabel")}</span>
             <span class="arena-stat">${gameMeta.stats.wins}/${gameMeta.stats.plays}</span>
@@ -277,9 +368,9 @@ export function renderGameScreen(container, { route, cards, result, progress, ac
                     <span></span>
                   </div>
                   <span class="small-label">${result.status === "won" ? t("play.victory") : t("play.roundOver")}</span>
-                  <h3 class="section-title">${result.status === "won" ? t("play.rewardSecured") : t("play.jumpBackIn")}</h3>
+                  <h3 class="section-title">${result.status === "won" ? (isDailyChallenge ? t("dailyChallenge.completedTitle") : t("play.rewardSecured")) : t("play.jumpBackIn")}</h3>
                   <p class="section-copy">
-                    ${result.status === "won" ? t("play.winCopy") : t("play.loseCopy")}
+                    ${result.status === "won" ? (isDailyChallenge ? t("dailyChallenge.completedWinCopy") : t("play.winCopy")) : (isDailyChallenge ? t("dailyChallenge.retryBody") : t("play.loseCopy"))}
                   </p>
                   ${renderOutcomeSummary(result)}
                   ${result.status === "won" ? renderVictoryStats(result) : ""}
@@ -289,7 +380,11 @@ export function renderGameScreen(container, { route, cards, result, progress, ac
                         ? `<button class="primary-button" type="button" data-route="reward">${t("play.openRewardBox")}</button>`
                         : `<button class="primary-button" type="button" data-reset-game="true">${t("play.replayGame")}</button>`
                     }
-                    <button class="secondary-button" type="button" data-reset-game="true">${t("play.playThisGameAgain")}</button>
+                    ${
+                      result.status === "won" && isDailyChallenge
+                        ? `<button class="secondary-button" type="button" data-route="home">${t("dailyChallenge.backTomorrow")}</button>`
+                        : `<button class="secondary-button" type="button" data-reset-game="true">${t("play.playThisGameAgain")}</button>`
+                    }
                     <button class="ghost-button" type="button" data-play-random="${gameId}">${t("play.tryRandomGame")}</button>
                   </div>
                 </div>

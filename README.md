@@ -49,6 +49,7 @@ Use these docs before starting work:
 - English pronunciation playback for visible/open cards
 - English, Hebrew, and Russian UI
 - Parent Mode for content, category, reward, and progress control
+- Authenticated Daily Challenge with per-user daily state and one daily bonus reward
 - Isolated persistence boundaries:
   - guest progress is session-only
   - authenticated progress is keyed per Firebase user
@@ -62,8 +63,8 @@ Use these docs before starting work:
 - Plain CSS
 - Plain JavaScript modules
 - sessionStorage for guest progress
-- per-user localStorage fallback for authenticated progress until Firestore is live
-- Firebase Authentication and Firestore foundation for account features
+- Firebase Authentication plus Firestore-backed per-user progress and Daily Challenge state
+- per-user localStorage fallback only if Firestore is temporarily unavailable
 - Browser-native speech synthesis for English card pronunciation
 - Hash-based routing
 
@@ -90,21 +91,24 @@ LootWords now runs with a real Firebase web config at [public/firebase-config.js
 - sign out
 - refresh persistence
 - guest vs logged-in UI
+- Firestore-backed per-user progress at `users/{uid}/progress/main`
+- authenticated Daily Challenge with one rewardable completion per calendar day
 - reCAPTCHA-ready auth submit hooks
 
 If you want to point the app at your own Firebase project:
 
 1. Create a Firebase web app in your own Firebase project.
 2. Enable Email/Password sign-in in the Firebase Console.
-3. Create a real Cloud Firestore database in the Firebase Console. The current project code is already wired for `users/{uid}/progress/main`, but that backend path cannot work until the database exists.
-4. Replace the values in [public/firebase-config.js](public/firebase-config.js) with your project’s web config.
-5. Use [firebase-config.example.js](firebase-config.example.js) as the field reference.
-6. Replace the values in [public/recaptcha-config.js](public/recaptcha-config.js):
+3. Create a Cloud Firestore database in the Firebase Console.
+4. Deploy [firestore.rules](firestore.rules) so the `users/{uid}/progress/main` path is owner-only.
+5. Replace the values in [public/firebase-config.js](public/firebase-config.js) with your project’s web config.
+6. Use [firebase-config.example.js](firebase-config.example.js) as the field reference.
+7. Replace the values in [public/recaptcha-config.js](public/recaptcha-config.js):
    - `enabled`
    - `provider`
    - `siteKey`
    Use [recaptcha-config.example.js](recaptcha-config.example.js) as the field reference.
-7. Deploy [firestore.rules](firestore.rules) before adding any account-linked Firestore data.
+8. If you enable reCAPTCHA enforcement, add the matching allowed domains in Google Cloud / Firebase Console.
 
 Notes:
 
@@ -113,7 +117,7 @@ Notes:
 - Do not put service-account credentials or Admin SDK keys into the frontend.
 - The app still remains playable in guest mode if auth is unavailable at runtime.
 - Guest progress is intentionally temporary and session-only.
-- Authenticated progress is isolated per user. If Firestore is unavailable, the app falls back to per-user local browser storage instead of mixing users together.
+- Authenticated progress and Daily Challenge state are isolated per user under `users/{uid}/progress/main`. If Firestore is temporarily unavailable, the app falls back to per-user local browser storage instead of mixing users together.
 - The current implementation collects reCAPTCHA tokens in the auth flow when enabled. If you later want strong abuse verification, add a server-side or Firebase-hosted verification path after inserting the real site key.
 
 ## Main folders
@@ -125,6 +129,7 @@ Notes:
 - `public/scripts/storage.js`: guest session persistence, per-user progress loading/saving, and legacy shared-storage cleanup
 - `public/scripts/data/`: cards, categories, config, and translations
 - `public/scripts/core/auth-manager.js`: centralized Firebase auth bootstrap and session handling
+- `public/scripts/core/daily-challenge-manager.js`: deterministic daily challenge generation, per-user daily state, and daily reward idempotency
 - `public/firebase-config.js`: browser-served Firebase web config used by the running app
 - `public/recaptcha-config.js`: browser-served reCAPTCHA runtime config used by the auth flow
 - `public/scripts/games/`: mini-game implementations and registry

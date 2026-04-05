@@ -36,20 +36,19 @@ To test auth against your own Firebase project:
 
 1. Create your own Firebase web app.
 2. Enable Email/Password sign-in in the Firebase Console.
-3. Create a Cloud Firestore database if you plan to add per-user progression or Daily Challenge data.
-   The current LootWords code already tries to use `users/{uid}/progress/main`, but that path cannot work until a real Firestore database exists in the project.
-4. Replace the values in [public/firebase-config.js](public/firebase-config.js) with your project’s web config.
-5. Use [firebase-config.example.js](firebase-config.example.js) as the field reference.
-6. Replace the values in [public/recaptcha-config.js](public/recaptcha-config.js):
+3. Create a Cloud Firestore database.
+4. Deploy [firestore.rules](firestore.rules) so `users/{uid}/progress/main` stays owner-only.
+5. Replace the values in [public/firebase-config.js](public/firebase-config.js) with your project’s web config.
+6. Use [firebase-config.example.js](firebase-config.example.js) as the field reference.
+7. Replace the values in [public/recaptcha-config.js](public/recaptcha-config.js):
    - `enabled`
    - `provider`
    - `siteKey`
-7. Use [recaptcha-config.example.js](recaptcha-config.example.js) as the field reference.
-8. Deploy [firestore.rules](firestore.rules) before adding any account-linked Firestore collections.
+8. Use [recaptcha-config.example.js](recaptcha-config.example.js) as the field reference.
 
 Firebase web config is safe to ship to browsers. Do not add Admin SDK credentials or service-account secrets to this repo.
 The reCAPTCHA site key is also a public browser value. Do not add secret verification keys to this repo.
-Guest progress is intentionally session-only. Authenticated progress is isolated per user. If Firestore is still unavailable in your Firebase project, the app falls back to per-user local browser storage instead of one shared profile.
+Guest progress is intentionally session-only. Authenticated progress and Daily Challenge state are isolated per user under `users/{uid}/progress/main`. If Firestore is temporarily unavailable in your Firebase project, the app falls back to per-user local browser storage instead of one shared profile.
 
 ## How to choose work
 

@@ -19,6 +19,7 @@ LootWords is an evolving MVP with a working core loop. It is no longer a bare pr
 - Card speech for visible/open cards in English
 - Voice selection for English pronunciation when the browser exposes multiple English voices
 - Firebase Authentication with guest fallback, auth modal UI, session bootstrap, and logout flow
+- Firestore-backed Daily Challenge for authenticated users with guest lock state, retryable daily runs, and one daily bonus reward
 - Eight playable mini-games:
   - Memory Match
   - Treasure Match
@@ -71,9 +72,15 @@ LootWords is an evolving MVP with a working core loop. It is no longer a bare pr
   - guest progress is now temporary and session-only instead of using one shared browser profile
   - authenticated users now load isolated per-user progress instead of sharing one global browser profile
   - auth submit flow now has a dedicated reCAPTCHA integration layer that can be activated later through `public/recaptcha-config.js`
-  - the runtime tries `users/{uid}/progress/main` first and falls back to per-user local browser storage if Firestore is unavailable
-  - `firestore.rules` now includes a locked-down owner-only `users/{uid}` pattern for future account data
-  - the current Firebase project still needs an actual Firestore database created before backend profile storage can be verified live
+  - the runtime uses `users/{uid}/progress/main` as the primary Firestore path and falls back to per-user local browser storage only if Firestore is unavailable
+  - `firestore.rules` now includes a locked-down owner-only `users/{uid}` pattern for account data
+- Daily Challenge:
+  - real authenticated-user-only MVP is in place
+  - guest users see a locked CTA state and cannot start the feature
+  - challenge assignment is deterministic by UTC calendar day and rotates across stable existing mini-games
+  - per-user challenge state is stored inside `users/{uid}/progress/main`
+  - success grants one extra daily reward box exactly once per day
+  - failed runs stay retryable on the same day
 
 ## What needs care
 
@@ -95,9 +102,10 @@ LootWords is an evolving MVP with a working core loop. It is no longer a bare pr
   - missing or inconsistent keys can easily surface in the UI
 - `public/scripts/core/auth-manager.js`
   - central auth bootstrap, Firebase wiring, and future account foundation
+- `public/scripts/core/daily-challenge-manager.js`
+  - central daily date-key logic, deterministic challenge generation, and reward idempotency
 - `firestore.rules`
-  - ready for per-user data isolation once Firestore exists
-  - must stay aligned with the `users/{uid}/progress/main` data path
+  - owner-only rules must stay aligned with the `users/{uid}/progress/main` data path
 - `public/firebase-config.js`
   - live browser runtime config for the current Firebase web app
   - changes here should preserve guest fallback and public-repo safety
@@ -108,7 +116,7 @@ LootWords is an evolving MVP with a working core loop. It is no longer a bare pr
 ## Known active development areas
 
 - More learning-focused mini-games
-- Daily Challenge and account-based progression on top of the new auth foundation
+- richer Daily Challenge types and broader account-based progression on top of the shipped MVP
 - Better speech quality and voice handling
 - Better card art and image-first presentation
 - Improved mobile polish and accessibility

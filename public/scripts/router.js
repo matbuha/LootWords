@@ -13,6 +13,7 @@ export function parseRoute(hashValue = window.location.hash) {
   return {
     path: normalizedPath,
     game: params.get("game") ?? null,
+    challenge: params.get("challenge") ?? null,
     section: params.get("section") ?? null,
   };
 }

@@ -34,7 +34,20 @@ export const ROUTE_SEQUENCE = [
 export const DEFAULT_ROUTE = {
   path: ROUTES.home,
   game: null,
+  challenge: null,
 };
+
+export const DAILY_CHALLENGE_TIME_ZONE = "UTC";
+export const DAILY_CHALLENGE_REWARD_BOXES = 1;
+export const DAILY_CHALLENGE_GAME_IDS = [
+  "memory-match",
+  "picture-match",
+  "flash-find",
+  "tap-the-word",
+  "repeat-after-me",
+  "sequence-memory",
+  "image-reveal",
+];
 
 export const RARITY_ORDER = [
   "common",
