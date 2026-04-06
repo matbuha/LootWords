@@ -12,8 +12,10 @@ function createProgressResetState(profile) {
     rewardBoxes: 0,
     rewardBoxesEarned: 0,
     rewardBoxesOpened: 0,
+    coins: 0,
     totalWins: 0,
     bonusStars: 0,
+    inventory: defaults.inventory,
     currentStreak: 0,
     bestStreak: 0,
     firstWinGameIds: [],
@@ -32,6 +34,8 @@ export function resetCollectionProgress(profile) {
     ...profile,
     unlockedCardIds: [],
     discoveredAtByCardId: {},
+    coins: createInitialProfile().coins,
+    inventory: createInitialProfile().inventory,
   };
 }
 
@@ -39,7 +43,11 @@ export function resetRewardState(profile) {
   return {
     ...profile,
     rewardBoxes: 0,
+    rewardBoxesEarned: 0,
+    rewardBoxesOpened: 0,
+    coins: 0,
     bonusStars: 0,
+    inventory: createInitialProfile().inventory,
   };
 }
 

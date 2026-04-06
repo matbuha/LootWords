@@ -1,5 +1,4 @@
 import { createCardDefinition, assertValidCardLibrary } from "../core/card-utils.js";
-import { getRarityFromPoints } from "../core/rarity.js";
 
 function entry(word, icon, difficultyLevel, tags, extras = {}) {
   return {
@@ -208,7 +207,7 @@ export function hydrateCards(profile) {
     return {
       ...card,
       points,
-      rarity: getRarityFromPoints(points),
+      rarity: card.baseRarity,
       unlocked: unlockedSet.has(card.id),
       discoveredAt: profile.discoveredAtByCardId[card.id] ?? null,
     };

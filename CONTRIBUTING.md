@@ -72,6 +72,8 @@ Be extra careful in:
 - `public/scripts/app.js`
 - `public/scripts/storage.js`
 - `public/scripts/core/rewards.js`
+- `public/scripts/core/loot-manager.js`
+- `public/scripts/data/loot.js`
 - `public/scripts/core/auth-manager.js`
 - `firestore.rules`
 - `public/scripts/ui/game-screen.js`

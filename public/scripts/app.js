@@ -1182,7 +1182,7 @@ const actions = {
       if (rewardResult.reward.type === "card" && revealedCard) {
         feedback.trigger(FEEDBACK_EVENTS.newCardUnlocked, {
           rarity: revealedCard.rarity,
-          audio: revealedCard.rarity !== "legendary",
+          audio: revealedCard.rarity !== "legend",
           audioOptions: { delayMs: 120 },
         });
       }

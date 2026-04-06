@@ -637,15 +637,17 @@ a {
 }
 
 .loot-card[data-rarity="common"],
-.detail-card[data-rarity="common"] { background: linear-gradient(160deg, rgba(83, 196, 255, 0.16), rgba(42, 28, 99, 0.95)); }
+.detail-card[data-rarity="common"] { background: linear-gradient(160deg, rgba(159, 168, 184, 0.18), rgba(42, 28, 99, 0.95)); }
+.loot-card[data-rarity="uncommon"],
+.detail-card[data-rarity="uncommon"] { background: linear-gradient(160deg, rgba(102, 225, 140, 0.16), rgba(42, 28, 99, 0.95)); }
 .loot-card[data-rarity="rare"],
-.detail-card[data-rarity="rare"] { background: linear-gradient(160deg, rgba(82, 241, 203, 0.16), rgba(42, 28, 99, 0.95)); }
-.loot-card[data-rarity="super-rare"],
-.detail-card[data-rarity="super-rare"] { background: linear-gradient(160deg, rgba(255, 201, 79, 0.18), rgba(42, 28, 99, 0.95)); }
+.detail-card[data-rarity="rare"] { background: linear-gradient(160deg, rgba(83, 196, 255, 0.18), rgba(42, 28, 99, 0.95)); }
+.loot-card[data-rarity="mythic"],
+.detail-card[data-rarity="mythic"] { background: linear-gradient(160deg, rgba(255, 102, 102, 0.18), rgba(42, 28, 99, 0.95)); }
 .loot-card[data-rarity="epic"],
-.detail-card[data-rarity="epic"] { background: linear-gradient(160deg, rgba(255, 123, 141, 0.18), rgba(42, 28, 99, 0.95)); }
-.loot-card[data-rarity="legendary"],
-.detail-card[data-rarity="legendary"] { background: linear-gradient(160deg, rgba(255, 201, 79, 0.24), rgba(83, 196, 255, 0.14), rgba(42, 28, 99, 0.96)); }
+.detail-card[data-rarity="epic"] { background: linear-gradient(160deg, rgba(255, 214, 102, 0.2), rgba(42, 28, 99, 0.95)); }
+.loot-card[data-rarity="legend"],
+.detail-card[data-rarity="legend"] { background: linear-gradient(160deg, rgba(183, 117, 255, 0.24), rgba(125, 91, 255, 0.16), rgba(42, 28, 99, 0.96)); }
 .loot-card.is-locked,
 .detail-card.is-locked { background: linear-gradient(160deg, rgba(255, 255, 255, 0.07), rgba(24, 17, 58, 0.94)); }
 
@@ -1913,40 +1915,56 @@ body.is-feedback-legendary .route-glow::after {
   min-height: 340px;
 }
 
-.loot-card[data-rarity="rare"],
-.detail-card[data-rarity="rare"] {
-  --rarity-accent: rgba(82, 241, 203, 0.24);
-  --rarity-core: #6cf4da;
-  --rarity-shadow: rgba(82, 241, 203, 0.22);
-  --rarity-badge-bg: linear-gradient(135deg, #c9fff2, #6ff4da);
+.loot-card[data-rarity="common"],
+.detail-card[data-rarity="common"] {
+  --rarity-accent: rgba(173, 181, 197, 0.18);
+  --rarity-core: #c8d0dc;
+  --rarity-shadow: rgba(173, 181, 197, 0.18);
+  --rarity-badge-bg: linear-gradient(135deg, #edf1f7, #b8c1cf);
 }
 
-.loot-card[data-rarity="super-rare"],
-.detail-card[data-rarity="super-rare"] {
-  --rarity-accent: rgba(255, 201, 79, 0.24);
-  --rarity-core: #ffd36d;
-  --rarity-shadow: rgba(255, 201, 79, 0.24);
-  --rarity-badge-bg: linear-gradient(135deg, #fff0c2, #ffd36d);
+.loot-card[data-rarity="uncommon"],
+.detail-card[data-rarity="uncommon"] {
+  --rarity-accent: rgba(102, 225, 140, 0.24);
+  --rarity-core: #76e89c;
+  --rarity-shadow: rgba(102, 225, 140, 0.22);
+  --rarity-badge-bg: linear-gradient(135deg, #d9ffe5, #79ea9f);
+}
+
+.loot-card[data-rarity="rare"],
+.detail-card[data-rarity="rare"] {
+  --rarity-accent: rgba(83, 196, 255, 0.24);
+  --rarity-core: #72d3ff;
+  --rarity-shadow: rgba(83, 196, 255, 0.22);
+  --rarity-badge-bg: linear-gradient(135deg, #d3f2ff, #73d4ff);
+}
+
+.loot-card[data-rarity="mythic"],
+.detail-card[data-rarity="mythic"] {
+  --rarity-accent: rgba(255, 102, 102, 0.24);
+  --rarity-core: #ff8585;
+  --rarity-shadow: rgba(255, 102, 102, 0.24);
+  --rarity-badge-bg: linear-gradient(135deg, #ffd8d8, #ff7d7d);
 }
 
 .loot-card[data-rarity="epic"],
 .detail-card[data-rarity="epic"] {
-  --rarity-accent: rgba(255, 123, 141, 0.24);
-  --rarity-core: #ff9aa9;
-  --rarity-shadow: rgba(255, 123, 141, 0.24);
-  --rarity-badge-bg: linear-gradient(135deg, #ffd0d7, #ff8a9c);
+  --rarity-accent: rgba(255, 214, 102, 0.24);
+  --rarity-core: #ffd76f;
+  --rarity-shadow: rgba(255, 214, 102, 0.24);
+  --rarity-badge-bg: linear-gradient(135deg, #fff2c7, #ffd86f);
 }
 
-.loot-card[data-rarity="legendary"],
-.detail-card[data-rarity="legendary"] {
-  --rarity-accent: rgba(255, 223, 124, 0.28);
-  --rarity-core: #ffe083;
-  --rarity-shadow: rgba(255, 223, 124, 0.26);
-  --rarity-badge-bg: linear-gradient(135deg, #fff4d4, #ffe083 48%, #ffd068 100%);
+.loot-card[data-rarity="legend"],
+.detail-card[data-rarity="legend"] {
+  --rarity-accent: rgba(183, 117, 255, 0.28);
+  --rarity-core: #ca90ff;
+  --rarity-shadow: rgba(183, 117, 255, 0.26);
+  --rarity-badge-bg: linear-gradient(135deg, #f2d8ff, #cb91ff 48%, #a96fff 100%);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.22),
     0 28px 42px rgba(8, 7, 21, 0.34),
-    0 0 0 1px rgba(255, 223, 124, 0.18);
+    0 0 0 1px rgba(183, 117, 255, 0.18);
 }
 
 .loot-card.is-locked,
@@ -2137,25 +2155,29 @@ body.is-feedback-legendary .route-glow::after {
 }
 
 .rarity-chip[data-rarity="common"] {
-  border-color: rgba(83, 196, 255, 0.16);
+  border-color: rgba(173, 181, 197, 0.18);
+}
+
+.rarity-chip[data-rarity="uncommon"] {
+  border-color: rgba(102, 225, 140, 0.18);
 }
 
 .rarity-chip[data-rarity="rare"] {
-  border-color: rgba(82, 241, 203, 0.16);
+  border-color: rgba(83, 196, 255, 0.18);
 }
 
-.rarity-chip[data-rarity="super-rare"] {
-  border-color: rgba(255, 201, 79, 0.18);
+.rarity-chip[data-rarity="mythic"] {
+  border-color: rgba(255, 102, 102, 0.2);
 }
 
 .rarity-chip[data-rarity="epic"] {
-  border-color: rgba(255, 123, 141, 0.18);
+  border-color: rgba(255, 214, 102, 0.2);
 }
 
-.rarity-chip[data-rarity="legendary"] {
-  border-color: rgba(255, 223, 124, 0.22);
+.rarity-chip[data-rarity="legend"] {
+  border-color: rgba(183, 117, 255, 0.22);
   background:
-    linear-gradient(145deg, rgba(255, 223, 124, 0.12), rgba(255, 255, 255, 0.04)),
+    linear-gradient(145deg, rgba(183, 117, 255, 0.12), rgba(255, 255, 255, 0.04)),
     rgba(255, 255, 255, 0.06);
 }
 

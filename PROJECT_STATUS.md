@@ -16,6 +16,8 @@ LootWords is an evolving MVP with a working core loop. It is no longer a bare pr
 - Parent-controlled active card/category filtering
 - Reward box inventory and three-tap opening flow
 - Reward reveal with card unlock persistence
+- Centralized loot foundation with strict rarity weighting and reward-type separation
+- Multi-type reward inventory foundation for cards, coins, stickers, cursor skins, UI theme packs, profile backgrounds, and profile avatars
 - Card speech for visible/open cards in English
 - Voice selection for English pronunciation when the browser exposes multiple English voices
 - Firebase Authentication with guest fallback, auth modal UI, session bootstrap, and logout flow
@@ -53,6 +55,11 @@ LootWords is an evolving MVP with a working core loop. It is no longer a bare pr
 - Game feel:
   - significantly improved
   - still open for polish, consistency passes, and tuning
+- Reward foundation:
+  - centralized loot generation now runs through rarity -> reward type -> reward item
+  - rarity logic is now separated from reward-content selection
+  - the current reward room UX still uses the existing reveal flow rather than a new cinematic box-opening experience
+  - cosmetic reward types now exist in the data model and inventory foundation, but there is not yet a full equip/shop/theme application layer
 - Tap the Word:
   - real playable MVP is in place
   - still open for distractor tuning, pacing tweaks, and stronger mobile optimization
@@ -94,6 +101,12 @@ LootWords is an evolving MVP with a working core loop. It is no longer a bare pr
 - `public/scripts/core/rewards.js`
   - reward correctness matters for unlock progression
   - duplicate or invalid reveal bugs are high-impact
+- `public/scripts/core/loot-manager.js`
+  - central reward generation and application path
+  - bad edits here can skew rarity odds or break future reward types
+- `public/scripts/data/loot.js`
+  - controls reward-type catalogs, rarity weights, and inventory keys
+  - changes here affect long-term extensibility, not just the current reward reveal UI
 - `public/scripts/storage.js`
   - guest-vs-authenticated persistence boundaries, profile normalization, and recovery logic
   - unsafe edits here can corrupt saved progress or leak user state across sessions
@@ -121,6 +134,7 @@ LootWords is an evolving MVP with a working core loop. It is no longer a bare pr
 - Better card art and image-first presentation
 - Improved mobile polish and accessibility
 - More progression hooks and longer-term retention systems
+- cinematic reward presentation, cosmetic equip systems, and shop work on top of the new loot foundation
 - Cleaner contributor workflow and ongoing documentation
 
 ## What is intentionally lightweight right now

@@ -11,9 +11,16 @@ import {
   STORAGE_VERSION,
 } from "./data/config.js";
 import { FIREBASE_MODULE_URLS, loadFirebaseRuntimeConfig } from "./data/firebase-config.js";
+import {
+  createEmptyLootInventory,
+  getKnownInventoryIds,
+  getRewardInventoryKey,
+  REWARD_TYPE_META,
+} from "./data/loot.js";
 import { CARD_LIBRARY } from "./data/cards.js";
 import { normalizeGameStatsMap, createEmptyGameStatsMap } from "./core/game-session-manager.js";
 import { createDefaultParentSettings, normalizeParentSettings } from "./core/parent-mode.js";
+import { createRarityBoundPoints, getCardBaseRarity, getRarityPointRange } from "./core/rarity.js";
 import { createDefaultSettings, normalizeSettings } from "./core/settings-manager.js";
 
 const STORAGE_BACKUP_KEY = `${STORAGE_KEY}:backup`;
@@ -28,12 +35,14 @@ let firestoreApiPromise = null;
 let pendingUserSave = Promise.resolve();
 const userStorageModes = new Map();
 
-function clampPoints(value) {
+function clampPoints(value, card) {
   const normalized = Number.parseInt(value, 10);
+  const rarity = getCardBaseRarity(card);
+  const { min, max } = getRarityPointRange(rarity);
   if (Number.isNaN(normalized)) {
-    return Math.floor(Math.random() * 1000) + 1;
+    return createRarityBoundPoints(card);
   }
-  return Math.max(1, Math.min(1000, normalized));
+  return Math.max(min, Math.min(max, normalized));
 }
 
 function isValidTimestamp(value) {
@@ -62,9 +71,25 @@ function normalizeGameId(value, fallback = "memory-match") {
 
 function createInitialPoints(existing = {}) {
   return CARD_LIBRARY.reduce((accumulator, card) => {
-    accumulator[card.id] = clampPoints(existing[card.id]);
+    accumulator[card.id] = clampPoints(existing[card.id], card);
     return accumulator;
   }, {});
+}
+
+function normalizeLootInventory(rawInventory) {
+  const defaults = createEmptyLootInventory();
+  const source = rawInventory && typeof rawInventory === "object" ? rawInventory : {};
+
+  return Object.keys(defaults).reduce((inventory, key) => {
+    const rewardType = Object.keys(REWARD_TYPE_META).find(
+      (type) => getRewardInventoryKey(type) === key,
+    );
+    const knownIds = rewardType ? getKnownInventoryIds(rewardType) : new Set();
+    const nextItems = Array.isArray(source[key]) ? source[key].filter((itemId) => knownIds.has(itemId)) : [];
+
+    inventory[key] = Array.from(new Set(nextItems));
+    return inventory;
+  }, createEmptyLootInventory());
 }
 
 function normalizeCategoryFilter(value) {
@@ -90,8 +115,10 @@ export function createInitialProfile() {
     rewardBoxes: 0,
     rewardBoxesEarned: 0,
     rewardBoxesOpened: 0,
+    coins: 0,
     totalWins: 0,
     bonusStars: 0,
+    inventory: createEmptyLootInventory(),
     currentStreak: 0,
     bestStreak: 0,
     firstWinGameIds: [],
@@ -146,8 +173,10 @@ export function normalizeProfile(rawProfile) {
       Number.parseInt(raw.rewardBoxesEarned, 10) || Number.parseInt(raw.totalWins, 10) || 0,
     ),
     rewardBoxesOpened: Math.max(0, Number.parseInt(raw.rewardBoxesOpened, 10) || 0),
+    coins: Math.max(0, Number.parseInt(raw.coins, 10) || 0),
     totalWins: Math.max(0, Number.parseInt(raw.totalWins, 10) || 0),
     bonusStars: Math.max(0, Number.parseInt(raw.bonusStars, 10) || 0),
+    inventory: normalizeLootInventory(raw.inventory),
     currentStreak: Math.max(0, Number.parseInt(raw.currentStreak, 10) || 0),
     bestStreak: Math.max(
       0,

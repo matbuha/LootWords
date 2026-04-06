@@ -9,7 +9,7 @@ import {
 
 export const APP_NAME = "LootWords";
 export const STORAGE_KEY = "lootwords-profile";
-export const STORAGE_VERSION = 6;
+export const STORAGE_VERSION = 7;
 
 export { CATEGORY_META, CATEGORY_ORDER, DIFFICULTY_META, LEGACY_CATEGORY_ALIASES, PACK_META, PACK_ORDER };
 
@@ -51,18 +51,20 @@ export const DAILY_CHALLENGE_GAME_IDS = [
 
 export const RARITY_ORDER = [
   "common",
+  "uncommon",
   "rare",
-  "super-rare",
+  "mythic",
   "epic",
-  "legendary",
+  "legend",
 ];
 
 export const RARITY_META = {
-  common: { label: "Common", range: "1-200" },
-  rare: { label: "Rare", range: "201-400" },
-  "super-rare": { label: "Super Rare", range: "401-600" },
-  epic: { label: "Epic", range: "601-800" },
-  legendary: { label: "Legendary", range: "801-1000" },
+  common: { label: "Common", color: "gray", points: { min: 80, max: 220 } },
+  uncommon: { label: "Uncommon", color: "green", points: { min: 180, max: 360 } },
+  rare: { label: "Rare", color: "blue", points: { min: 320, max: 560 } },
+  mythic: { label: "Mythic", color: "red", points: { min: 600, max: 820 } },
+  epic: { label: "Epic", color: "yellow", points: { min: 520, max: 760 } },
+  legend: { label: "Legend", color: "purple", points: { min: 820, max: 1000 } },
 };
 
 export const COLLECTION_SORTS = {
@@ -267,7 +269,8 @@ export const AUDIO_EVENT_SFX = {
 
 export const AUDIO_RARITY_ACCENTS = {
   epic: AUDIO_SFX.epicRevealAccent,
-  legendary: AUDIO_SFX.legendaryReveal,
+  mythic: AUDIO_SFX.epicRevealAccent,
+  legend: AUDIO_SFX.legendaryReveal,
 };
 
 export const AUDIO_TRACKS = {

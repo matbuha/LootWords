@@ -1,0 +1,284 @@
+import { FALLBACK_STARS, RARITY_ORDER } from "../data/config.js";
+import {
+  COIN_REWARD_AMOUNTS,
+  createEmptyLootInventory,
+  getRewardCatalog,
+  getRewardCatalogItem,
+  getRewardInventoryKey,
+  LOOT_RARITY_WEIGHTS,
+  LOOT_TYPE_WEIGHTS_BY_RARITY,
+  REWARD_TYPE_META,
+} from "../data/loot.js";
+import { pickWeightedRarity } from "./rarity.js";
+
+function uniqueList(items) {
+  return Array.from(new Set(items));
+}
+
+function weightedPick(weightMap, random = Math.random) {
+  const entries = Object.entries(weightMap).filter(([, weight]) => weight > 0);
+  const totalWeight = entries.reduce((sum, [, weight]) => sum + weight, 0);
+
+  if (!totalWeight) {
+    return null;
+  }
+
+  let cursor = random() * totalWeight;
+  for (const [id, weight] of entries) {
+    cursor -= weight;
+    if (cursor < 0) {
+      return id;
+    }
+  }
+
+  return entries[entries.length - 1]?.[0] ?? null;
+}
+
+function pickRandom(items, random = Math.random) {
+  if (!items.length) {
+    return null;
+  }
+
+  return items[Math.floor(random() * items.length)] ?? null;
+}
+
+function buildCardCandidates(cards) {
+  return cards
+    .filter((card) => !card.unlocked)
+    .map((card) => ({
+      type: "card",
+      rarity: card.rarity,
+      itemId: card.id,
+      cardId: card.id,
+      card,
+    }));
+}
+
+function buildDuplicateCandidates(cards, parentSettings) {
+  if (!parentSettings.rewards.duplicateRewardsEnabled) {
+    return [];
+  }
+
+  return cards
+    .filter((card) => card.unlocked)
+    .map((card) => ({
+      type: "duplicate",
+      rarity: card.rarity,
+      itemId: card.id,
+      cardId: card.id,
+      card,
+    }));
+}
+
+function buildCoinsCandidates() {
+  return Object.entries(COIN_REWARD_AMOUNTS).map(([rarity, amount]) => ({
+    type: "coins",
+    rarity,
+    itemId: `${rarity}-coins`,
+    amount,
+  }));
+}
+
+function buildInventoryCandidates(profile) {
+  const inventory = profile.inventory ?? createEmptyLootInventory();
+
+  return Object.keys(REWARD_TYPE_META)
+    .filter((type) => REWARD_TYPE_META[type].ownable)
+    .flatMap((type) => {
+      const inventoryKey = getRewardInventoryKey(type);
+      const ownedItems = new Set(inventory[inventoryKey] ?? []);
+
+      return getRewardCatalog(type)
+        .filter((item) => !ownedItems.has(item.id))
+        .map((item) => ({
+          type,
+          rarity: item.rarity,
+          itemId: item.id,
+          itemLabel: item.label,
+        }));
+    });
+}
+
+function buildCandidates({ profile, cards, parentSettings }) {
+  return [
+    ...buildCardCandidates(cards),
+    ...buildCoinsCandidates(),
+    ...buildInventoryCandidates(profile),
+    ...buildDuplicateCandidates(cards, parentSettings),
+  ];
+}
+
+function createAvailableRarityWeights(candidates) {
+  return RARITY_ORDER.reduce((weights, rarity) => {
+    if (candidates.some((candidate) => candidate.rarity === rarity)) {
+      weights[rarity] = LOOT_RARITY_WEIGHTS[rarity] ?? 0;
+    }
+    return weights;
+  }, {});
+}
+
+function getTypeWeightsForRarity(rarity, candidates) {
+  const availableTypes = new Set(candidates.filter((candidate) => candidate.rarity === rarity).map((candidate) => candidate.type));
+  const configuredWeights = LOOT_TYPE_WEIGHTS_BY_RARITY[rarity] ?? {};
+
+  return Object.entries(configuredWeights).reduce((weights, [type, value]) => {
+    if (availableTypes.has(type)) {
+      weights[type] = value;
+    }
+    return weights;
+  }, {});
+}
+
+function createGenericReward(candidate) {
+  const typeMeta = REWARD_TYPE_META[candidate.type];
+  return {
+    type: candidate.type,
+    rewardType: candidate.type,
+    rarity: candidate.rarity,
+    itemId: candidate.itemId,
+    itemLabel: candidate.itemLabel,
+    typeLabelKey: typeMeta?.labelKey ?? "reward.rewardNote",
+  };
+}
+
+function createFallbackReward(parentSettings) {
+  if (parentSettings.rewards.fallbackRewardType === "message") {
+    return {
+      type: "message",
+      titleKey: "reward.allCardsCollected",
+      detailKey: "reward.allActiveCollectedDetail",
+    };
+  }
+
+  return {
+    type: "stars",
+    amount: parentSettings.rewards.fallbackStars ?? FALLBACK_STARS,
+  };
+}
+
+export function generateLootReward({ profile, cards, parentSettings, random = Math.random }) {
+  const candidates = buildCandidates({ profile, cards, parentSettings });
+  if (!candidates.length) {
+    return createFallbackReward(parentSettings);
+  }
+
+  const rarity = pickWeightedRarity(createAvailableRarityWeights(candidates), random());
+  const rarityCandidates = candidates.filter((candidate) => candidate.rarity === rarity);
+  const rewardType = weightedPick(getTypeWeightsForRarity(rarity, rarityCandidates), random);
+  const pickedCandidate = pickRandom(
+    rarityCandidates.filter((candidate) => candidate.type === rewardType),
+    random,
+  );
+
+  if (!pickedCandidate) {
+    return createFallbackReward(parentSettings);
+  }
+
+  if (pickedCandidate.type === "card") {
+    return {
+      type: "card",
+      rewardType: "card",
+      rarity,
+      cardId: pickedCandidate.cardId,
+    };
+  }
+
+  if (pickedCandidate.type === "duplicate") {
+    return {
+      type: "duplicate",
+      rewardType: "card",
+      rarity,
+      cardId: pickedCandidate.cardId,
+      amount: parentSettings.rewards.duplicateRewardStars,
+    };
+  }
+
+  if (pickedCandidate.type === "coins") {
+    return {
+      ...createGenericReward(pickedCandidate),
+      amount: pickedCandidate.amount,
+    };
+  }
+
+  return createGenericReward(pickedCandidate);
+}
+
+export function applyLootReward(profile, reward) {
+  const nextProfile = {
+    ...profile,
+    inventory: profile.inventory ?? createEmptyLootInventory(),
+  };
+
+  if (reward.type === "card") {
+    const discoveredAt = new Date().toISOString();
+    return {
+      profile: {
+        ...nextProfile,
+        unlockedCardIds: uniqueList([...nextProfile.unlockedCardIds, reward.cardId]),
+        discoveredAtByCardId: {
+          ...nextProfile.discoveredAtByCardId,
+          [reward.cardId]: discoveredAt,
+        },
+      },
+      reward: {
+        ...reward,
+        discoveredAt,
+      },
+    };
+  }
+
+  if (reward.type === "duplicate") {
+    return {
+      profile: {
+        ...nextProfile,
+        bonusStars: nextProfile.bonusStars + reward.amount,
+      },
+      reward,
+    };
+  }
+
+  if (reward.type === "stars") {
+    return {
+      profile: {
+        ...nextProfile,
+        bonusStars: nextProfile.bonusStars + reward.amount,
+      },
+      reward,
+    };
+  }
+
+  if (reward.type === "coins") {
+    return {
+      profile: {
+        ...nextProfile,
+        coins: nextProfile.coins + reward.amount,
+      },
+      reward,
+    };
+  }
+
+  const inventoryKey = getRewardInventoryKey(reward.type);
+  if (!inventoryKey) {
+    return {
+      profile: nextProfile,
+      reward,
+    };
+  }
+
+  const nextItems = uniqueList([...(nextProfile.inventory[inventoryKey] ?? []), reward.itemId]);
+  const item = getRewardCatalogItem(reward.type, reward.itemId);
+
+  return {
+    profile: {
+      ...nextProfile,
+      inventory: {
+        ...nextProfile.inventory,
+        [inventoryKey]: nextItems,
+      },
+    },
+    reward: {
+      ...reward,
+      itemLabel: reward.itemLabel ?? item?.label ?? reward.itemId,
+    },
+  };
+}

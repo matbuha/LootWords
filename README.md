@@ -45,7 +45,15 @@ Use these docs before starting work:
   - Sequence Memory
   - Image Reveal
 - Reward box flow with staged three-tap opening
-- Collectible English noun cards with persisted random points and rarity
+- Centralized loot pipeline with rarity -> reward type -> reward item generation
+- Multi-type reward foundation for cards, coins, stickers, cursor skins, UI theme packs, profile backgrounds, and profile avatars
+- Collectible English noun cards with persisted random points and the current six-tier rarity model:
+  - common
+  - uncommon
+  - rare
+  - mythic
+  - epic
+  - legend
 - English pronunciation playback for visible/open cards
 - English, Hebrew, and Russian UI
 - Parent Mode for content, category, reward, and progress control
@@ -125,9 +133,11 @@ Notes:
 - `public/index.html`: the single browser-served app entry point
 - `public/styles/`: theme, responsive rules, i18n, and animation layers
 - `public/scripts/app.js`: app bootstrap, actions, shell rendering, and shared wiring
-- `public/scripts/core/`: rewards, progression, i18n, audio, parent mode, auth, and support systems
+- `public/scripts/core/`: rewards, progression, rarity, loot generation, i18n, audio, parent mode, auth, and support systems
 - `public/scripts/storage.js`: guest session persistence, per-user progress loading/saving, and legacy shared-storage cleanup
 - `public/scripts/data/`: cards, categories, config, and translations
+- `public/scripts/core/loot-manager.js`: centralized loot generation and reward application
+- `public/scripts/data/loot.js`: reward-type catalogs, rarity weights, and inventory foundations
 - `public/scripts/core/auth-manager.js`: centralized Firebase auth bootstrap and session handling
 - `public/scripts/core/daily-challenge-manager.js`: deterministic daily challenge generation, per-user daily state, and daily reward idempotency
 - `public/firebase-config.js`: browser-served Firebase web config used by the running app
@@ -145,6 +155,7 @@ The most useful contribution areas right now are:
 - speech and pronunciation quality improvements
 - card art and image pipeline improvements
 - reward/game feel polish
+- cinematic reward-box presentation and cosmetic equip UX on top of the shipped loot foundation
 - mobile UX and accessibility improvements
 - parent-mode quality and safety improvements
 

@@ -1,6 +1,5 @@
 import { CATEGORY_META, CATEGORY_ORDER, PACK_META } from "../data/categories.js";
-import { RARITY_ORDER } from "../data/config.js";
-import { getRarityFromPoints } from "./rarity.js";
+import { getCardBaseRarity, getRarityIndex } from "./rarity.js";
 
 const DISALLOWED_WORDS = new Set([
   "freedom",
@@ -19,8 +18,7 @@ function getDiscoveredTime(card) {
 }
 
 function rarityIndex(rarity) {
-  const index = RARITY_ORDER.indexOf(rarity);
-  return index === -1 ? 0 : index;
+  return getRarityIndex(rarity);
 }
 
 export function slugifyWord(word) {
@@ -45,6 +43,12 @@ export function createCardDefinition(definition, category, index) {
     difficultyLevel: definition.difficultyLevel ?? 1,
     tags: Array.from(new Set(definition.tags ?? [])),
     sortOrder: definition.sortOrder ?? index + 1,
+    baseRarity: getCardBaseRarity({
+      id,
+      word: definition.word,
+      difficultyLevel: definition.difficultyLevel ?? 1,
+      baseRarity: definition.baseRarity,
+    }),
   };
 }
 
@@ -155,8 +159,8 @@ export function validateCardLibrary(cards) {
       errors.push(`Invalid sort order on card ${card.id}`);
     }
 
-    if (typeof card.points === "number" && card.rarity && getRarityFromPoints(card.points) !== card.rarity) {
-      errors.push(`Rarity mismatch on card ${card.id}`);
+    if (!card.baseRarity) {
+      errors.push(`Missing base rarity on card ${card.id}`);
     }
   }
 

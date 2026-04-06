@@ -154,8 +154,15 @@ These are optional contribution ideas. They should not replace the core vocabula
 ### Improve reward animations and reveal polish
 - Status: `Partial`
 - Why it matters: the reward reveal is central to motivation.
-- Idea: refine box opening, reveal timing, rarity-specific effects, and visual payoff.
-- Suggested area: Reward UI, animation CSS, feedback/audio coupling
+- Idea: the loot foundation now supports multi-type rewards and stricter rarity odds, but the UI still uses the older reveal presentation. The next work is cinematic box opening, clearer non-card reward presentation, and stronger rarity-specific payoff without changing reward correctness.
+- Suggested area: Reward UI, animation CSS, feedback/audio coupling, `public/scripts/core/loot-manager.js`
+
+### Expand cosmetic and inventory application systems
+- Status: `Not started`
+- Why it matters: the data foundation now supports cosmetic reward types, but players still need real ways to browse, equip, and value them.
+- Idea: build the next layer for stickers, cursor skins, theme packs, profile backgrounds, and profile avatars on top of the shipped loot inventory structure.
+- Suggested area: inventory/profile UI, collection UI, future settings/equip surfaces
+- Notes: keep it modular. The loot foundation already exists; this task is about application UX, not redoing reward generation.
 
 ### Improve collection browsing feel
 - Status: `Partial`

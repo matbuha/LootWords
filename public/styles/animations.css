@@ -269,21 +269,23 @@ body::after {
 }
 
 .reward-reveal__launch[data-rarity="common"] .reward-reveal__spin,
+.reward-reveal__launch[data-rarity="uncommon"] .reward-reveal__spin,
 .reward-reveal__launch[data-rarity="rare"] .reward-reveal__spin,
-.reward-reveal__launch[data-rarity="super-rare"] .reward-reveal__spin,
+.reward-reveal__launch[data-rarity="mythic"] .reward-reveal__spin,
 .reward-reveal__launch[data-rarity="epic"] .reward-reveal__spin,
-.reward-reveal__launch[data-rarity="legendary"] .reward-reveal__spin {
+.reward-reveal__launch[data-rarity="legend"] .reward-reveal__spin {
   animation-fill-mode: forwards;
   animation-timing-function: cubic-bezier(0.16, 0.96, 0.22, 1);
 }
 
-.reward-reveal__launch[data-rarity="common"] .reward-reveal__spin {
+.reward-reveal__launch[data-rarity="common"] .reward-reveal__spin,
+.reward-reveal__launch[data-rarity="uncommon"] .reward-reveal__spin {
   animation-name: rewardCardSpinCommon;
   animation-duration: 840ms;
 }
 
 .reward-reveal__launch[data-rarity="rare"] .reward-reveal__spin,
-.reward-reveal__launch[data-rarity="super-rare"] .reward-reveal__spin {
+.reward-reveal__launch[data-rarity="mythic"] .reward-reveal__spin {
   animation-name: rewardCardSpinRare;
   animation-duration: 980ms;
 }
@@ -293,13 +295,13 @@ body::after {
   animation-duration: 1120ms;
 }
 
-.reward-reveal__launch[data-rarity="legendary"] .reward-reveal__spin {
+.reward-reveal__launch[data-rarity="legend"] .reward-reveal__spin {
   animation-name: rewardCardSpinLegendary;
   animation-duration: 1380ms;
 }
 
 .reward-reveal__launch[data-rarity="epic"] .card-halo,
-.reward-reveal__launch[data-rarity="legendary"] .card-halo {
+.reward-reveal__launch[data-rarity="legend"] .card-halo {
   animation: auraPulseLegendary 1800ms ease-in-out infinite;
 }
 

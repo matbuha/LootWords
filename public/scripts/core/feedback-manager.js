@@ -59,15 +59,15 @@ export function createFeedbackManager({ audio, eventBus, surface = document.body
       const rarityAccent = AUDIO_RARITY_ACCENTS[payload.rarity];
       if (rarityAccent) {
         audio.playSfx(rarityAccent, {
-          delayMs: payload.rarity === "legendary" ? 140 : 90,
+          delayMs: payload.rarity === "legend" ? 140 : 90,
         });
       }
 
-      if (payload.rarity === "epic") {
+      if (payload.rarity === "epic" || payload.rarity === "mythic") {
         pulse("is-feedback-epic", 980);
       }
 
-      if (payload.rarity === "legendary") {
+      if (payload.rarity === "legend") {
         pulse("is-feedback-legendary", 1400);
       }
     }

@@ -1,10 +1,10 @@
 import {
-  FALLBACK_STARS,
   FIRST_WIN_BONUS_BOXES,
   GAME_CONFIG,
   WIN_MILESTONE_BONUS_STARS,
   WIN_MILESTONE_STEP,
 } from "../data/config.js";
+import { applyLootReward, generateLootReward } from "./loot-manager.js";
 import { summarizeWinOutcome } from "./game-session-manager.js";
 import { getParentSettings } from "./parent-mode.js";
 
@@ -122,89 +122,16 @@ export function openRewardBox(profile, cards) {
     };
   }
 
-  const lockedCards = cards.filter((card) => !card.unlocked);
   const baseProfile = {
     ...profile,
     rewardBoxes: profile.rewardBoxes - 1,
     rewardBoxesOpened: profile.rewardBoxesOpened + 1,
   };
+  const reward = generateLootReward({
+    profile: baseProfile,
+    cards,
+    parentSettings,
+  });
 
-  if (parentSettings.rewards.duplicateRewardsEnabled) {
-    const rewardCard = cards[Math.floor(Math.random() * cards.length)];
-    const discoveredAt = new Date().toISOString();
-
-    if (!rewardCard.unlocked) {
-      return {
-        profile: {
-          ...baseProfile,
-          unlockedCardIds: uniqueList([...baseProfile.unlockedCardIds, rewardCard.id]),
-          discoveredAtByCardId: {
-            ...baseProfile.discoveredAtByCardId,
-            [rewardCard.id]: discoveredAt,
-          },
-        },
-        reward: {
-          type: "card",
-          cardId: rewardCard.id,
-          discoveredAt,
-        },
-      };
-    }
-
-    return {
-      profile: {
-        ...baseProfile,
-        bonusStars: baseProfile.bonusStars + parentSettings.rewards.duplicateRewardStars,
-      },
-      reward: {
-        type: "duplicate",
-        cardId: rewardCard.id,
-        amount: parentSettings.rewards.duplicateRewardStars,
-      },
-    };
-  }
-
-  if (!lockedCards.length) {
-    if (parentSettings.rewards.fallbackRewardType === "message") {
-      return {
-        profile: baseProfile,
-        reward: {
-          type: "message",
-          titleKey: "reward.allCardsCollected",
-          detailKey: "reward.allActiveCollectedDetail",
-        },
-      };
-    }
-
-    return {
-      profile: {
-        ...baseProfile,
-        bonusStars:
-          baseProfile.bonusStars + (parentSettings.rewards.fallbackStars ?? FALLBACK_STARS),
-      },
-      reward: {
-        type: "stars",
-        amount: parentSettings.rewards.fallbackStars ?? FALLBACK_STARS,
-      },
-    };
-  }
-
-  const rewardCard = lockedCards[Math.floor(Math.random() * lockedCards.length)];
-  const discoveredAt = new Date().toISOString();
-
-  return {
-    profile: {
-      ...baseProfile,
-      unlockedCardIds: uniqueList([...baseProfile.unlockedCardIds, rewardCard.id]),
-      discoveredAtByCardId: {
-        ...baseProfile.discoveredAtByCardId,
-        [rewardCard.id]: discoveredAt,
-      },
-    },
-    reward: {
-      type: "card",
-      cardId: rewardCard.id,
-      discoveredAt,
-    },
-  };
+  return applyLootReward(baseProfile, reward);
 }

@@ -48,7 +48,7 @@ function getPhaseCopy(rewardState, rewardBoxes, activeCardCount) {
     return {
       eyebrow: t("reward.revealComplete"),
       title: t("reward.newRewardLanded"),
-      hint: rewardBoxes > 0 ? t("reward.anotherBoxWaiting") : t("reward.enjoyNewCard"),
+      hint: rewardBoxes > 0 ? t("reward.anotherBoxWaiting") : t("reward.enjoyNewLoot"),
     };
   }
 
@@ -143,6 +143,14 @@ export function renderRewardScreen(container, { rewardState, rewardCard, rewardB
         <p class="section-copy">${t("reward.duplicateStars", { amount: rewardState.reveal.amount })}</p>
       </div>
     `;
+  } else if (rewardState.reveal?.type === "coins") {
+    revealMarkup = `
+      <div class="celebration-card celebration-card--reward celebration-card--reward-info" data-rarity="${rewardState.reveal.rarity}">
+        <span class="small-label">${t("reward.types.coins")}</span>
+        <h3 class="section-title">${t("reward.coinRewardTitle", { amount: rewardState.reveal.amount })}</h3>
+        <p class="section-copy">${t("reward.coinRewardDetail", { amount: rewardState.reveal.amount })}</p>
+      </div>
+    `;
   } else if (rewardState.reveal?.type === "message") {
     revealMarkup = `
       <div class="celebration-card celebration-card--reward">
@@ -157,6 +165,14 @@ export function renderRewardScreen(container, { rewardState, rewardCard, rewardB
         <span class="small-label">${t("reward.rewardBlocked")}</span>
         <h3 class="section-title">${rewardState.reveal.titleKey ? t(rewardState.reveal.titleKey) : rewardState.reveal.title}</h3>
         <p class="section-copy">${rewardState.reveal.detailKey ? t(rewardState.reveal.detailKey) : rewardState.reveal.detail}</p>
+      </div>
+    `;
+  } else if (rewardState.reveal) {
+    revealMarkup = `
+      <div class="celebration-card celebration-card--reward celebration-card--reward-info" data-rarity="${rewardState.reveal.rarity}">
+        <span class="small-label">${rewardState.reveal.typeLabelKey ? t(rewardState.reveal.typeLabelKey) : t("reward.rewardNote")}</span>
+        <h3 class="section-title">${t("reward.rewardUnlockedTitle")}</h3>
+        <p class="section-copy">${t("reward.rewardUnlockedDetail", { item: rewardState.reveal.itemLabel ?? rewardState.reveal.itemId ?? t("reward.rewardNote") })}</p>
       </div>
     `;
   }
