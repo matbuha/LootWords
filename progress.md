@@ -671,6 +671,11 @@ Latest prompt: Prepare the authentication flow for reCAPTCHA with a real integra
   - the runtime now attempts `users/{uid}/progress/main` first and falls back to per-user local browser storage if Firestore is unavailable
   - verified guest/session isolation and user A vs user B isolation in the browser with real auth sessions
   - updated `firestore.rules` to the owner-only `users/{uid}` / `users/{uid}/progress/{documentId}` pattern, but the current Firebase project still needs a real Firestore database created before backend enforcement can be verified live
+- 2026-04-06: Added progressive rarity-upgrade logic to reward-box openings:
+  - base rarity selection and upgrade odds now live in centralized loot tuning instead of the UI layer
+  - each rarity stage now runs on its own five-tap cycle, with upgrades resetting stage progress and changing the live cinematic rarity state immediately
+  - final reward resolution now waits until the current stage finishes without upgrading, which keeps high-rarity outcomes meaningfully rarer
+  - verified with a deterministic manager test and a live browser smoke test that both the upgrade path and the standard reveal path still work without console errors
 
 ## Notes
 

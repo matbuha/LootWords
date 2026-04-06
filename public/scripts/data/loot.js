@@ -45,6 +45,24 @@ export const LOOT_RARITY_WEIGHTS = Object.freeze({
   legend: 30,
 });
 
+export const LOOT_BOX_BASE_RARITY_WEIGHTS = Object.freeze({
+  common: 7800,
+  uncommon: 1700,
+  rare: 420,
+  mythic: 60,
+  epic: 18,
+  legend: 2,
+});
+
+export const LOOT_BOX_UPGRADE_CHANCES = Object.freeze({
+  common: 1500,
+  uncommon: 550,
+  rare: 110,
+  mythic: 24,
+  epic: 4,
+  legend: 0,
+});
+
 export const LOOT_TYPE_WEIGHTS_BY_RARITY = Object.freeze({
   common: Object.freeze({
     card: 94,

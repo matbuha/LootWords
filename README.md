@@ -1,6 +1,6 @@
 # LootWords
 
-LootWords is a browser-based vocabulary game for children. The player clears short mini-games, earns reward boxes, opens them through a focused five-tap cinematic sequence, and collects English noun cards that become the learning material.
+LootWords is a browser-based vocabulary game for children. The player clears short mini-games, earns reward boxes, opens them through a focused staged cinematic sequence, and collects English noun cards that become the learning material.
 
 The product is designed for children who respond more strongly to game loops, visual rewards, and spoken English than to worksheet-style learning.
 
@@ -14,7 +14,7 @@ The product is designed for children who respond more strongly to game loops, vi
 2. Wait for the short countdown.
 3. Play a quick round.
 4. Win a reward box.
-5. Open the box in five taps.
+5. Open the box through staged five-tap rarity cycles until the reward locks in.
 6. Reveal a collectible English word card.
 7. Review the card in the collection or learn screens, with English pronunciation support.
 
@@ -44,7 +44,7 @@ Use these docs before starting work:
   - Repeat After Me
   - Sequence Memory
   - Image Reveal
-- Reward box flow with staged five-tap cinematic opening
+- Reward box flow with staged five-tap cinematic opening and progressive rarity upgrades before the final reward resolves
 - Centralized loot pipeline with rarity -> reward type -> reward item generation
 - Multi-type reward foundation for cards, coins, stickers, cursor skins, UI theme packs, profile backgrounds, and profile avatars
 - Collectible English noun cards with persisted random points and the current six-tier rarity model:

@@ -28,7 +28,13 @@ function renderRewardCardShowcase(card, { isNew = false } = {}) {
 }
 
 function getRewardRarityStage(rewardState, rewardCard) {
-  return rewardState.pendingReveal?.rarity ?? rewardState.reveal?.rarity ?? rewardCard?.rarity ?? "dormant";
+  return (
+    rewardState.opening?.currentRarity ??
+    rewardState.pendingReveal?.rarity ??
+    rewardState.reveal?.rarity ??
+    rewardCard?.rarity ??
+    "dormant"
+  );
 }
 
 function getBoxStateClass(rewardState, revealPhase) {
@@ -40,14 +46,23 @@ function getBoxStateClass(rewardState, revealPhase) {
     return "reward-box--opened";
   }
 
-  if (rewardState.clicks <= 0) {
+  if (revealPhase === "upgraded") {
+    return "reward-box--upgraded";
+  }
+
+  const stageClicks = rewardState.opening?.stageClicks ?? 0;
+  if (stageClicks <= 0) {
     return "reward-box--idle";
   }
 
-  return `reward-box--tap-${Math.min(rewardState.clicks, Math.max(1, BOX_TAP_COUNT - 1))}`;
+  return `reward-box--tap-${Math.min(stageClicks, Math.max(1, BOX_TAP_COUNT - 1))}`;
 }
 
 function getPhaseCopy(rewardState, rewardBoxes, activeCardCount) {
+  const currentRarity = rewardState.opening?.currentRarity ?? null;
+  const rarityLabel = currentRarity ? t(`rarities.${currentRarity}`) : "";
+  const stageClicks = rewardState.opening?.stageClicks ?? 0;
+
   if (rewardState.reveal?.type === "blocked" || activeCardCount === 0) {
     return {
       eyebrow: t("reward.contentPaused"),
@@ -80,27 +95,44 @@ function getPhaseCopy(rewardState, rewardBoxes, activeCardCount) {
     };
   }
 
-  if (rewardState.clicks >= BOX_TAP_COUNT - 1) {
+  if (rewardState.phase === "upgraded") {
+    return {
+      eyebrow: t("reward.rarityUpgraded"),
+      title: t("reward.upgradedToRarity", { rarity: rarityLabel }),
+      hint: t("reward.upgradeContinueHint", { count: BOX_TAP_COUNT }),
+    };
+  }
+
+  if (stageClicks >= BOX_TAP_COUNT - 1) {
     return {
       eyebrow: t("reward.almostOpen"),
       title: t("reward.finalTapBurst"),
-      hint: t("reward.finalTapBurstHint"),
+      hint:
+        currentRarity === "legend"
+          ? t("reward.finalTapBurstHint")
+          : t("reward.finalTapStageHint", { rarity: rarityLabel }),
     };
   }
 
-  if (rewardState.clicks === 1) {
+  if (stageClicks === 1) {
     return {
-      eyebrow: t("reward.somethingHappening"),
+      eyebrow: rarityLabel ? t("reward.currentStage", { rarity: rarityLabel }) : t("reward.somethingHappening"),
       title: t("reward.boxWakingUp"),
-      hint: t("reward.firstCrackHint"),
+      hint: t("reward.currentStageHint", {
+        rarity: rarityLabel,
+        remaining: BOX_TAP_COUNT - stageClicks,
+      }),
     };
   }
 
-  if (rewardState.clicks > 1) {
+  if (stageClicks > 1) {
     return {
-      eyebrow: t("reward.magicBurst"),
+      eyebrow: rarityLabel ? t("reward.currentStage", { rarity: rarityLabel }) : t("reward.magicBurst"),
       title: t("reward.pressureBuilding"),
-      hint: t("reward.keepTappingHint", { remaining: BOX_TAP_COUNT - rewardState.clicks }),
+      hint: t("reward.currentStageHint", {
+        rarity: rarityLabel,
+        remaining: BOX_TAP_COUNT - stageClicks,
+      }),
     };
   }
 
@@ -112,13 +144,30 @@ function getPhaseCopy(rewardState, rewardBoxes, activeCardCount) {
 }
 
 export function renderRewardScreen(container, { rewardState, rewardCard, rewardBoxes, activeCardCount, actions }) {
-  const meter = Array.from({ length: BOX_TAP_COUNT }, (_, index) => index < rewardState.clicks);
+  const stageClicks = rewardState.opening?.stageClicks ?? 0;
+  const meter = Array.from({ length: BOX_TAP_COUNT }, (_, index) => index < stageClicks);
   const revealPhase = rewardState.phase ?? "idle";
   const phaseCopy = getPhaseCopy(rewardState, rewardBoxes, activeCardCount);
   const boxStateClass = getBoxStateClass(rewardState, revealPhase);
-  const cinematicActive = revealPhase !== "revealed" && (rewardState.clicks > 0 || revealPhase === "opening");
+  const cinematicActive = revealPhase !== "revealed" && (Boolean(rewardState.opening) || revealPhase === "opening");
   const cinematicRarity = getRewardRarityStage(rewardState, rewardCard);
-  const boxVisualRarity = revealPhase === "idle" && rewardState.clicks === 0 ? "dormant" : cinematicRarity;
+  const upgradeCount = rewardState.opening?.upgradeHistory?.length ?? 0;
+  const rarityLabel = rewardState.opening?.currentRarity ? t(`rarities.${rewardState.opening.currentRarity}`) : "";
+  const stageStatusMarkup = rewardState.opening
+    ? `
+      <div class="reward-stage-status" data-rarity="${rewardState.opening.currentRarity}">
+        <span class="small-label">${t("reward.currentStage", { rarity: rarityLabel })}</span>
+        <strong>${rarityLabel}</strong>
+        <small>${
+          upgradeCount > 0
+            ? t("reward.upgradesCount", { count: upgradeCount })
+            : t("reward.baseStage")
+        }</small>
+      </div>
+    `
+    : "";
+
+  const boxVisualStage = revealPhase === "idle" && stageClicks === 0 ? "dormant" : cinematicRarity;
 
   document.body.classList.toggle("has-reward-cinematic", cinematicActive);
 
@@ -204,8 +253,8 @@ export function renderRewardScreen(container, { rewardState, rewardCard, rewardB
   container.innerHTML = `
     <section
       class="reward-panel reward-panel--${revealPhase} ${cinematicActive ? "reward-panel--cinematic" : ""}"
-      data-reward-rarity="${boxVisualRarity}"
-      data-reward-clicks="${rewardState.clicks}"
+      data-reward-rarity="${boxVisualStage}"
+      data-reward-clicks="${stageClicks}"
     >
       <div class="reward-layout">
         <div class="reward-box-stage">
@@ -223,6 +272,7 @@ export function renderRewardScreen(container, { rewardState, rewardCard, rewardB
             </div>
           </div>
 
+          ${stageStatusMarkup}
           <div class="reward-box-wrap">
             <div class="reward-sparkles" aria-hidden="true">
               <span></span>
@@ -241,7 +291,7 @@ export function renderRewardScreen(container, { rewardState, rewardCard, rewardB
               data-cinematic="${cinematicActive ? "true" : "false"}"
               aria-label="${t("common.rewardBoxAria")}"
             >
-              <div class="reward-box ${boxStateClass}" data-tension="${rewardState.clicks}" data-rarity="${boxVisualRarity}">
+              <div class="reward-box ${boxStateClass}" data-tension="${stageClicks}" data-rarity="${boxVisualStage}">
                 <div class="reward-box__impact" aria-hidden="true"></div>
                 <div class="reward-box__pressure-rings" aria-hidden="true">
                   <span></span>
@@ -324,7 +374,9 @@ export function renderRewardScreen(container, { rewardState, rewardCard, rewardB
       return {
         screen: "reward",
         rewardBoxes,
-        clicks: rewardState.clicks,
+        clicks: stageClicks,
+        currentRarity: rewardState.opening?.currentRarity ?? null,
+        upgradeCount,
         phase: revealPhase,
         reveal: rewardState.reveal?.type ?? null,
       };

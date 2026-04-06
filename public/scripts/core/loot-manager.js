@@ -108,10 +108,10 @@ function buildCandidates({ profile, cards, parentSettings }) {
   ];
 }
 
-function createAvailableRarityWeights(candidates) {
+function createAvailableRarityWeights(candidates, weightSource = LOOT_RARITY_WEIGHTS) {
   return RARITY_ORDER.reduce((weights, rarity) => {
     if (candidates.some((candidate) => candidate.rarity === rarity)) {
-      weights[rarity] = LOOT_RARITY_WEIGHTS[rarity] ?? 0;
+      weights[rarity] = weightSource[rarity] ?? 0;
     }
     return weights;
   }, {});
@@ -163,7 +163,42 @@ export function generateLootReward({ profile, cards, parentSettings, random = Ma
   }
 
   const rarity = pickWeightedRarity(createAvailableRarityWeights(candidates), random());
+  return generateLootRewardForRarity({
+    profile,
+    cards,
+    parentSettings,
+    rarity,
+    random,
+  });
+}
+
+export function getAvailableLootRarityWeights({
+  profile,
+  cards,
+  parentSettings,
+  weightSource = LOOT_RARITY_WEIGHTS,
+}) {
+  const candidates = buildCandidates({ profile, cards, parentSettings });
+  return createAvailableRarityWeights(candidates, weightSource);
+}
+
+export function generateLootRewardForRarity({
+  profile,
+  cards,
+  parentSettings,
+  rarity,
+  random = Math.random,
+}) {
+  const candidates = buildCandidates({ profile, cards, parentSettings });
+  if (!candidates.length) {
+    return createFallbackReward(parentSettings);
+  }
+
   const rarityCandidates = candidates.filter((candidate) => candidate.rarity === rarity);
+  if (!rarityCandidates.length) {
+    return createFallbackReward(parentSettings);
+  }
+
   const rewardType = weightedPick(getTypeWeightsForRarity(rarity, rarityCandidates), random);
   const pickedCandidate = pickRandom(
     rarityCandidates.filter((candidate) => candidate.type === rewardType),

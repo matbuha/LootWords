@@ -59,6 +59,7 @@ LootWords is an evolving MVP with a working core loop. It is no longer a bare pr
   - centralized loot generation now runs through rarity -> reward type -> reward item
   - rarity logic is now separated from reward-content selection
   - reward opening now uses a focused overlay cinematic with five taps, stronger tactile motion, rarity-tinted radial backgrounds, and a final jump-and-spin release
+  - box opening now resolves through staged rarity-upgrade checks, resetting the five-tap cycle when an upgrade lands and delaying final reward resolution until the last stage locks in
   - cosmetic reward types now exist in the data model and inventory foundation, but there is not yet a full equip/shop/theme application layer
 - Tap the Word:
   - real playable MVP is in place

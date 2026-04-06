@@ -1,6 +1,5 @@
 import {
   APP_NAME,
-  BOX_TAP_COUNT,
   FEEDBACK_EVENTS,
   GAME_CONFIG,
   REWARD_REVEAL_DELAY_MS,
@@ -23,6 +22,10 @@ import { createFeedbackManager } from "./core/feedback-manager.js";
 import { importProfileFromJson, exportProfileToJson } from "./core/import-export-manager.js";
 import { t } from "./core/i18n.js";
 import { createLanguageManager } from "./core/language-manager.js";
+import {
+  advanceBoxOpeningSession,
+  createEmptyBoxOpeningState,
+} from "./core/box-opening-manager.js";
 import { getReviewDeck, summarizeProgress } from "./core/progression.js";
 import { getRecommendedGameId } from "./core/game-session-manager.js";
 import {
@@ -40,7 +43,7 @@ import {
   resetRewardState,
   resetSettingsState,
 } from "./core/reset-manager.js";
-import { openRewardBox, recordGameLoss, recordGameWin } from "./core/rewards.js";
+import { recordGameLoss, recordGameWin } from "./core/rewards.js";
 import { createRecaptchaManager } from "./core/recaptcha-manager.js";
 import { createSpeechManager } from "./core/speech-manager.js";
 import { createStore } from "./core/state.js";
@@ -69,7 +72,7 @@ const root = document.querySelector("#app");
 
 function createRewardSession() {
   return {
-    clicks: 0,
+    opening: createEmptyBoxOpeningState(),
     reveal: null,
     pendingReveal: null,
     phase: "idle",
@@ -1104,31 +1107,75 @@ const actions = {
       return;
     }
 
-    const nextClicks = session.reward.clicks + 1;
+    const openingResult = advanceBoxOpeningSession({
+      profile,
+      cards: activeCards,
+      opening: session.reward.opening,
+    });
 
-    if (nextClicks < BOX_TAP_COUNT) {
-      commitState((currentState) => ({
+    if (openingResult.status === "blocked") {
+      updateSessionOnly((currentState) => ({
+        ...currentState,
+        session: {
+          ...currentState.session,
+          reward: {
+            ...createRewardSession(),
+            reveal: openingResult.reveal,
+            phase: "revealed",
+          },
+        },
+      }));
+      return;
+    }
+
+    if (openingResult.status === "progress") {
+      updateSessionOnly((currentState) => ({
         ...currentState,
         session: {
           ...currentState.session,
           reward: {
             ...currentState.session.reward,
-            clicks: nextClicks,
-            phase: nextClicks === 1 ? "warming" : "charged",
+            opening: openingResult.opening,
+            pendingReveal: null,
+            reveal: null,
+            phase: openingResult.opening.stageClicks === 1 ? "warming" : "charged",
           },
         },
       }));
 
       feedback.trigger(
-        nextClicks === 1 ? FEEDBACK_EVENTS.rewardTap1 : FEEDBACK_EVENTS.rewardTap2,
+        openingResult.opening.stageClicks === 1 ? FEEDBACK_EVENTS.rewardTap1 : FEEDBACK_EVENTS.rewardTap2,
       );
+      return;
+    }
+
+    if (openingResult.status === "upgraded") {
+      updateSessionOnly((currentState) => ({
+        ...currentState,
+        session: {
+          ...currentState.session,
+          reward: {
+            ...currentState.session.reward,
+            opening: openingResult.opening,
+            pendingReveal: null,
+            reveal: null,
+            phase: "upgraded",
+          },
+        },
+      }));
+
+      feedback.trigger(FEEDBACK_EVENTS.rewardTap3);
+      return;
+    }
+
+    if (openingResult.status !== "resolved") {
       return;
     }
 
     feedback.trigger(FEEDBACK_EVENTS.rewardTap3);
     clearRewardRevealTimeout();
 
-    const rewardResult = openRewardBox(profile, activeCards);
+    const rewardResult = openingResult;
     const nextCards = hydrateCards(rewardResult.profile);
     const nextActiveCards = getChildModeCards(nextCards, rewardResult.profile);
     const revealedCard =
@@ -1147,7 +1194,7 @@ const actions = {
       session: {
         ...currentState.session,
         reward: {
-          clicks: BOX_TAP_COUNT,
+          opening: rewardResult.opening,
           reveal: null,
           pendingReveal: rewardResult.reward,
           phase: "opening",
@@ -1737,7 +1784,10 @@ window.render_game_to_text = () => {
     persistence: state.persistence,
     legacyArchive: getLegacyArchiveInfo(),
     reward: {
-      clicks: state.session.reward.clicks,
+      clicks: state.session.reward.opening?.stageClicks ?? 0,
+      totalClicks: state.session.reward.opening?.totalClicks ?? 0,
+      currentRarity: state.session.reward.opening?.currentRarity ?? null,
+      upgradeCount: state.session.reward.opening?.upgradeHistory?.length ?? 0,
       phase: state.session.reward.phase,
       reveal: state.session.reward.reveal,
     },
