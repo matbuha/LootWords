@@ -1,0 +1,25 @@
+{
+  "panelClass": "reward-panel reward-panel--revealed ",
+  "clicks": "5",
+  "bodyClass": "",
+  "wrapRect": {
+    "x": 129,
+    "y": 411.4375,
+    "width": 574.34375,
+    "height": 410,
+    "top": 411.4375,
+    "right": 703.34375,
+    "bottom": 821.4375,
+    "left": 129
+  },
+  "buttonRect": {
+    "x": 256.171875,
+    "y": 478.4375,
+    "width": 320,
+    "height": 320,
+    "top": 478.4375,
+    "right": 576.171875,
+    "bottom": 798.4375,
+    "left": 256.171875
+  }
+}

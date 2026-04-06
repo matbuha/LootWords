@@ -97,9 +97,9 @@ export const DEFAULT_LEARN_FILTERS = {
   sort: "newest",
 };
 
-export const BOX_TAP_COUNT = 3;
+export const BOX_TAP_COUNT = 5;
 export const FALLBACK_STARS = 50;
-export const REWARD_REVEAL_DELAY_MS = 1000;
+export const REWARD_REVEAL_DELAY_MS = 1350;
 export const RECENT_CARD_LIMIT = 4;
 
 export const GAME_CONFIG = {

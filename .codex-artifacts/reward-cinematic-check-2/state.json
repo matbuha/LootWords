@@ -1,0 +1,19 @@
+{
+  "reward": {
+    "clicks": "5",
+    "phase": "reward-panel reward-panel--revealed ",
+    "revealTitle": "Make the reward feel special",
+    "hint": "Open the collection or reward room to inspect the new loot."
+  },
+  "buttonDisabled": true,
+  "boxRect": {
+    "x": 256.171875,
+    "y": 478.4375,
+    "width": 320,
+    "height": 320,
+    "top": 478.4375,
+    "right": 576.171875,
+    "bottom": 798.4375,
+    "left": 256.171875
+  }
+}

@@ -52,6 +52,7 @@ Latest prompt: Prepare the authentication flow for reCAPTCHA with a real integra
 - Added `public/recaptcha-config.js`, `recaptcha-config.example.js`, and a dedicated `public/scripts/core/recaptcha-manager.js` so auth submit actions now have a clean reCAPTCHA insertion point.
 - Kept the current repo safe by leaving reCAPTCHA disabled with blank placeholders until the final real site key is added later.
 - Verified the app still boots, the auth modal renders correctly, the localhost setup note is visible when reCAPTCHA is not configured, and sign-in still works without runtime errors while the site key is intentionally missing.
+- Replaced the old reward-room opening feel with a five-click cinematic overlay that dims the rest of the UI, centers the box, builds stronger charge states, and ends with a jump-and-spin reveal beat before the reward lands.
 
 ## Progress Checklist
 

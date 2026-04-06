@@ -14,7 +14,7 @@ LootWords is an evolving MVP with a working core loop. It is no longer a bare pr
 - Authenticated per-user progress isolation keyed by Firebase user identity
 - English, Hebrew, and Russian UI switching
 - Parent-controlled active card/category filtering
-- Reward box inventory and three-tap opening flow
+- Reward box inventory and five-tap cinematic opening flow
 - Reward reveal with card unlock persistence
 - Centralized loot foundation with strict rarity weighting and reward-type separation
 - Multi-type reward inventory foundation for cards, coins, stickers, cursor skins, UI theme packs, profile backgrounds, and profile avatars
@@ -58,7 +58,7 @@ LootWords is an evolving MVP with a working core loop. It is no longer a bare pr
 - Reward foundation:
   - centralized loot generation now runs through rarity -> reward type -> reward item
   - rarity logic is now separated from reward-content selection
-  - the current reward room UX still uses the existing reveal flow rather than a new cinematic box-opening experience
+  - reward opening now uses a focused overlay cinematic with five taps, stronger tactile motion, rarity-tinted radial backgrounds, and a final jump-and-spin release
   - cosmetic reward types now exist in the data model and inventory foundation, but there is not yet a full equip/shop/theme application layer
 - Tap the Word:
   - real playable MVP is in place

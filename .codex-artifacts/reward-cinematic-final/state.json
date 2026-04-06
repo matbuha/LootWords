@@ -1,0 +1,9 @@
+{
+  "panelClass": "reward-panel reward-panel--revealed ",
+  "clicks": "5",
+  "bodyClass": "",
+  "rewardBoxesText": "0",
+  "title": "A new reward landed in your album",
+  "hint": "Open the collection or reward room to inspect the new loot.",
+  "hasRevealCard": true
+}
