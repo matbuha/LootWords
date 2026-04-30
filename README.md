@@ -6,7 +6,7 @@ The product is designed for children who respond more strongly to game loops, vi
 
 ## Live build
 
-[Play LootWords](https://matbuha.github.io/LootWords/)
+[Play LootWords](https://dg-expert.github.io/LootWords/)
 
 ## Core loop
 
@@ -47,6 +47,10 @@ Use these docs before starting work:
 - Reward box flow with staged five-tap cinematic opening and progressive rarity upgrades before the final reward resolves
 - Centralized loot pipeline with rarity -> reward type -> reward item generation
 - Multi-type reward foundation for cards, coins, stickers, cursor skins, UI theme packs, profile backgrounds, and profile avatars
+- Real non-card rewards for:
+  - coins
+  - stickers
+- Duplicate sticker rewards safely convert into coins instead of creating duplicate ownership entries
 - Collectible English noun cards with persisted random points and the current six-tier rarity model:
   - common
   - uncommon

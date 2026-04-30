@@ -8,6 +8,7 @@ import {
   LOOT_RARITY_WEIGHTS,
   LOOT_TYPE_WEIGHTS_BY_RARITY,
   REWARD_TYPE_META,
+  STICKER_DUPLICATE_COIN_AMOUNTS,
 } from "../data/loot.js";
 import { pickWeightedRarity } from "./rarity.js";
 
@@ -83,7 +84,7 @@ function buildInventoryCandidates(profile) {
   const inventory = profile.inventory ?? createEmptyLootInventory();
 
   return Object.keys(REWARD_TYPE_META)
-    .filter((type) => REWARD_TYPE_META[type].ownable)
+    .filter((type) => REWARD_TYPE_META[type].ownable && REWARD_TYPE_META[type].lootEnabled)
     .flatMap((type) => {
       const inventoryKey = getRewardInventoryKey(type);
       const ownedItems = new Set(inventory[inventoryKey] ?? []);
@@ -94,7 +95,9 @@ function buildInventoryCandidates(profile) {
           type,
           rarity: item.rarity,
           itemId: item.id,
+          itemName: item.name ?? item.label,
           itemLabel: item.label,
+          itemIcon: item.icon ?? null,
         }));
     });
 }
@@ -136,8 +139,26 @@ function createGenericReward(candidate) {
     rewardType: candidate.type,
     rarity: candidate.rarity,
     itemId: candidate.itemId,
+    itemName: candidate.itemName,
     itemLabel: candidate.itemLabel,
+    itemIcon: candidate.itemIcon ?? null,
     typeLabelKey: typeMeta?.labelKey ?? "reward.rewardNote",
+  };
+}
+
+function createStickerDuplicateReward(reward, catalogItem) {
+  const amount = STICKER_DUPLICATE_COIN_AMOUNTS[reward.rarity] ?? COIN_REWARD_AMOUNTS.common;
+
+  return {
+    type: "sticker-duplicate",
+    rewardType: "sticker",
+    rarity: reward.rarity,
+    itemId: reward.itemId,
+    itemName: reward.itemName ?? catalogItem?.name ?? catalogItem?.label ?? reward.itemId,
+    itemLabel: reward.itemLabel ?? catalogItem?.label ?? reward.itemId,
+    itemIcon: reward.itemIcon ?? catalogItem?.icon ?? null,
+    amount,
+    typeLabelKey: "reward.types.sticker",
   };
 }
 
@@ -300,8 +321,22 @@ export function applyLootReward(profile, reward) {
     };
   }
 
-  const nextItems = uniqueList([...(nextProfile.inventory[inventoryKey] ?? []), reward.itemId]);
   const item = getRewardCatalogItem(reward.type, reward.itemId);
+  const existingItems = nextProfile.inventory[inventoryKey] ?? [];
+  const alreadyOwned = existingItems.includes(reward.itemId);
+
+  if (reward.type === "sticker" && alreadyOwned) {
+    const duplicateReward = createStickerDuplicateReward(reward, item);
+    return {
+      profile: {
+        ...nextProfile,
+        coins: nextProfile.coins + duplicateReward.amount,
+      },
+      reward: duplicateReward,
+    };
+  }
+
+  const nextItems = uniqueList([...existingItems, reward.itemId]);
 
   return {
     profile: {
@@ -313,7 +348,9 @@ export function applyLootReward(profile, reward) {
     },
     reward: {
       ...reward,
+      itemName: reward.itemName ?? item?.name ?? item?.label ?? reward.itemId,
       itemLabel: reward.itemLabel ?? item?.label ?? reward.itemId,
+      itemIcon: reward.itemIcon ?? item?.icon ?? null,
     },
   };
 }

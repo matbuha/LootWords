@@ -60,7 +60,9 @@ LootWords is an evolving MVP with a working core loop. It is no longer a bare pr
   - rarity logic is now separated from reward-content selection
   - reward opening now uses a focused overlay cinematic with five taps, stronger tactile motion, rarity-tinted radial backgrounds, and a final jump-and-spin release
   - box opening now resolves through staged rarity-upgrade checks, resetting the five-tap cycle when an upgrade lands and delaying final reward resolution until the last stage locks in
-  - cosmetic reward types now exist in the data model and inventory foundation, but there is not yet a full equip/shop/theme application layer
+  - coins and stickers are now real reward types with live reward reveal support and persisted balances/ownership
+  - duplicate sticker rewards now convert into coins instead of creating duplicate inventory entries
+  - cursor skins, theme packs, profile backgrounds, and profile avatars still remain foundation-only and are not yet active in the live loot pool
 - Tap the Word:
   - real playable MVP is in place
   - still open for distractor tuning, pacing tweaks, and stronger mobile optimization

@@ -3,13 +3,15 @@ import { categoryLabel, collectionSortLabel, difficultyLabel, formatDate, packLa
 import { getCollectionSections } from "../core/progression.js";
 import { renderCard, renderDetailCard, renderEmptyState, escapeHtml, formatPoints } from "./ui-kit.js";
 
-export function renderCollectionScreen(container, { cards, filters, progress, actions, modalCard }) {
+export function renderCollectionScreen(container, { cards, filters, progress, actions, modalCard, profile }) {
   const collectionSections = getCollectionSections(cards, filters);
   const recentCardIds = new Set(progress.recentCardIds);
   const categoryCountById = new Map(progress.categoryCounts.map((entry) => [entry.id, entry]));
   const categoryOptions = progress.categoryCounts;
   const overlayRoot = document.createElement("div");
   overlayRoot.className = "detail-modal-root";
+  const coinBalance = profile?.coins ?? 0;
+  const stickerCount = profile?.inventory?.stickers?.length ?? 0;
 
   container.innerHTML = `
     <section class="collection-panel">
@@ -41,6 +43,16 @@ export function renderCollectionScreen(container, { cards, filters, progress, ac
           <span>${t("collection.topCard")}</span>
           <strong>${progress.strongestCard ? escapeHtml(progress.strongestCard.word) : "--"}</strong>
           <small>${progress.strongestCard ? t("common.pointsValue", { value: formatPoints(progress.strongestCard.points) }) : t("collection.winToRevealMore")}</small>
+        </article>
+        <article class="stat-card">
+          <span>${t("collection.coinBalance")}</span>
+          <strong data-count-to="${coinBalance}" data-count-key="collection-coins">${coinBalance}</strong>
+          <small>${t("collection.coinBalanceNote")}</small>
+        </article>
+        <article class="stat-card">
+          <span>${t("collection.stickersOwned")}</span>
+          <strong data-count-to="${stickerCount}" data-count-key="collection-stickers">${stickerCount}</strong>
+          <small>${t("collection.stickerStashNote")}</small>
         </article>
       </div>
 

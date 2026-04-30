@@ -3,36 +3,43 @@ export const REWARD_TYPE_META = Object.freeze({
     labelKey: "reward.types.card",
     inventoryKey: null,
     ownable: false,
+    lootEnabled: true,
   },
   coins: {
     labelKey: "reward.types.coins",
     inventoryKey: null,
     ownable: false,
+    lootEnabled: true,
   },
   sticker: {
     labelKey: "reward.types.sticker",
     inventoryKey: "stickers",
     ownable: true,
+    lootEnabled: true,
   },
   "cursor-skin": {
     labelKey: "reward.types.cursorSkin",
     inventoryKey: "cursorSkins",
     ownable: true,
+    lootEnabled: false,
   },
   "ui-theme-pack": {
     labelKey: "reward.types.uiThemePack",
     inventoryKey: "uiThemePacks",
     ownable: true,
+    lootEnabled: false,
   },
   "profile-background": {
     labelKey: "reward.types.profileBackground",
     inventoryKey: "profileBackgrounds",
     ownable: true,
+    lootEnabled: false,
   },
   "profile-avatar": {
     labelKey: "reward.types.profileAvatar",
     inventoryKey: "profileAvatars",
     ownable: true,
+    lootEnabled: false,
   },
 });
 
@@ -110,20 +117,67 @@ export const LOOT_TYPE_WEIGHTS_BY_RARITY = Object.freeze({
 });
 
 export const COIN_REWARD_AMOUNTS = Object.freeze({
-  common: 20,
-  uncommon: 40,
-  rare: 80,
-  mythic: 220,
-  epic: 150,
+  common: 25,
+  uncommon: 50,
+  rare: 90,
+  mythic: 160,
+  epic: 260,
   legend: 500,
+});
+
+export const STICKER_DUPLICATE_COIN_AMOUNTS = Object.freeze({
+  common: 15,
+  uncommon: 28,
+  rare: 55,
+  mythic: 95,
+  epic: 150,
+  legend: 260,
 });
 
 const RAW_REWARD_ITEM_LIBRARY = Object.freeze({
   sticker: Object.freeze([
-    { id: "spark-pop", label: "Spark Pop", rarity: "common" },
-    { id: "mini-star-rain", label: "Mini Star Rain", rarity: "uncommon" },
-    { id: "rocket-trail", label: "Rocket Trail", rarity: "rare" },
-    { id: "dragon-blink", label: "Dragon Blink", rarity: "epic" },
+    {
+      id: "sunny-star",
+      name: "Sunny Star",
+      label: "Sunny Star",
+      rarity: "common",
+      icon: "⭐",
+    },
+    {
+      id: "happy-rainbow",
+      name: "Happy Rainbow",
+      label: "Happy Rainbow",
+      rarity: "uncommon",
+      icon: "🌈",
+    },
+    {
+      id: "rocket-buddy",
+      name: "Rocket Buddy",
+      label: "Rocket Buddy",
+      rarity: "rare",
+      icon: "🚀",
+    },
+    {
+      id: "treasure-crown",
+      name: "Treasure Crown",
+      label: "Treasure Crown",
+      rarity: "mythic",
+      icon: "👑",
+    },
+    {
+      id: "sun-spark",
+      name: "Sun Spark",
+      label: "Sun Spark",
+      rarity: "epic",
+      icon: "🌞",
+    },
+    {
+      id: "legend-dragon",
+      name: "Legend Dragon",
+      label: "Legend Dragon",
+      rarity: "legend",
+      icon: "🐉",
+    },
   ]),
   "cursor-skin": Object.freeze([
     { id: "glossy-comet", label: "Glossy Comet", rarity: "rare" },

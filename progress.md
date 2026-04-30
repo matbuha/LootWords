@@ -676,6 +676,12 @@ Latest prompt: Prepare the authentication flow for reCAPTCHA with a real integra
   - each rarity stage now runs on its own five-tap cycle, with upgrades resetting stage progress and changing the live cinematic rarity state immediately
   - final reward resolution now waits until the current stage finishes without upgrading, which keeps high-rarity outcomes meaningfully rarer
   - verified with a deterministic manager test and a live browser smoke test that both the upgrade path and the standard reveal path still work without console errors
+- 2026-04-30: Shipped the first real non-card rewards:
+  - coins now award a real persisted balance with rarity-scaled amounts in the live loot pipeline
+  - stickers now use a safe starter catalog with icon placeholders and real owned-state persistence
+  - duplicate sticker rewards now convert into coins instead of creating duplicate ownership entries
+  - the live loot pool now limits active non-card rewards to cards, coins, and stickers while future cosmetics stay foundation-only
+  - verified reward logic for coin rewards, sticker ownership, and duplicate-sticker conversion, plus browser rendering for coin/sticker reveal cards and collection stats
 
 ## Notes
 

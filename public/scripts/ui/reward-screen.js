@@ -27,6 +27,17 @@ function renderRewardCardShowcase(card, { isNew = false } = {}) {
   `;
 }
 
+function renderRewardTokenShowcase(reward, { title, detail, eyebrow }) {
+  return `
+    <div class="celebration-card celebration-card--reward celebration-card--reward-info reward-token-card" data-rarity="${reward.rarity ?? "common"}">
+      <div class="reward-token-card__icon" aria-hidden="true">${reward.itemIcon ?? "✨"}</div>
+      <span class="small-label">${eyebrow}</span>
+      <h3 class="section-title">${title}</h3>
+      <p class="section-copy">${detail}</p>
+    </div>
+  `;
+}
+
 function getRewardRarityStage(rewardState, rewardCard) {
   return (
     rewardState.opening?.currentRarity ??
@@ -224,6 +235,27 @@ export function renderRewardScreen(container, { rewardState, rewardCard, rewardB
         <p class="section-copy">${t("reward.coinRewardDetail", { amount: rewardState.reveal.amount })}</p>
       </div>
     `;
+  } else if (rewardState.reveal?.type === "sticker") {
+    revealMarkup = renderRewardTokenShowcase(rewardState.reveal, {
+      eyebrow: t("reward.types.sticker"),
+      title: t("reward.stickerRewardTitle", {
+        item: rewardState.reveal.itemName ?? rewardState.reveal.itemLabel ?? rewardState.reveal.itemId,
+      }),
+      detail: t("reward.stickerRewardDetail", {
+        item: rewardState.reveal.itemName ?? rewardState.reveal.itemLabel ?? rewardState.reveal.itemId,
+      }),
+    });
+  } else if (rewardState.reveal?.type === "sticker-duplicate") {
+    revealMarkup = renderRewardTokenShowcase(rewardState.reveal, {
+      eyebrow: t("reward.types.sticker"),
+      title: t("reward.stickerDuplicateTitle", {
+        item: rewardState.reveal.itemName ?? rewardState.reveal.itemLabel ?? rewardState.reveal.itemId,
+      }),
+      detail: t("reward.stickerDuplicateDetail", {
+        item: rewardState.reveal.itemName ?? rewardState.reveal.itemLabel ?? rewardState.reveal.itemId,
+        amount: rewardState.reveal.amount,
+      }),
+    });
   } else if (rewardState.reveal?.type === "message") {
     revealMarkup = `
       <div class="celebration-card celebration-card--reward">

@@ -2858,6 +2858,28 @@ body.is-feedback-legendary .route-glow::after {
     rgba(255, 255, 255, 0.06);
 }
 
+.reward-token-card {
+  text-align: center;
+  align-items: center;
+}
+
+.reward-token-card__icon {
+  display: grid;
+  place-items: center;
+  width: 88px;
+  height: 88px;
+  margin: 0 auto 10px;
+  border-radius: 28px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background:
+    radial-gradient(circle at 30% 25%, rgba(255, 255, 255, 0.34), rgba(255, 255, 255, 0.06)),
+    rgba(255, 255, 255, 0.08);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    0 16px 26px rgba(8, 7, 21, 0.2);
+  font-size: 2.7rem;
+}
+
 .victory-chip-row {
   display: flex;
   flex-wrap: wrap;
