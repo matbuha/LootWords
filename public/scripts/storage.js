@@ -119,6 +119,8 @@ export function createInitialProfile() {
     totalWins: 0,
     bonusStars: 0,
     inventory: createEmptyLootInventory(),
+    selectedProfileAvatarId: null,
+    selectedProfileBackgroundId: null,
     currentStreak: 0,
     bestStreak: 0,
     firstWinGameIds: [],
@@ -137,6 +139,7 @@ export function normalizeProfile(rawProfile) {
   const raw = rawProfile && typeof rawProfile === "object" ? rawProfile : {};
   const normalizedGameStats = normalizeGameStatsMap(raw.gameStats, raw.completedRounds);
   const firstWinGameIds = createFirstWinGameIds(normalizedGameStats, raw.firstWinGameIds);
+  const normalizedInventory = normalizeLootInventory(raw.inventory);
 
   const unlockedIds = Array.isArray(raw.unlockedCardIds)
     ? raw.unlockedCardIds.filter((cardId) => CARD_LIBRARY.some((card) => card.id === cardId))
@@ -176,7 +179,13 @@ export function normalizeProfile(rawProfile) {
     coins: Math.max(0, Number.parseInt(raw.coins, 10) || 0),
     totalWins: Math.max(0, Number.parseInt(raw.totalWins, 10) || 0),
     bonusStars: Math.max(0, Number.parseInt(raw.bonusStars, 10) || 0),
-    inventory: normalizeLootInventory(raw.inventory),
+    inventory: normalizedInventory,
+    selectedProfileAvatarId: normalizedInventory.profileAvatars.includes(raw.selectedProfileAvatarId)
+      ? raw.selectedProfileAvatarId
+      : null,
+    selectedProfileBackgroundId: normalizedInventory.profileBackgrounds.includes(raw.selectedProfileBackgroundId)
+      ? raw.selectedProfileBackgroundId
+      : null,
     currentStreak: Math.max(0, Number.parseInt(raw.currentStreak, 10) || 0),
     bestStreak: Math.max(
       0,

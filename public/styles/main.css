@@ -1900,6 +1900,42 @@ body.is-feedback-legendary .route-glow::after {
   margin-bottom: 18px;
 }
 
+.collection-profile-cosmetics {
+  margin-bottom: 18px;
+}
+
+.collection-profile-cosmetics__card {
+  gap: 14px;
+}
+
+.collection-profile-cosmetics__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+  width: 100%;
+}
+
+.collection-profile-cosmetics__slot {
+  display: grid;
+  gap: 6px;
+  padding: 14px 16px;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.04)),
+    rgba(10, 9, 24, 0.26);
+}
+
+.collection-profile-cosmetics__slot span {
+  color: rgba(245, 243, 255, 0.72);
+  font-size: 0.85rem;
+}
+
+.collection-profile-cosmetics__slot strong {
+  color: #fffdf6;
+  font-size: 1.02rem;
+}
+
 .collection-grid {
   gap: 20px;
 }

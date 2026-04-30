@@ -50,7 +50,13 @@ Use these docs before starting work:
 - Real non-card rewards for:
   - coins
   - stickers
+  - profile avatars
+  - profile backgrounds
 - Duplicate sticker rewards safely convert into coins instead of creating duplicate ownership entries
+- Duplicate profile avatar and background rewards safely convert into coins instead of creating duplicate ownership entries
+- Minimal equipped-state foundation for:
+  - selected profile avatar
+  - selected profile background
 - Collectible English noun cards with persisted random points and the current six-tier rarity model:
   - common
   - uncommon
@@ -159,7 +165,7 @@ The most useful contribution areas right now are:
 - speech and pronunciation quality improvements
 - card art and image pipeline improvements
 - reward/game feel polish
-- cinematic reward-box presentation and cosmetic equip UX on top of the shipped loot foundation
+- richer profile customization UX, cosmetic browsing, and equip controls on top of the shipped loot foundation
 - mobile UX and accessibility improvements
 - parent-mode quality and safety improvements
 

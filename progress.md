@@ -682,6 +682,14 @@ Latest prompt: Prepare the authentication flow for reCAPTCHA with a real integra
   - duplicate sticker rewards now convert into coins instead of creating duplicate ownership entries
   - the live loot pool now limits active non-card rewards to cards, coins, and stickers while future cosmetics stay foundation-only
   - verified reward logic for coin rewards, sticker ownership, and duplicate-sticker conversion, plus browser rendering for coin/sticker reveal cards and collection stats
+- 2026-04-30: Added profile cosmetics foundation on top of the live loot pipeline:
+  - profile avatars and profile backgrounds are now real live reward types with starter catalogs, placeholder icons, and rarity-aware ownership
+  - duplicate avatar/background rewards now convert into coins instead of creating duplicate ownership entries
+  - profile persistence now includes `selectedProfileAvatarId` and `selectedProfileBackgroundId`
+  - first-owned avatars/backgrounds now auto-equip as the minimal equipped-state foundation
+  - reward reveal now renders explicit avatar/background reward states and duplicate-conversion states
+  - collection now shows avatar/background ownership counts plus the currently equipped avatar/background preview
+  - verified reward application, duplicate conversion, collection rendering, and reward rendering without console errors
 
 ## Notes
 

@@ -158,11 +158,11 @@ These are optional contribution ideas. They should not replace the core vocabula
 - Suggested area: Reward UI, animation CSS, feedback/audio coupling, `public/scripts/core/loot-manager.js`
 
 ### Expand cosmetic and inventory application systems
-- Status: `Not started`
-- Why it matters: coins and stickers are now real rewards, but players still need richer ways to browse, equip, spend, and value the broader cosmetic pool.
-- Idea: build the next layer for sticker browsing, cursor skins, theme packs, profile backgrounds, and profile avatars on top of the shipped loot inventory structure.
+- Status: `Partial`
+- Why it matters: coins, stickers, profile avatars, and profile backgrounds are now real rewards, but players still need richer ways to browse, equip, spend, and value the broader cosmetic pool.
+- Idea: build the next layer for sticker browsing, manual avatar/background selection, cursor skins, theme packs, and fuller cosmetic inventory surfaces on top of the shipped loot inventory structure.
 - Suggested area: inventory/profile UI, collection UI, future settings/equip surfaces
-- Notes: keep it modular. Coins and stickers are already live; this task is about application UX, not redoing reward generation.
+- Notes: keep it modular. Coins, stickers, avatars, and backgrounds are already live reward types; this task is about application UX, not redoing reward generation.
 
 ### Improve collection browsing feel
 - Status: `Partial`

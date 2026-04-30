@@ -256,6 +256,48 @@ export function renderRewardScreen(container, { rewardState, rewardCard, rewardB
         amount: rewardState.reveal.amount,
       }),
     });
+  } else if (rewardState.reveal?.type === "profile-avatar") {
+    revealMarkup = renderRewardTokenShowcase(rewardState.reveal, {
+      eyebrow: t("reward.types.profileAvatar"),
+      title: t("reward.profileAvatarRewardTitle", {
+        item: rewardState.reveal.itemName ?? rewardState.reveal.itemLabel ?? rewardState.reveal.itemId,
+      }),
+      detail: t("reward.profileAvatarRewardDetail", {
+        item: rewardState.reveal.itemName ?? rewardState.reveal.itemLabel ?? rewardState.reveal.itemId,
+      }),
+    });
+  } else if (rewardState.reveal?.type === "profile-avatar-duplicate") {
+    revealMarkup = renderRewardTokenShowcase(rewardState.reveal, {
+      eyebrow: t("reward.types.profileAvatar"),
+      title: t("reward.profileAvatarDuplicateTitle", {
+        item: rewardState.reveal.itemName ?? rewardState.reveal.itemLabel ?? rewardState.reveal.itemId,
+      }),
+      detail: t("reward.profileAvatarDuplicateDetail", {
+        item: rewardState.reveal.itemName ?? rewardState.reveal.itemLabel ?? rewardState.reveal.itemId,
+        amount: rewardState.reveal.amount,
+      }),
+    });
+  } else if (rewardState.reveal?.type === "profile-background") {
+    revealMarkup = renderRewardTokenShowcase(rewardState.reveal, {
+      eyebrow: t("reward.types.profileBackground"),
+      title: t("reward.profileBackgroundRewardTitle", {
+        item: rewardState.reveal.itemName ?? rewardState.reveal.itemLabel ?? rewardState.reveal.itemId,
+      }),
+      detail: t("reward.profileBackgroundRewardDetail", {
+        item: rewardState.reveal.itemName ?? rewardState.reveal.itemLabel ?? rewardState.reveal.itemId,
+      }),
+    });
+  } else if (rewardState.reveal?.type === "profile-background-duplicate") {
+    revealMarkup = renderRewardTokenShowcase(rewardState.reveal, {
+      eyebrow: t("reward.types.profileBackground"),
+      title: t("reward.profileBackgroundDuplicateTitle", {
+        item: rewardState.reveal.itemName ?? rewardState.reveal.itemLabel ?? rewardState.reveal.itemId,
+      }),
+      detail: t("reward.profileBackgroundDuplicateDetail", {
+        item: rewardState.reveal.itemName ?? rewardState.reveal.itemLabel ?? rewardState.reveal.itemId,
+        amount: rewardState.reveal.amount,
+      }),
+    });
   } else if (rewardState.reveal?.type === "message") {
     revealMarkup = `
       <div class="celebration-card celebration-card--reward">

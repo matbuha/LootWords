@@ -1,4 +1,5 @@
 import { CATEGORY_META, COLLECTION_SORTS, DIFFICULTY_META, PACK_META, RARITY_META } from "../data/config.js";
+import { getRewardCatalogItem } from "../data/loot.js";
 import { categoryLabel, collectionSortLabel, difficultyLabel, formatDate, packLabel, rarityLabel, t } from "../core/i18n.js";
 import { getCollectionSections } from "../core/progression.js";
 import { renderCard, renderDetailCard, renderEmptyState, escapeHtml, formatPoints } from "./ui-kit.js";
@@ -12,6 +13,10 @@ export function renderCollectionScreen(container, { cards, filters, progress, ac
   overlayRoot.className = "detail-modal-root";
   const coinBalance = profile?.coins ?? 0;
   const stickerCount = profile?.inventory?.stickers?.length ?? 0;
+  const avatarCount = profile?.inventory?.profileAvatars?.length ?? 0;
+  const backgroundCount = profile?.inventory?.profileBackgrounds?.length ?? 0;
+  const equippedAvatar = getRewardCatalogItem("profile-avatar", profile?.selectedProfileAvatarId);
+  const equippedBackground = getRewardCatalogItem("profile-background", profile?.selectedProfileBackgroundId);
 
   container.innerHTML = `
     <section class="collection-panel">
@@ -53,6 +58,34 @@ export function renderCollectionScreen(container, { cards, filters, progress, ac
           <span>${t("collection.stickersOwned")}</span>
           <strong data-count-to="${stickerCount}" data-count-key="collection-stickers">${stickerCount}</strong>
           <small>${t("collection.stickerStashNote")}</small>
+        </article>
+        <article class="stat-card">
+          <span>${t("collection.avatarsOwned")}</span>
+          <strong data-count-to="${avatarCount}" data-count-key="collection-avatars">${avatarCount}</strong>
+          <small>${t("collection.avatarInventoryNote")}</small>
+        </article>
+        <article class="stat-card">
+          <span>${t("collection.backgroundsOwned")}</span>
+          <strong data-count-to="${backgroundCount}" data-count-key="collection-backgrounds">${backgroundCount}</strong>
+          <small>${t("collection.backgroundInventoryNote")}</small>
+        </article>
+      </div>
+
+      <div class="collection-profile-cosmetics">
+        <article class="celebration-card collection-profile-cosmetics__card">
+          <span class="small-label">${t("collection.profileCosmetics")}</span>
+          <h3 class="section-title">${t("collection.currentProfileStyle")}</h3>
+          <div class="collection-profile-cosmetics__grid">
+            <div class="collection-profile-cosmetics__slot">
+              <span>${t("collection.equippedAvatar")}</span>
+              <strong>${equippedAvatar ? `${equippedAvatar.icon ?? "🙂"} ${escapeHtml(equippedAvatar.label)}` : t("collection.noneEquipped")}</strong>
+            </div>
+            <div class="collection-profile-cosmetics__slot">
+              <span>${t("collection.equippedBackground")}</span>
+              <strong>${equippedBackground ? `${equippedBackground.icon ?? "🖼️"} ${escapeHtml(equippedBackground.label)}` : t("collection.noneEquipped")}</strong>
+            </div>
+          </div>
+          <p class="section-copy">${t("collection.profileCosmeticsNote")}</p>
         </article>
       </div>
 

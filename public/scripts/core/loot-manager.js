@@ -7,6 +7,7 @@ import {
   getRewardInventoryKey,
   LOOT_RARITY_WEIGHTS,
   LOOT_TYPE_WEIGHTS_BY_RARITY,
+  PROFILE_COSMETIC_DUPLICATE_COIN_AMOUNTS,
   REWARD_TYPE_META,
   STICKER_DUPLICATE_COIN_AMOUNTS,
 } from "../data/loot.js";
@@ -160,6 +161,44 @@ function createStickerDuplicateReward(reward, catalogItem) {
     amount,
     typeLabelKey: "reward.types.sticker",
   };
+}
+
+function createOwnableDuplicateCoinReward(reward, catalogItem, amount) {
+  return {
+    type: `${reward.type}-duplicate`,
+    rewardType: reward.type,
+    rarity: reward.rarity,
+    itemId: reward.itemId,
+    itemName: reward.itemName ?? catalogItem?.name ?? catalogItem?.label ?? reward.itemId,
+    itemLabel: reward.itemLabel ?? catalogItem?.label ?? reward.itemId,
+    itemIcon: reward.itemIcon ?? catalogItem?.icon ?? null,
+    amount,
+    typeLabelKey: REWARD_TYPE_META[reward.type]?.labelKey ?? "reward.rewardNote",
+  };
+}
+
+function getDuplicateCoinAmount(type, rarity) {
+  if (type === "sticker") {
+    return STICKER_DUPLICATE_COIN_AMOUNTS[rarity] ?? COIN_REWARD_AMOUNTS.common;
+  }
+
+  if (type === "profile-avatar" || type === "profile-background") {
+    return PROFILE_COSMETIC_DUPLICATE_COIN_AMOUNTS[rarity] ?? COIN_REWARD_AMOUNTS.common;
+  }
+
+  return null;
+}
+
+function getAutoEquipFieldForType(type) {
+  if (type === "profile-avatar") {
+    return "selectedProfileAvatarId";
+  }
+
+  if (type === "profile-background") {
+    return "selectedProfileBackgroundId";
+  }
+
+  return null;
 }
 
 function createFallbackReward(parentSettings) {
@@ -325,22 +364,36 @@ export function applyLootReward(profile, reward) {
   const existingItems = nextProfile.inventory[inventoryKey] ?? [];
   const alreadyOwned = existingItems.includes(reward.itemId);
 
-  if (reward.type === "sticker" && alreadyOwned) {
-    const duplicateReward = createStickerDuplicateReward(reward, item);
-    return {
-      profile: {
-        ...nextProfile,
-        coins: nextProfile.coins + duplicateReward.amount,
-      },
-      reward: duplicateReward,
-    };
+  if (alreadyOwned) {
+    const duplicateAmount = getDuplicateCoinAmount(reward.type, reward.rarity);
+    if (duplicateAmount !== null) {
+      const duplicateReward =
+        reward.type === "sticker"
+          ? createStickerDuplicateReward(reward, item)
+          : createOwnableDuplicateCoinReward(reward, item, duplicateAmount);
+
+      return {
+        profile: {
+          ...nextProfile,
+          coins: nextProfile.coins + duplicateReward.amount,
+        },
+        reward: duplicateReward,
+      };
+    }
   }
 
   const nextItems = uniqueList([...existingItems, reward.itemId]);
+  const autoEquipField = getAutoEquipFieldForType(reward.type);
+  const nextEquippedValue =
+    autoEquipField && !nextProfile[autoEquipField] ? reward.itemId : nextProfile[autoEquipField];
+  const profileUpdates = autoEquipField
+    ? { [autoEquipField]: nextEquippedValue }
+    : {};
 
   return {
     profile: {
       ...nextProfile,
+      ...profileUpdates,
       inventory: {
         ...nextProfile.inventory,
         [inventoryKey]: nextItems,

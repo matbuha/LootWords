@@ -33,13 +33,13 @@ export const REWARD_TYPE_META = Object.freeze({
     labelKey: "reward.types.profileBackground",
     inventoryKey: "profileBackgrounds",
     ownable: true,
-    lootEnabled: false,
+    lootEnabled: true,
   },
   "profile-avatar": {
     labelKey: "reward.types.profileAvatar",
     inventoryKey: "profileAvatars",
     ownable: true,
-    lootEnabled: false,
+    lootEnabled: true,
   },
 });
 
@@ -134,6 +134,15 @@ export const STICKER_DUPLICATE_COIN_AMOUNTS = Object.freeze({
   legend: 260,
 });
 
+export const PROFILE_COSMETIC_DUPLICATE_COIN_AMOUNTS = Object.freeze({
+  common: 20,
+  uncommon: 35,
+  rare: 80,
+  mythic: 140,
+  epic: 220,
+  legend: 380,
+});
+
 const RAW_REWARD_ITEM_LIBRARY = Object.freeze({
   sticker: Object.freeze([
     {
@@ -191,16 +200,72 @@ const RAW_REWARD_ITEM_LIBRARY = Object.freeze({
     { id: "royal-nebula", label: "Royal Nebula", rarity: "legend" },
   ]),
   "profile-background": Object.freeze([
-    { id: "jungle-morning", label: "Jungle Morning", rarity: "rare" },
-    { id: "sky-lanterns", label: "Sky Lanterns", rarity: "epic" },
-    { id: "crimson-comets", label: "Crimson Comets", rarity: "mythic" },
-    { id: "violet-vault", label: "Violet Vault", rarity: "legend" },
+    {
+      id: "jungle-morning",
+      type: "profile-background",
+      name: "Jungle Morning",
+      label: "Jungle Morning",
+      rarity: "rare",
+      icon: "🌿",
+    },
+    {
+      id: "sky-lanterns",
+      type: "profile-background",
+      name: "Sky Lanterns",
+      label: "Sky Lanterns",
+      rarity: "epic",
+      icon: "🏮",
+    },
+    {
+      id: "crimson-comets",
+      type: "profile-background",
+      name: "Crimson Comets",
+      label: "Crimson Comets",
+      rarity: "mythic",
+      icon: "☄️",
+    },
+    {
+      id: "violet-vault",
+      type: "profile-background",
+      name: "Violet Vault",
+      label: "Violet Vault",
+      rarity: "legend",
+      icon: "💜",
+    },
   ]),
   "profile-avatar": Object.freeze([
-    { id: "lion-badge", label: "Lion Badge", rarity: "rare" },
-    { id: "rocket-badge", label: "Rocket Badge", rarity: "epic" },
-    { id: "phoenix-badge", label: "Phoenix Badge", rarity: "mythic" },
-    { id: "crown-badge", label: "Crown Badge", rarity: "legend" },
+    {
+      id: "lion-badge",
+      type: "profile-avatar",
+      name: "Lion Badge",
+      label: "Lion Badge",
+      rarity: "rare",
+      icon: "🦁",
+    },
+    {
+      id: "rocket-badge",
+      type: "profile-avatar",
+      name: "Rocket Badge",
+      label: "Rocket Badge",
+      rarity: "epic",
+      icon: "🚀",
+    },
+    {
+      id: "phoenix-badge",
+      type: "profile-avatar",
+      name: "Phoenix Badge",
+      label: "Phoenix Badge",
+      rarity: "mythic",
+      icon: "🔥",
+    },
+    {
+      id: "crown-badge",
+      type: "profile-avatar",
+      name: "Crown Badge",
+      label: "Crown Badge",
+      rarity: "legend",
+      icon: "👑",
+    },
   ]),
 });
 
