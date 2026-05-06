@@ -164,6 +164,13 @@ These are optional contribution ideas. They should not replace the core vocabula
 - Suggested area: inventory/profile UI, collection UI, future settings/equip surfaces
 - Notes: keep it modular. Coins, stickers, cursor skins, theme packs, avatars, and backgrounds are already live reward types. Theme packs already have a minimal Collection-based equip flow; the remaining work is broader cosmetic browsing and management UX, not redoing reward generation.
 
+### Expand shop into a fuller marketplace
+- Status: `Partial`
+- Why it matters: the project now has a real coin balance and a minimal auth-only shop foundation, but it still needs a clearer spending loop and stronger browsing surface.
+- Idea: build on the shipped shop catalog and purchase manager with featured items, daily/rotating stock, discounts, and better purchase feedback.
+- Suggested area: `public/scripts/data/shop.js`, `public/scripts/core/shop-manager.js`, collection/shop UI, future Home surfaces
+- Notes: keep the current auth-safe purchase validation and owned-state logic intact. The remaining work is marketplace UX and tuning, not rebuilding coin deduction or ownership checks.
+
 ### Improve collection browsing feel
 - Status: `Partial`
 - Why it matters: browsing the collection should feel rewarding, not administrative.

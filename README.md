@@ -63,6 +63,10 @@ Use these docs before starting work:
   - selected cursor skin
   - selected profile avatar
   - selected profile background
+- Auth-only coin shop foundation:
+  - centralized shop catalog with price, availability, owned-state, and purchasable-state metadata
+  - minimal Collection-screen shop panel for stickers, cursor skins, avatars, backgrounds, and theme packs
+  - purchases deduct coins safely, block guests, block insufficient balances, and block duplicate unique ownership
 - Usable theme-pack MVP:
   - Collection now previews all six starter themes
   - owned themes can be equipped directly from Collection
@@ -158,6 +162,8 @@ Notes:
 - `public/scripts/data/`: cards, categories, config, and translations
 - `public/scripts/core/loot-manager.js`: centralized loot generation and reward application
 - `public/scripts/data/loot.js`: reward-type catalogs, rarity weights, and inventory foundations
+- `public/scripts/data/shop.js`: centralized shop catalog entries for coin purchases
+- `public/scripts/core/shop-manager.js`: centralized auth-aware shop purchase validation and coin deduction
 - `public/scripts/core/theme-manager.js`: centralized equipped theme resolution and global CSS token application
 - `public/scripts/core/auth-manager.js`: centralized Firebase auth bootstrap and session handling
 - `public/scripts/core/daily-challenge-manager.js`: deterministic daily challenge generation, per-user daily state, and daily reward idempotency

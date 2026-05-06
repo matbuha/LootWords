@@ -712,6 +712,11 @@ Latest prompt: Prepare the authentication flow for reCAPTCHA with a real integra
   - owned themes can be equipped directly from Collection, while locked themes stay visible but non-interactive
   - equipped themes now recolor shared UI surfaces more clearly, including global backgrounds, panel gradients, buttons, reward accents, and safe card-atmosphere tokens
   - verified desktop equip flow in English and a narrow Hebrew mobile viewport with no console errors or horizontal overflow after persistence finished loading
+- 2026-05-06: Added the first coin-shop foundation:
+  - introduced a centralized shop catalog in `public/scripts/data/shop.js` for stickers, cursor skins, profile avatars, profile backgrounds, and UI theme packs
+  - added a centralized `shop-manager.js` that blocks guest purchases, blocks insufficient balances, blocks duplicate unique ownership, and deducts coins without allowing negative balances
+  - Collection now shows a minimal auth-only shop panel with locked guest CTA state and direct purchase buttons for authenticated users
+  - verified guest lock state, authenticated purchase success, coin deduction, owned-state transition, and logout reset in a real browser flow
 
 ## Notes
 

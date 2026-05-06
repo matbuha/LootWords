@@ -1,6 +1,7 @@
 import { CATEGORY_META, COLLECTION_SORTS, DIFFICULTY_META, PACK_META, RARITY_META } from "../data/config.js";
-import { getRewardCatalog, getRewardCatalogItem } from "../data/loot.js";
+import { getRewardCatalog, getRewardCatalogItem, REWARD_TYPE_META } from "../data/loot.js";
 import { categoryLabel, collectionSortLabel, difficultyLabel, formatDate, packLabel, rarityLabel, t } from "../core/i18n.js";
+import { buildShopViewModel } from "../core/shop-manager.js";
 import { getCollectionSections } from "../core/progression.js";
 import { renderCard, renderDetailCard, renderEmptyState, escapeHtml, formatPoints } from "./ui-kit.js";
 
@@ -60,7 +61,48 @@ function renderThemePackCard(themePack, { owned, equipped }) {
   `;
 }
 
-export function renderCollectionScreen(container, { cards, filters, progress, actions, modalCard, profile }) {
+function getShopStateLabel(entry) {
+  switch (entry.state) {
+    case "owned":
+      return t("collection.shopOwned");
+    case "insufficient":
+      return t("collection.shopNotEnoughCoins");
+    case "unavailable":
+      return t("collection.shopUnavailable");
+    case "locked":
+      return t("collection.shopAuthOnlyChip");
+    case "purchasable":
+    default:
+      return t("collection.shopBuy");
+  }
+}
+
+function renderShopItemCard(entry) {
+  const typeLabel = t(REWARD_TYPE_META[entry.rewardType]?.labelKey ?? "common.locked");
+
+  return `
+    <article class="shop-item-card ${entry.state === "owned" ? "is-owned" : ""}" data-rarity="${escapeHtml(entry.rewardItem.rarity)}">
+      <div class="shop-item-card__topline">
+        <strong>${entry.rewardItem.icon ?? "🎁"} ${escapeHtml(entry.rewardItem.label ?? entry.rewardItem.name ?? entry.rewardItem.id)}</strong>
+        <span class="rarity-badge">${rarityLabel(entry.rewardItem.rarity)}</span>
+      </div>
+      <p class="section-copy">${typeLabel}</p>
+      <div class="shop-item-card__footer">
+        <span class="card-category">${t("collection.shopPrice", { coins: entry.price })}</span>
+        <button
+          class="${entry.state === "purchasable" ? "primary-button" : "secondary-button"} shop-item-card__action"
+          type="button"
+          data-shop-item-id="${escapeHtml(entry.id)}"
+          ${entry.state === "purchasable" ? "" : "disabled"}
+        >
+          ${getShopStateLabel(entry)}
+        </button>
+      </div>
+    </article>
+  `;
+}
+
+export function renderCollectionScreen(container, { cards, filters, progress, actions, modalCard, profile, authState }) {
   const collectionSections = getCollectionSections(cards, filters);
   const recentCardIds = new Set(progress.recentCardIds);
   const categoryCountById = new Map(progress.categoryCounts.map((entry) => [entry.id, entry]));
@@ -79,6 +121,8 @@ export function renderCollectionScreen(container, { cards, filters, progress, ac
   const equippedCursorSkin = getRewardCatalogItem("cursor-skin", profile?.selectedCursorSkinId);
   const equippedAvatar = getRewardCatalogItem("profile-avatar", profile?.selectedProfileAvatarId);
   const equippedBackground = getRewardCatalogItem("profile-background", profile?.selectedProfileBackgroundId);
+  const shopEntries = buildShopViewModel(profile, authState);
+  const shopIsLocked = authState?.mode !== "authenticated";
 
   container.innerHTML = `
     <section class="collection-panel">
@@ -186,6 +230,33 @@ export function renderCollectionScreen(container, { cards, filters, progress, ac
               }))
             .join("")}
         </div>
+      </section>
+
+      <section class="shop-panel celebration-card">
+        <div class="screen-header screen-header--compact">
+          <div>
+            <span class="small-label">${t("collection.shopEyebrow")}</span>
+            <h3 class="section-title">${t("collection.shopTitle")}</h3>
+          </div>
+          <p class="screen-note">${t("collection.shopBody")}</p>
+        </div>
+        ${
+          shopIsLocked
+            ? `
+              <div class="shop-locked-state">
+                <div>
+                  <strong>${t("collection.shopLockedTitle")}</strong>
+                  <p class="section-copy">${t("collection.shopLockedBody")}</p>
+                </div>
+                <button class="primary-button" type="button" data-open-auth="signin">${t("collection.shopOpenAuth")}</button>
+              </div>
+            `
+            : `
+              <div class="shop-grid">
+                ${shopEntries.map((entry) => renderShopItemCard(entry)).join("")}
+              </div>
+            `
+        }
       </section>
 
       <div class="pack-rack">
@@ -381,6 +452,14 @@ export function renderCollectionScreen(container, { cards, filters, progress, ac
     });
   });
 
+  container.querySelectorAll("[data-shop-item-id]").forEach((button) => {
+    button.addEventListener("click", () => {
+      if (!button.disabled) {
+        actions.purchaseShopItem(button.dataset.shopItemId);
+      }
+    });
+  });
+
   overlayRoot.querySelectorAll("[data-close-modal]").forEach((element) => {
     element.addEventListener("click", (event) => {
       if (element.dataset.closeModal === "button" || event.target === element) {
@@ -406,6 +485,8 @@ export function renderCollectionScreen(container, { cards, filters, progress, ac
         visibleCards: collectionSections.reduce((sum, section) => sum + section.cards.length, 0),
         sectionCount: collectionSections.length,
         filters,
+        shopLocked: shopIsLocked,
+        shopItemCount: shopEntries.length,
       };
     },
   };

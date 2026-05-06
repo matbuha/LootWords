@@ -1949,6 +1949,12 @@ body.is-feedback-legendary .route-glow::after {
   margin-bottom: 18px;
 }
 
+.shop-panel {
+  display: grid;
+  gap: 18px;
+  margin-bottom: 18px;
+}
+
 .collection-profile-cosmetics__card {
   gap: 14px;
 }
@@ -1985,6 +1991,64 @@ body.is-feedback-legendary .route-glow::after {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
   gap: 14px;
+}
+
+.shop-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 14px;
+}
+
+.shop-locked-state {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 18px;
+  padding: 18px;
+  border-radius: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background:
+    linear-gradient(135deg, rgba(255, 201, 79, 0.12), rgba(83, 196, 255, 0.08)),
+    rgba(10, 9, 24, 0.26);
+}
+
+.shop-locked-state strong {
+  color: #fffdf6;
+}
+
+.shop-item-card {
+  display: grid;
+  gap: 12px;
+  padding: 16px;
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background:
+    linear-gradient(145deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.04)),
+    rgba(10, 9, 24, 0.26);
+}
+
+.shop-item-card.is-owned {
+  border-color: color-mix(in srgb, var(--accent-cyan) 36%, white);
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--accent-cyan) 16%, transparent),
+    0 18px 28px rgba(8, 7, 21, 0.18);
+}
+
+.shop-item-card__topline,
+.shop-item-card__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.shop-item-card__topline strong {
+  color: #fffdf6;
+}
+
+.shop-item-card__action {
+  min-width: 124px;
 }
 
 .theme-pack-card {

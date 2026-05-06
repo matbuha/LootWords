@@ -21,6 +21,7 @@ LootWords is an evolving MVP with a working core loop. It is no longer a bare pr
 - Real cursor-skin rewards with persisted ownership and minimal equipped-state support
 - Real UI-theme-pack rewards with persisted ownership, duplicate-to-coins handling, and minimal equipped-state support
 - Real profile-avatar and profile-background rewards with persisted ownership and minimal equipped-state support
+- Auth-only coin shop foundation with a centralized catalog, minimal Collection-screen purchase UI, and safe owned/insufficient/locked states
 - Card speech for visible/open cards in English
 - Voice selection for English pronunciation when the browser exposes multiple English voices
 - Firebase Authentication with guest fallback, auth modal UI, session bootstrap, and logout flow
@@ -68,6 +69,7 @@ LootWords is an evolving MVP with a working core loop. It is no longer a bare pr
   - first-owned cursor skins, theme packs, profile avatars, and backgrounds now auto-equip into minimal selected-state fields so later profile UI can build on real equipped data
   - cursor skins now apply globally through a safe fine-pointer-only cursor layer, and theme packs now apply safe global CSS token overrides through a centralized theme manager
   - Collection now exposes a minimal theme-pack picker with preview cards and direct equip buttons for owned themes, while locked themes remain visible but non-interactive
+  - Collection now also exposes a minimal auth-only coin shop backed by centralized purchase validation and user-specific inventory writes
 - Tap the Word:
   - real playable MVP is in place
   - still open for distractor tuning, pacing tweaks, and stronger mobile optimization
@@ -115,6 +117,10 @@ LootWords is an evolving MVP with a working core loop. It is no longer a bare pr
 - `public/scripts/data/loot.js`
   - controls reward-type catalogs, rarity weights, and inventory keys
   - changes here affect long-term extensibility, not just the current reward reveal UI
+- `public/scripts/core/shop-manager.js`
+  - central shop purchase validation, ownership checks, and coin deduction
+- `public/scripts/data/shop.js`
+  - central shop catalog, pricing, and availability metadata
 - `public/scripts/storage.js`
   - guest-vs-authenticated persistence boundaries, profile normalization, and recovery logic
   - unsafe edits here can corrupt saved progress or leak user state across sessions

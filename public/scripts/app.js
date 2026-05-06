@@ -28,6 +28,7 @@ import {
   createEmptyBoxOpeningState,
 } from "./core/box-opening-manager.js";
 import { applyCursorSkin } from "./core/cursor-skin-manager.js";
+import { purchaseShopItem } from "./core/shop-manager.js";
 import { getReviewDeck, summarizeProgress } from "./core/progression.js";
 import { getRecommendedGameId } from "./core/game-session-manager.js";
 import {
@@ -1038,6 +1039,20 @@ const actions = {
           ...currentState.profile,
           selectedUiThemePackId: themePackId,
         },
+      };
+    });
+  },
+  purchaseShopItem(shopItemId) {
+    feedback.trigger(FEEDBACK_EVENTS.buttonClick);
+    commitState((currentState) => {
+      const purchaseResult = purchaseShopItem(currentState.profile, currentState.auth, shopItemId);
+      if (!purchaseResult.ok || !purchaseResult.profile) {
+        return currentState;
+      }
+
+      return {
+        ...currentState,
+        profile: purchaseResult.profile,
       };
     });
   },
