@@ -690,6 +690,15 @@ Latest prompt: Prepare the authentication flow for reCAPTCHA with a real integra
   - reward reveal now renders explicit avatar/background reward states and duplicate-conversion states
   - collection now shows avatar/background ownership counts plus the currently equipped avatar/background preview
   - verified reward application, duplicate conversion, collection rendering, and reward rendering without console errors
+- 2026-04-30: Added cursor-skin foundation on top of the live loot pipeline:
+  - cursor skins are now real live reward types with a starter catalog, placeholder icons, and generated placeholder cursor visuals
+  - duplicate cursor-skin rewards now convert into coins instead of creating duplicate ownership entries
+  - profile persistence now includes `selectedCursorSkinId`
+  - the first owned cursor skin now auto-equips as the minimal equipped-state foundation
+  - the equipped cursor now applies globally on fine-pointer devices without affecting touch-only usability
+  - reward reveal now renders explicit cursor-skin reward states and duplicate-conversion states
+  - collection now shows cursor-skin ownership counts plus the currently equipped cursor preview
+  - verified reward application, collection rendering, reward rendering, and live cursor application on reload without console errors
 
 ## Notes
 

@@ -26,6 +26,7 @@ import {
   advanceBoxOpeningSession,
   createEmptyBoxOpeningState,
 } from "./core/box-opening-manager.js";
+import { applyCursorSkin } from "./core/cursor-skin-manager.js";
 import { getReviewDeck, summarizeProgress } from "./core/progression.js";
 import { getRecommendedGameId } from "./core/game-session-manager.js";
 import {
@@ -1511,6 +1512,7 @@ function renderApp() {
   try {
     languageManager.setLanguage(state.profile.settings.language);
     speech.setPreferredVoice(state.profile.settings.speech?.voiceURI ?? null);
+    applyCursorSkin(state.profile);
     document.body.dataset.route = state.route.path;
 
     root.innerHTML = renderShell({

@@ -50,11 +50,14 @@ Use these docs before starting work:
 - Real non-card rewards for:
   - coins
   - stickers
+  - cursor skins
   - profile avatars
   - profile backgrounds
 - Duplicate sticker rewards safely convert into coins instead of creating duplicate ownership entries
+- Duplicate cursor-skin rewards safely convert into coins instead of creating duplicate ownership entries
 - Duplicate profile avatar and background rewards safely convert into coins instead of creating duplicate ownership entries
 - Minimal equipped-state foundation for:
+  - selected cursor skin
   - selected profile avatar
   - selected profile background
 - Collectible English noun cards with persisted random points and the current six-tier rarity model:

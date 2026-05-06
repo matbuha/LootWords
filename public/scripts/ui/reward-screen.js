@@ -256,6 +256,27 @@ export function renderRewardScreen(container, { rewardState, rewardCard, rewardB
         amount: rewardState.reveal.amount,
       }),
     });
+  } else if (rewardState.reveal?.type === "cursor-skin") {
+    revealMarkup = renderRewardTokenShowcase(rewardState.reveal, {
+      eyebrow: t("reward.types.cursorSkin"),
+      title: t("reward.cursorSkinRewardTitle", {
+        item: rewardState.reveal.itemName ?? rewardState.reveal.itemLabel ?? rewardState.reveal.itemId,
+      }),
+      detail: t("reward.cursorSkinRewardDetail", {
+        item: rewardState.reveal.itemName ?? rewardState.reveal.itemLabel ?? rewardState.reveal.itemId,
+      }),
+    });
+  } else if (rewardState.reveal?.type === "cursor-skin-duplicate") {
+    revealMarkup = renderRewardTokenShowcase(rewardState.reveal, {
+      eyebrow: t("reward.types.cursorSkin"),
+      title: t("reward.cursorSkinDuplicateTitle", {
+        item: rewardState.reveal.itemName ?? rewardState.reveal.itemLabel ?? rewardState.reveal.itemId,
+      }),
+      detail: t("reward.cursorSkinDuplicateDetail", {
+        item: rewardState.reveal.itemName ?? rewardState.reveal.itemLabel ?? rewardState.reveal.itemId,
+        amount: rewardState.reveal.amount,
+      }),
+    });
   } else if (rewardState.reveal?.type === "profile-avatar") {
     revealMarkup = renderRewardTokenShowcase(rewardState.reveal, {
       eyebrow: t("reward.types.profileAvatar"),

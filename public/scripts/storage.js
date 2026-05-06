@@ -119,6 +119,7 @@ export function createInitialProfile() {
     totalWins: 0,
     bonusStars: 0,
     inventory: createEmptyLootInventory(),
+    selectedCursorSkinId: null,
     selectedProfileAvatarId: null,
     selectedProfileBackgroundId: null,
     currentStreak: 0,
@@ -180,6 +181,9 @@ export function normalizeProfile(rawProfile) {
     totalWins: Math.max(0, Number.parseInt(raw.totalWins, 10) || 0),
     bonusStars: Math.max(0, Number.parseInt(raw.bonusStars, 10) || 0),
     inventory: normalizedInventory,
+    selectedCursorSkinId: normalizedInventory.cursorSkins.includes(raw.selectedCursorSkinId)
+      ? raw.selectedCursorSkinId
+      : null,
     selectedProfileAvatarId: normalizedInventory.profileAvatars.includes(raw.selectedProfileAvatarId)
       ? raw.selectedProfileAvatarId
       : null,

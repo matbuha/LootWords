@@ -186,6 +186,10 @@ function getDuplicateCoinAmount(type, rarity) {
     return PROFILE_COSMETIC_DUPLICATE_COIN_AMOUNTS[rarity] ?? COIN_REWARD_AMOUNTS.common;
   }
 
+  if (type === "cursor-skin") {
+    return PROFILE_COSMETIC_DUPLICATE_COIN_AMOUNTS[rarity] ?? COIN_REWARD_AMOUNTS.common;
+  }
+
   return null;
 }
 
@@ -196,6 +200,10 @@ function getAutoEquipFieldForType(type) {
 
   if (type === "profile-background") {
     return "selectedProfileBackgroundId";
+  }
+
+  if (type === "cursor-skin") {
+    return "selectedCursorSkinId";
   }
 
   return null;
