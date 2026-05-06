@@ -48,6 +48,7 @@ import { recordGameLoss, recordGameWin } from "./core/rewards.js";
 import { createRecaptchaManager } from "./core/recaptcha-manager.js";
 import { createSpeechManager } from "./core/speech-manager.js";
 import { createStore } from "./core/state.js";
+import { applyUiTheme } from "./core/theme-manager.js";
 import { createUiEffects } from "./core/ui-effects.js";
 import { updateAudioSettings, updateLanguageSettings, updateSpeechSettings } from "./core/settings-manager.js";
 import { getRandomGameId } from "./games/game-registry.js";
@@ -1512,6 +1513,7 @@ function renderApp() {
   try {
     languageManager.setLanguage(state.profile.settings.language);
     speech.setPreferredVoice(state.profile.settings.speech?.voiceURI ?? null);
+    applyUiTheme(state.profile);
     applyCursorSkin(state.profile);
     document.body.dataset.route = state.route.path;
 

@@ -159,10 +159,10 @@ These are optional contribution ideas. They should not replace the core vocabula
 
 ### Expand cosmetic and inventory application systems
 - Status: `Partial`
-- Why it matters: coins, stickers, cursor skins, profile avatars, and profile backgrounds are now real rewards, but players still need richer ways to browse, equip, spend, and value the broader cosmetic pool.
-- Idea: build the next layer for sticker browsing, manual cursor/avatar/background selection, theme packs, and fuller cosmetic inventory surfaces on top of the shipped loot inventory structure.
+- Why it matters: coins, stickers, cursor skins, UI theme packs, profile avatars, and profile backgrounds are now real rewards, but players still need richer ways to browse, equip, spend, and value the broader cosmetic pool.
+- Idea: build the next layer for sticker browsing, manual cursor/theme/avatar/background selection, and fuller cosmetic inventory surfaces on top of the shipped loot inventory structure.
 - Suggested area: inventory/profile UI, collection UI, future settings/equip surfaces
-- Notes: keep it modular. Coins, stickers, cursor skins, avatars, and backgrounds are already live reward types; this task is about application UX, not redoing reward generation.
+- Notes: keep it modular. Coins, stickers, cursor skins, theme packs, avatars, and backgrounds are already live reward types; this task is about application UX, not redoing reward generation.
 
 ### Improve collection browsing feel
 - Status: `Partial`

@@ -19,6 +19,7 @@ LootWords is an evolving MVP with a working core loop. It is no longer a bare pr
 - Centralized loot foundation with strict rarity weighting and reward-type separation
 - Multi-type reward inventory foundation for cards, coins, stickers, cursor skins, UI theme packs, profile backgrounds, and profile avatars
 - Real cursor-skin rewards with persisted ownership and minimal equipped-state support
+- Real UI-theme-pack rewards with persisted ownership, duplicate-to-coins handling, and minimal equipped-state support
 - Real profile-avatar and profile-background rewards with persisted ownership and minimal equipped-state support
 - Card speech for visible/open cards in English
 - Voice selection for English pronunciation when the browser exposes multiple English voices
@@ -62,10 +63,10 @@ LootWords is an evolving MVP with a working core loop. It is no longer a bare pr
   - rarity logic is now separated from reward-content selection
   - reward opening now uses a focused overlay cinematic with five taps, stronger tactile motion, rarity-tinted radial backgrounds, and a final jump-and-spin release
   - box opening now resolves through staged rarity-upgrade checks, resetting the five-tap cycle when an upgrade lands and delaying final reward resolution until the last stage locks in
-  - coins, stickers, cursor skins, profile avatars, and profile backgrounds are now real reward types with live reward reveal support and persisted balances/ownership
-  - duplicate sticker, cursor, avatar, and background rewards now convert into coins instead of creating duplicate inventory entries
-  - first-owned cursor skins, profile avatars, and backgrounds now auto-equip into minimal selected-state fields so later profile UI can build on real equipped data
-  - cursor skins now apply globally through a safe fine-pointer-only cursor layer, while theme packs still remain foundation-only and are not yet active in the live loot pool
+  - coins, stickers, cursor skins, UI theme packs, profile avatars, and profile backgrounds are now real reward types with live reward reveal support and persisted balances/ownership
+  - duplicate sticker, cursor, theme-pack, avatar, and background rewards now convert into coins instead of creating duplicate inventory entries
+  - first-owned cursor skins, theme packs, profile avatars, and backgrounds now auto-equip into minimal selected-state fields so later profile UI can build on real equipped data
+  - cursor skins now apply globally through a safe fine-pointer-only cursor layer, and theme packs now apply safe global CSS token overrides through a centralized theme manager
 - Tap the Word:
   - real playable MVP is in place
   - still open for distractor tuning, pacing tweaks, and stronger mobile optimization

@@ -14,6 +14,7 @@ import { FIREBASE_MODULE_URLS, loadFirebaseRuntimeConfig } from "./data/firebase
 import {
   createEmptyLootInventory,
   getKnownInventoryIds,
+  isRewardCatalogItemDefaultOwned,
   getRewardInventoryKey,
   REWARD_TYPE_META,
 } from "./data/loot.js";
@@ -119,6 +120,7 @@ export function createInitialProfile() {
     totalWins: 0,
     bonusStars: 0,
     inventory: createEmptyLootInventory(),
+    selectedUiThemePackId: "default",
     selectedCursorSkinId: null,
     selectedProfileAvatarId: null,
     selectedProfileBackgroundId: null,
@@ -181,6 +183,12 @@ export function normalizeProfile(rawProfile) {
     totalWins: Math.max(0, Number.parseInt(raw.totalWins, 10) || 0),
     bonusStars: Math.max(0, Number.parseInt(raw.bonusStars, 10) || 0),
     inventory: normalizedInventory,
+    selectedUiThemePackId:
+      raw.selectedUiThemePackId === "default" || isRewardCatalogItemDefaultOwned("ui-theme-pack", raw.selectedUiThemePackId)
+        ? "default"
+        : normalizedInventory.uiThemePacks.includes(raw.selectedUiThemePackId)
+          ? raw.selectedUiThemePackId
+          : fallback.selectedUiThemePackId,
     selectedCursorSkinId: normalizedInventory.cursorSkins.includes(raw.selectedCursorSkinId)
       ? raw.selectedCursorSkinId
       : null,

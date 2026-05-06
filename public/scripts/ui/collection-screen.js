@@ -14,8 +14,10 @@ export function renderCollectionScreen(container, { cards, filters, progress, ac
   const coinBalance = profile?.coins ?? 0;
   const stickerCount = profile?.inventory?.stickers?.length ?? 0;
   const cursorSkinCount = profile?.inventory?.cursorSkins?.length ?? 0;
+  const themePackCount = profile?.inventory?.uiThemePacks?.length ?? 0;
   const avatarCount = profile?.inventory?.profileAvatars?.length ?? 0;
   const backgroundCount = profile?.inventory?.profileBackgrounds?.length ?? 0;
+  const equippedThemePack = getRewardCatalogItem("ui-theme-pack", profile?.selectedUiThemePackId ?? "default");
   const equippedCursorSkin = getRewardCatalogItem("cursor-skin", profile?.selectedCursorSkinId);
   const equippedAvatar = getRewardCatalogItem("profile-avatar", profile?.selectedProfileAvatarId);
   const equippedBackground = getRewardCatalogItem("profile-background", profile?.selectedProfileBackgroundId);
@@ -67,6 +69,11 @@ export function renderCollectionScreen(container, { cards, filters, progress, ac
           <small>${t("collection.cursorSkinInventoryNote")}</small>
         </article>
         <article class="stat-card">
+          <span>${t("collection.themePacksOwned")}</span>
+          <strong data-count-to="${themePackCount}" data-count-key="collection-theme-packs">${themePackCount}</strong>
+          <small>${t("collection.themePackInventoryNote")}</small>
+        </article>
+        <article class="stat-card">
           <span>${t("collection.avatarsOwned")}</span>
           <strong data-count-to="${avatarCount}" data-count-key="collection-avatars">${avatarCount}</strong>
           <small>${t("collection.avatarInventoryNote")}</small>
@@ -83,6 +90,10 @@ export function renderCollectionScreen(container, { cards, filters, progress, ac
           <span class="small-label">${t("collection.profileCosmetics")}</span>
           <h3 class="section-title">${t("collection.currentProfileStyle")}</h3>
           <div class="collection-profile-cosmetics__grid">
+            <div class="collection-profile-cosmetics__slot">
+              <span>${t("collection.equippedThemePack")}</span>
+              <strong>${equippedThemePack ? `${equippedThemePack.icon ?? "✨"} ${escapeHtml(equippedThemePack.label)}` : t("collection.noneEquipped")}</strong>
+            </div>
             <div class="collection-profile-cosmetics__slot">
               <span>${t("collection.equippedCursorSkin")}</span>
               <strong>${equippedCursorSkin ? `${equippedCursorSkin.icon ?? "🖱️"} ${escapeHtml(equippedCursorSkin.label)}` : t("collection.noneEquipped")}</strong>

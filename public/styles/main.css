@@ -17,6 +17,11 @@
   --mint: #52f1cb;
   --rose: #ff7b8d;
   --sky: #53c4ff;
+  --bg-glow-gold: rgba(255, 201, 79, 0.24);
+  --bg-glow-mint: rgba(82, 241, 203, 0.15);
+  --bg-glow-sky: rgba(83, 196, 255, 0.14);
+  --bg-orb-top: rgba(255, 201, 79, 0.18);
+  --bg-orb-bottom: rgba(82, 241, 203, 0.14);
   --shadow: 0 22px 48px rgba(9, 7, 20, 0.36);
   --radius-xl: 32px;
   --radius-lg: 24px;
@@ -42,9 +47,9 @@ body {
 body {
   font-family: "DM Sans", sans-serif;
   background:
-    radial-gradient(circle at 10% 10%, rgba(255, 201, 79, 0.24), transparent 24%),
-    radial-gradient(circle at 88% 18%, rgba(82, 241, 203, 0.15), transparent 22%),
-    radial-gradient(circle at 88% 82%, rgba(83, 196, 255, 0.14), transparent 18%),
+    radial-gradient(circle at 10% 10%, var(--bg-glow-gold), transparent 24%),
+    radial-gradient(circle at 88% 18%, var(--bg-glow-mint), transparent 22%),
+    radial-gradient(circle at 88% 82%, var(--bg-glow-sky), transparent 18%),
     linear-gradient(180deg, var(--bg-2) 0%, var(--bg-1) 48%, var(--bg-0) 100%);
   color: var(--text-main);
   overflow-x: hidden;
@@ -65,7 +70,7 @@ body::before {
   right: -7rem;
   width: 20rem;
   height: 20rem;
-  background: rgba(255, 201, 79, 0.18);
+  background: var(--bg-orb-top);
 }
 
 body::after {
@@ -73,7 +78,7 @@ body::after {
   left: -8rem;
   width: 26rem;
   height: 26rem;
-  background: rgba(82, 241, 203, 0.14);
+  background: var(--bg-orb-bottom);
 }
 
 button,

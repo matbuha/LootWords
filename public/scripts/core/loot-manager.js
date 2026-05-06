@@ -91,7 +91,7 @@ function buildInventoryCandidates(profile) {
       const ownedItems = new Set(inventory[inventoryKey] ?? []);
 
       return getRewardCatalog(type)
-        .filter((item) => !ownedItems.has(item.id))
+        .filter((item) => !item.defaultOwned && !ownedItems.has(item.id))
         .map((item) => ({
           type,
           rarity: item.rarity,
@@ -190,6 +190,10 @@ function getDuplicateCoinAmount(type, rarity) {
     return PROFILE_COSMETIC_DUPLICATE_COIN_AMOUNTS[rarity] ?? COIN_REWARD_AMOUNTS.common;
   }
 
+  if (type === "ui-theme-pack") {
+    return PROFILE_COSMETIC_DUPLICATE_COIN_AMOUNTS[rarity] ?? COIN_REWARD_AMOUNTS.common;
+  }
+
   return null;
 }
 
@@ -204,6 +208,10 @@ function getAutoEquipFieldForType(type) {
 
   if (type === "cursor-skin") {
     return "selectedCursorSkinId";
+  }
+
+  if (type === "ui-theme-pack") {
+    return "selectedUiThemePackId";
   }
 
   return null;
@@ -393,7 +401,9 @@ export function applyLootReward(profile, reward) {
   const nextItems = uniqueList([...existingItems, reward.itemId]);
   const autoEquipField = getAutoEquipFieldForType(reward.type);
   const nextEquippedValue =
-    autoEquipField && !nextProfile[autoEquipField] ? reward.itemId : nextProfile[autoEquipField];
+    autoEquipField && (!nextProfile[autoEquipField] || nextProfile[autoEquipField] === "default")
+      ? reward.itemId
+      : nextProfile[autoEquipField];
   const profileUpdates = autoEquipField
     ? { [autoEquipField]: nextEquippedValue }
     : {};

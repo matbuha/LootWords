@@ -699,6 +699,14 @@ Latest prompt: Prepare the authentication flow for reCAPTCHA with a real integra
   - reward reveal now renders explicit cursor-skin reward states and duplicate-conversion states
   - collection now shows cursor-skin ownership counts plus the currently equipped cursor preview
   - verified reward application, collection rendering, reward rendering, and live cursor application on reload without console errors
+- 2026-05-06: Added UI-theme-pack foundation on top of the live loot pipeline:
+  - UI theme packs are now real live reward types with a starter catalog: `default`, `jungle`, `desert`, `cave`, `volcano`, and `dragon`
+  - duplicate UI-theme-pack rewards now convert into coins instead of creating duplicate ownership entries
+  - profile persistence now includes `selectedUiThemePackId`, with `default` available to everyone and the first owned non-default theme auto-equipping
+  - a new centralized `theme-manager.js` applies the equipped theme as safe global CSS-token overrides without redesigning every screen
+  - reward reveal now renders explicit UI-theme-pack reward states and duplicate-conversion states
+  - collection now shows theme-pack ownership counts plus the currently equipped theme preview
+  - verified reward application, collection rendering, reward rendering, and live theme-token application on reload without console errors
 
 ## Notes
 

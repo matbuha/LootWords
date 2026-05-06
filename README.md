@@ -51,12 +51,15 @@ Use these docs before starting work:
   - coins
   - stickers
   - cursor skins
+  - UI theme packs
   - profile avatars
   - profile backgrounds
 - Duplicate sticker rewards safely convert into coins instead of creating duplicate ownership entries
 - Duplicate cursor-skin rewards safely convert into coins instead of creating duplicate ownership entries
+- Duplicate UI-theme-pack rewards safely convert into coins instead of creating duplicate ownership entries
 - Duplicate profile avatar and background rewards safely convert into coins instead of creating duplicate ownership entries
 - Minimal equipped-state foundation for:
+  - selected UI theme pack
   - selected cursor skin
   - selected profile avatar
   - selected profile background
@@ -151,6 +154,7 @@ Notes:
 - `public/scripts/data/`: cards, categories, config, and translations
 - `public/scripts/core/loot-manager.js`: centralized loot generation and reward application
 - `public/scripts/data/loot.js`: reward-type catalogs, rarity weights, and inventory foundations
+- `public/scripts/core/theme-manager.js`: centralized equipped theme resolution and global CSS token application
 - `public/scripts/core/auth-manager.js`: centralized Firebase auth bootstrap and session handling
 - `public/scripts/core/daily-challenge-manager.js`: deterministic daily challenge generation, per-user daily state, and daily reward idempotency
 - `public/firebase-config.js`: browser-served Firebase web config used by the running app
