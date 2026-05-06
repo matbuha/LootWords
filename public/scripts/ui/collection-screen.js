@@ -1,8 +1,64 @@
 import { CATEGORY_META, COLLECTION_SORTS, DIFFICULTY_META, PACK_META, RARITY_META } from "../data/config.js";
-import { getRewardCatalogItem } from "../data/loot.js";
+import { getRewardCatalog, getRewardCatalogItem } from "../data/loot.js";
 import { categoryLabel, collectionSortLabel, difficultyLabel, formatDate, packLabel, rarityLabel, t } from "../core/i18n.js";
 import { getCollectionSections } from "../core/progression.js";
 import { renderCard, renderDetailCard, renderEmptyState, escapeHtml, formatPoints } from "./ui-kit.js";
+
+function getThemePreviewToken(themePack, key, fallback) {
+  return themePack?.themeTokens?.[key] ?? fallback;
+}
+
+function buildThemePreviewStyle(themePack) {
+  return [
+    `--theme-preview-bg-0:${getThemePreviewToken(themePack, "--bg-0", "#0d0a21")}`,
+    `--theme-preview-bg-1:${getThemePreviewToken(themePack, "--bg-1", "#161036")}`,
+    `--theme-preview-bg-2:${getThemePreviewToken(themePack, "--bg-2", "#24145f")}`,
+    `--theme-preview-panel:${getThemePreviewToken(themePack, "--panel-strong", "rgba(39, 28, 90, 0.96)")}`,
+    `--theme-preview-accent:${getThemePreviewToken(themePack, "--accent-cyan", "#53c4ff")}`,
+    `--theme-preview-accent-2:${getThemePreviewToken(themePack, "--accent-gold", "#ffc94f")}`,
+    `--theme-preview-button-a:${getThemePreviewToken(themePack, "--button-primary-a", "#ffe077")}`,
+    `--theme-preview-button-b:${getThemePreviewToken(themePack, "--button-primary-b", "#ffa04e")}`,
+  ].join(";");
+}
+
+function renderThemePackCard(themePack, { owned, equipped }) {
+  const actionLabel = equipped
+    ? t("collection.themeEquippedAction")
+    : owned
+      ? t("collection.equipTheme")
+      : t("collection.themeLockedAction");
+  const availabilityLabel = themePack.defaultOwned
+    ? t("collection.themeAlwaysReady")
+    : owned
+      ? t("collection.themeOwnedState")
+      : t("collection.themeLockedState");
+
+  return `
+    <article class="theme-pack-card ${owned ? "" : "is-locked"} ${equipped ? "is-equipped" : ""}" data-rarity="${escapeHtml(themePack.rarity)}">
+      <div class="theme-pack-card__preview" style="${buildThemePreviewStyle(themePack)}">
+        <div class="theme-pack-card__preview-panel" aria-hidden="true"></div>
+        <div class="theme-pack-card__preview-chip" aria-hidden="true"></div>
+        <div class="theme-pack-card__preview-button" aria-hidden="true"></div>
+      </div>
+      <div class="theme-pack-card__topline">
+        <strong>${themePack.icon ?? "✨"} ${escapeHtml(themePack.label)}</strong>
+        <span class="rarity-badge">${rarityLabel(themePack.rarity)}</span>
+      </div>
+      <p class="section-copy">${escapeHtml(themePack.preview ?? "")}</p>
+      <div class="theme-pack-card__footer">
+        <span class="card-category">${availabilityLabel}</span>
+        <button
+          class="${equipped ? "secondary-button" : "primary-button"} theme-pack-card__action"
+          type="button"
+          data-equip-theme-pack="${escapeHtml(themePack.id)}"
+          ${owned ? "" : "disabled"}
+        >
+          ${actionLabel}
+        </button>
+      </div>
+    </article>
+  `;
+}
 
 export function renderCollectionScreen(container, { cards, filters, progress, actions, modalCard, profile }) {
   const collectionSections = getCollectionSections(cards, filters);
@@ -15,6 +71,8 @@ export function renderCollectionScreen(container, { cards, filters, progress, ac
   const stickerCount = profile?.inventory?.stickers?.length ?? 0;
   const cursorSkinCount = profile?.inventory?.cursorSkins?.length ?? 0;
   const themePackCount = profile?.inventory?.uiThemePacks?.length ?? 0;
+  const themePacks = getRewardCatalog("ui-theme-pack");
+  const ownedThemeIds = new Set(profile?.inventory?.uiThemePacks ?? []);
   const avatarCount = profile?.inventory?.profileAvatars?.length ?? 0;
   const backgroundCount = profile?.inventory?.profileBackgrounds?.length ?? 0;
   const equippedThemePack = getRewardCatalogItem("ui-theme-pack", profile?.selectedUiThemePackId ?? "default");
@@ -110,6 +168,25 @@ export function renderCollectionScreen(container, { cards, filters, progress, ac
           <p class="section-copy">${t("collection.profileCosmeticsNote")}</p>
         </article>
       </div>
+
+      <section class="theme-pack-gallery-panel celebration-card">
+        <div class="screen-header screen-header--compact">
+          <div>
+            <span class="small-label">${t("collection.themeGalleryEyebrow")}</span>
+            <h3 class="section-title">${t("collection.themeGalleryTitle")}</h3>
+          </div>
+          <p class="screen-note">${t("collection.themeGalleryBody")}</p>
+        </div>
+        <div class="theme-pack-gallery">
+          ${themePacks
+            .map((themePack) =>
+              renderThemePackCard(themePack, {
+                owned: themePack.defaultOwned || ownedThemeIds.has(themePack.id),
+                equipped: equippedThemePack?.id === themePack.id,
+              }))
+            .join("")}
+        </div>
+      </section>
 
       <div class="pack-rack">
         ${progress.packCounts
@@ -293,6 +370,14 @@ export function renderCollectionScreen(container, { cards, filters, progress, ac
   container.querySelectorAll("[data-card-id]").forEach((button) => {
     button.addEventListener("click", () => {
       actions.openCardModal(button.dataset.cardId);
+    });
+  });
+
+  container.querySelectorAll("[data-equip-theme-pack]").forEach((button) => {
+    button.addEventListener("click", () => {
+      if (!button.disabled) {
+        actions.equipUiThemePack(button.dataset.equipThemePack);
+      }
     });
   });
 

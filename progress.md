@@ -707,6 +707,11 @@ Latest prompt: Prepare the authentication flow for reCAPTCHA with a real integra
   - reward reveal now renders explicit UI-theme-pack reward states and duplicate-conversion states
   - collection now shows theme-pack ownership counts plus the currently equipped theme preview
   - verified reward application, collection rendering, reward rendering, and live theme-token application on reload without console errors
+- 2026-05-06: Upgraded theme packs from foundation-only to a usable MVP:
+  - Collection now shows all six starter theme packs with lightweight visual previews
+  - owned themes can be equipped directly from Collection, while locked themes stay visible but non-interactive
+  - equipped themes now recolor shared UI surfaces more clearly, including global backgrounds, panel gradients, buttons, reward accents, and safe card-atmosphere tokens
+  - verified desktop equip flow in English and a narrow Hebrew mobile viewport with no console errors or horizontal overflow after persistence finished loading
 
 ## Notes
 

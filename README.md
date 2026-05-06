@@ -63,6 +63,10 @@ Use these docs before starting work:
   - selected cursor skin
   - selected profile avatar
   - selected profile background
+- Usable theme-pack MVP:
+  - Collection now previews all six starter themes
+  - owned themes can be equipped directly from Collection
+  - the equipped theme safely updates shared global UI tokens
 - Collectible English noun cards with persisted random points and the current six-tier rarity model:
   - common
   - uncommon

@@ -67,6 +67,7 @@ LootWords is an evolving MVP with a working core loop. It is no longer a bare pr
   - duplicate sticker, cursor, theme-pack, avatar, and background rewards now convert into coins instead of creating duplicate inventory entries
   - first-owned cursor skins, theme packs, profile avatars, and backgrounds now auto-equip into minimal selected-state fields so later profile UI can build on real equipped data
   - cursor skins now apply globally through a safe fine-pointer-only cursor layer, and theme packs now apply safe global CSS token overrides through a centralized theme manager
+  - Collection now exposes a minimal theme-pack picker with preview cards and direct equip buttons for owned themes, while locked themes remain visible but non-interactive
 - Tap the Word:
   - real playable MVP is in place
   - still open for distractor tuning, pacing tweaks, and stronger mobile optimization

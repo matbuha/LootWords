@@ -7,6 +7,7 @@ import {
   ROUTE_SEQUENCE,
 } from "./data/config.js";
 import { getCardById, hydrateCards } from "./data/cards.js";
+import { getRewardCatalogItem } from "./data/loot.js";
 import { createAudioManager } from "./core/audio-manager.js";
 import { createAuthManager } from "./core/auth-manager.js";
 import { createDailyChallengeManager } from "./core/daily-challenge-manager.js";
@@ -1015,6 +1016,30 @@ const actions = {
         },
       },
     }));
+  },
+  equipUiThemePack(themePackId) {
+    feedback.trigger(FEEDBACK_EVENTS.buttonClick);
+    commitState((currentState) => {
+      const canEquip =
+        themePackId === "default"
+        || currentState.profile.inventory?.uiThemePacks?.includes(themePackId);
+
+      if (!canEquip || !getRewardCatalogItem("ui-theme-pack", themePackId)) {
+        return currentState;
+      }
+
+      if (currentState.profile.selectedUiThemePackId === themePackId) {
+        return currentState;
+      }
+
+      return {
+        ...currentState,
+        profile: {
+          ...currentState.profile,
+          selectedUiThemePackId: themePackId,
+        },
+      };
+    });
   },
   updateLearnFilters(partialFilters) {
     feedback.trigger(FEEDBACK_EVENTS.filterChange);
