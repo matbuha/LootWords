@@ -717,6 +717,10 @@ Latest prompt: Prepare the authentication flow for reCAPTCHA with a real integra
   - added a centralized `shop-manager.js` that blocks guest purchases, blocks insufficient balances, blocks duplicate unique ownership, and deducts coins without allowing negative balances
   - Collection now shows a minimal auth-only shop panel with locked guest CTA state and direct purchase buttons for authenticated users
   - verified guest lock state, authenticated purchase success, coin deduction, owned-state transition, and logout reset in a real browser flow
+- 2026-05-06: Ran a rewards-branch QA and stabilization pass:
+  - fixed the centralized loot pipeline so guest box openings no longer roll account-owned reward types like coins, stickers, cursor skins, theme packs, avatars, or backgrounds
+  - verified reward generation coverage, duplicate-to-coin handling, box-opening stage progression, guest reward-room flow, reward reveal rendering for all shipped reward types, and auth-isolated shop/account state across two different users
+  - re-verified theme and cursor application safety so theme tokens still apply globally while custom cursors stay off coarse/touch pointer environments
 
 ## Notes
 

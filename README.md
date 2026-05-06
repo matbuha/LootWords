@@ -67,6 +67,9 @@ Use these docs before starting work:
   - centralized shop catalog with price, availability, owned-state, and purchasable-state metadata
   - minimal Collection-screen shop panel for stickers, cursor skins, avatars, backgrounds, and theme packs
   - purchases deduct coins safely, block guests, block insufficient balances, and block duplicate unique ownership
+- Guest reward openings now resolve only to guest-safe outcomes:
+  - account-owned reward types stay in the authenticated-only reward pool
+  - guest loot boxes can still award cards and guest-safe fallback outcomes without leaking account inventory behavior
 - Usable theme-pack MVP:
   - Collection now previews all six starter themes
   - owned themes can be equipped directly from Collection

@@ -22,6 +22,7 @@ LootWords is an evolving MVP with a working core loop. It is no longer a bare pr
 - Real UI-theme-pack rewards with persisted ownership, duplicate-to-coins handling, and minimal equipped-state support
 - Real profile-avatar and profile-background rewards with persisted ownership and minimal equipped-state support
 - Auth-only coin shop foundation with a centralized catalog, minimal Collection-screen purchase UI, and safe owned/insufficient/locked states
+- Guest loot boxes now stay on guest-safe reward outcomes only; account-owned reward types remain in the authenticated-only reward pool
 - Card speech for visible/open cards in English
 - Voice selection for English pronunciation when the browser exposes multiple English voices
 - Firebase Authentication with guest fallback, auth modal UI, session bootstrap, and logout flow
@@ -70,6 +71,7 @@ LootWords is an evolving MVP with a working core loop. It is no longer a bare pr
   - cursor skins now apply globally through a safe fine-pointer-only cursor layer, and theme packs now apply safe global CSS token overrides through a centralized theme manager
   - Collection now exposes a minimal theme-pack picker with preview cards and direct equip buttons for owned themes, while locked themes remain visible but non-interactive
   - Collection now also exposes a minimal auth-only coin shop backed by centralized purchase validation and user-specific inventory writes
+  - guest box openings no longer roll coins, stickers, cursor skins, theme packs, avatars, or backgrounds; those reward types now stay behind authenticated inventory ownership
 - Tap the Word:
   - real playable MVP is in place
   - still open for distractor tuning, pacing tweaks, and stronger mobile optimization

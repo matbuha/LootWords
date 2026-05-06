@@ -72,7 +72,11 @@ function buildDuplicateCandidates(cards, parentSettings) {
     }));
 }
 
-function buildCoinsCandidates() {
+function buildCoinsCandidates({ allowAccountInventoryRewards = true } = {}) {
+  if (!allowAccountInventoryRewards) {
+    return [];
+  }
+
   return Object.entries(COIN_REWARD_AMOUNTS).map(([rarity, amount]) => ({
     type: "coins",
     rarity,
@@ -81,7 +85,11 @@ function buildCoinsCandidates() {
   }));
 }
 
-function buildInventoryCandidates(profile) {
+function buildInventoryCandidates(profile, { allowAccountInventoryRewards = true } = {}) {
+  if (!allowAccountInventoryRewards) {
+    return [];
+  }
+
   const inventory = profile.inventory ?? createEmptyLootInventory();
 
   return Object.keys(REWARD_TYPE_META)
@@ -103,11 +111,11 @@ function buildInventoryCandidates(profile) {
     });
 }
 
-function buildCandidates({ profile, cards, parentSettings }) {
+function buildCandidates({ profile, cards, parentSettings, allowAccountInventoryRewards = true }) {
   return [
     ...buildCardCandidates(cards),
-    ...buildCoinsCandidates(),
-    ...buildInventoryCandidates(profile),
+    ...buildCoinsCandidates({ allowAccountInventoryRewards }),
+    ...buildInventoryCandidates(profile, { allowAccountInventoryRewards }),
     ...buildDuplicateCandidates(cards, parentSettings),
   ];
 }
@@ -232,8 +240,14 @@ function createFallbackReward(parentSettings) {
   };
 }
 
-export function generateLootReward({ profile, cards, parentSettings, random = Math.random }) {
-  const candidates = buildCandidates({ profile, cards, parentSettings });
+export function generateLootReward({
+  profile,
+  cards,
+  parentSettings,
+  random = Math.random,
+  allowAccountInventoryRewards = true,
+}) {
+  const candidates = buildCandidates({ profile, cards, parentSettings, allowAccountInventoryRewards });
   if (!candidates.length) {
     return createFallbackReward(parentSettings);
   }
@@ -253,8 +267,9 @@ export function getAvailableLootRarityWeights({
   cards,
   parentSettings,
   weightSource = LOOT_RARITY_WEIGHTS,
+  allowAccountInventoryRewards = true,
 }) {
-  const candidates = buildCandidates({ profile, cards, parentSettings });
+  const candidates = buildCandidates({ profile, cards, parentSettings, allowAccountInventoryRewards });
   return createAvailableRarityWeights(candidates, weightSource);
 }
 
@@ -264,8 +279,9 @@ export function generateLootRewardForRarity({
   parentSettings,
   rarity,
   random = Math.random,
+  allowAccountInventoryRewards = true,
 }) {
-  const candidates = buildCandidates({ profile, cards, parentSettings });
+  const candidates = buildCandidates({ profile, cards, parentSettings, allowAccountInventoryRewards });
   if (!candidates.length) {
     return createFallbackReward(parentSettings);
   }

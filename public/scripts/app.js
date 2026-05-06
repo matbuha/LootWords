@@ -1124,7 +1124,7 @@ const actions = {
     }));
   },
   tapRewardBox() {
-    const { profile, session } = store.getState();
+    const { profile, session, auth } = store.getState();
     if (profile.rewardBoxes <= 0 || session.reward.reveal || session.reward.phase === "opening") {
       return;
     }
@@ -1153,6 +1153,7 @@ const actions = {
       profile,
       cards: activeCards,
       opening: session.reward.opening,
+      allowAccountInventoryRewards: auth.mode === "authenticated",
     });
 
     if (openingResult.status === "blocked") {

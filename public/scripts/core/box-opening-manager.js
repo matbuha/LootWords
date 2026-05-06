@@ -43,7 +43,12 @@ export function createEmptyBoxOpeningState() {
   return null;
 }
 
-export function beginBoxOpeningSession({ profile, cards, random = Math.random }) {
+export function beginBoxOpeningSession({
+  profile,
+  cards,
+  random = Math.random,
+  allowAccountInventoryRewards = true,
+}) {
   if (profile.rewardBoxes <= 0) {
     return {
       status: "empty",
@@ -66,6 +71,7 @@ export function beginBoxOpeningSession({ profile, cards, random = Math.random })
     cards,
     parentSettings,
     weightSource: LOOT_BOX_BASE_RARITY_WEIGHTS,
+    allowAccountInventoryRewards,
   });
   const baseRarity = pickWeightedRarity(availableRarityWeights, random());
 
@@ -81,9 +87,10 @@ export function advanceBoxOpeningSession({
   cards,
   opening,
   random = Math.random,
+  allowAccountInventoryRewards = true,
 }) {
   if (!opening) {
-    const started = beginBoxOpeningSession({ profile, cards, random });
+    const started = beginBoxOpeningSession({ profile, cards, random, allowAccountInventoryRewards });
     if (started.status !== "started") {
       return started;
     }
@@ -93,6 +100,7 @@ export function advanceBoxOpeningSession({
       cards,
       opening: started.opening,
       random,
+      allowAccountInventoryRewards,
     });
   }
 
@@ -117,6 +125,7 @@ export function advanceBoxOpeningSession({
     cards,
     parentSettings,
     weightSource: LOOT_BOX_BASE_RARITY_WEIGHTS,
+    allowAccountInventoryRewards,
   });
   const upgradeTarget = getNextAvailableRarity(opening.currentRarity, availableRarityWeights);
   const upgradeChance = LOOT_BOX_UPGRADE_CHANCES[opening.currentRarity] ?? 0;
@@ -155,6 +164,7 @@ export function advanceBoxOpeningSession({
     parentSettings,
     rarity: opening.currentRarity,
     random,
+    allowAccountInventoryRewards,
   });
   const applied = applyLootReward(baseProfile, reward);
 
