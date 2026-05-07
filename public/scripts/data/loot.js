@@ -1,3 +1,11 @@
+import {
+  REWARD_RARITY_ORDER,
+  getCoinRewardAmount,
+  getDuplicateConversionAmount,
+  getRewardBalance,
+  getRewardTypeWeights,
+} from "./reward-balance.js";
+
 export const REWARD_TYPE_META = Object.freeze({
   card: {
     labelKey: "reward.types.card",
@@ -43,104 +51,37 @@ export const REWARD_TYPE_META = Object.freeze({
   },
 });
 
-export const LOOT_RARITY_WEIGHTS = Object.freeze({
-  common: 7200,
-  uncommon: 1800,
-  rare: 700,
-  mythic: 120,
-  epic: 150,
-  legend: 30,
-});
+const BALANCE = getRewardBalance();
 
-export const LOOT_BOX_BASE_RARITY_WEIGHTS = Object.freeze({
-  common: 7800,
-  uncommon: 1700,
-  rare: 420,
-  mythic: 60,
-  epic: 18,
-  legend: 2,
-});
-
-export const LOOT_BOX_UPGRADE_CHANCES = Object.freeze({
-  common: 1500,
-  uncommon: 550,
-  rare: 110,
-  mythic: 24,
-  epic: 4,
-  legend: 0,
-});
-
-export const LOOT_TYPE_WEIGHTS_BY_RARITY = Object.freeze({
-  common: Object.freeze({
-    card: 94,
-    coins: 6,
-  }),
-  uncommon: Object.freeze({
-    card: 84,
-    coins: 10,
-    sticker: 6,
-  }),
-  rare: Object.freeze({
-    card: 70,
-    coins: 12,
-    sticker: 8,
-    "profile-avatar": 6,
-    "cursor-skin": 4,
-  }),
-  mythic: Object.freeze({
-    card: 38,
-    coins: 10,
-    sticker: 8,
-    "profile-avatar": 12,
-    "cursor-skin": 12,
-    "profile-background": 10,
-    "ui-theme-pack": 10,
-  }),
-  epic: Object.freeze({
-    card: 50,
-    coins: 12,
-    sticker: 10,
-    "profile-avatar": 8,
-    "cursor-skin": 8,
-    "profile-background": 6,
-    "ui-theme-pack": 6,
-  }),
-  legend: Object.freeze({
-    card: 24,
-    coins: 8,
-    sticker: 8,
-    "profile-avatar": 16,
-    "cursor-skin": 16,
-    "profile-background": 14,
-    "ui-theme-pack": 14,
-  }),
-});
-
-export const COIN_REWARD_AMOUNTS = Object.freeze({
-  common: 25,
-  uncommon: 50,
-  rare: 90,
-  mythic: 160,
-  epic: 260,
-  legend: 500,
-});
-
+export const LOOT_RARITY_WEIGHTS = Object.freeze({ ...BALANCE.rarityWeights });
+export const LOOT_BOX_BASE_RARITY_WEIGHTS = Object.freeze({ ...BALANCE.boxBaseRarityWeights });
+export const LOOT_BOX_UPGRADE_CHANCES = Object.freeze({ ...BALANCE.boxUpgradeChances });
+export const LOOT_TYPE_WEIGHTS_BY_RARITY = Object.freeze(
+  Object.fromEntries(
+    REWARD_RARITY_ORDER.map((rarity) => [rarity, Object.freeze({ ...getRewardTypeWeights(rarity) })]),
+  ),
+);
+export const COIN_REWARD_AMOUNTS = Object.freeze(
+  REWARD_RARITY_ORDER.reduce((accumulator, rarity) => {
+    accumulator[rarity] = getCoinRewardAmount(rarity);
+    return accumulator;
+  }, {}),
+);
 export const STICKER_DUPLICATE_COIN_AMOUNTS = Object.freeze({
-  common: 15,
-  uncommon: 28,
-  rare: 55,
-  mythic: 95,
-  epic: 150,
-  legend: 260,
+  common: getDuplicateConversionAmount("sticker", "common"),
+  uncommon: getDuplicateConversionAmount("sticker", "uncommon"),
+  rare: getDuplicateConversionAmount("sticker", "rare"),
+  mythic: getDuplicateConversionAmount("sticker", "mythic"),
+  epic: getDuplicateConversionAmount("sticker", "epic"),
+  legend: getDuplicateConversionAmount("sticker", "legend"),
 });
-
 export const PROFILE_COSMETIC_DUPLICATE_COIN_AMOUNTS = Object.freeze({
-  common: 20,
-  uncommon: 35,
-  rare: 80,
-  mythic: 140,
-  epic: 220,
-  legend: 380,
+  common: getDuplicateConversionAmount("ui-theme-pack", "common"),
+  uncommon: getDuplicateConversionAmount("ui-theme-pack", "uncommon"),
+  rare: getDuplicateConversionAmount("ui-theme-pack", "rare"),
+  mythic: getDuplicateConversionAmount("ui-theme-pack", "mythic"),
+  epic: getDuplicateConversionAmount("ui-theme-pack", "epic"),
+  legend: getDuplicateConversionAmount("ui-theme-pack", "legend"),
 });
 
 const RAW_REWARD_ITEM_LIBRARY = Object.freeze({

@@ -1,8 +1,8 @@
 import { BOX_TAP_COUNT, RARITY_ORDER } from "../data/config.js";
-import { LOOT_BOX_BASE_RARITY_WEIGHTS, LOOT_BOX_UPGRADE_CHANCES } from "../data/loot.js";
 import { applyLootReward, generateLootRewardForRarity, getAvailableLootRarityWeights } from "./loot-manager.js";
 import { getParentSettings } from "./parent-mode.js";
 import { pickWeightedRarity } from "./rarity.js";
+import { getBoxBaseRarityWeights, getBoxUpgradeChance } from "../data/reward-balance.js";
 
 function getNextAvailableRarity(currentRarity, availableRarityWeights) {
   const currentIndex = Math.max(0, RARITY_ORDER.indexOf(currentRarity));
@@ -70,7 +70,9 @@ export function beginBoxOpeningSession({
     profile,
     cards,
     parentSettings,
-    weightSource: LOOT_BOX_BASE_RARITY_WEIGHTS,
+    weightSource: getBoxBaseRarityWeights({
+      rewardBoxesOpened: profile.rewardBoxesOpened,
+    }),
     allowAccountInventoryRewards,
   });
   const baseRarity = pickWeightedRarity(availableRarityWeights, random());
@@ -124,11 +126,15 @@ export function advanceBoxOpeningSession({
     profile,
     cards,
     parentSettings,
-    weightSource: LOOT_BOX_BASE_RARITY_WEIGHTS,
+    weightSource: getBoxBaseRarityWeights({
+      rewardBoxesOpened: profile.rewardBoxesOpened,
+    }),
     allowAccountInventoryRewards,
   });
   const upgradeTarget = getNextAvailableRarity(opening.currentRarity, availableRarityWeights);
-  const upgradeChance = LOOT_BOX_UPGRADE_CHANCES[opening.currentRarity] ?? 0;
+  const upgradeChance = getBoxUpgradeChance(opening.currentRarity, {
+    rewardBoxesOpened: profile.rewardBoxesOpened,
+  });
   const upgradeRolled = upgradeTarget ? random() * 10000 < upgradeChance : false;
 
   if (upgradeRolled && upgradeTarget) {

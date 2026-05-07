@@ -1,16 +1,18 @@
 import { FALLBACK_STARS, RARITY_ORDER } from "../data/config.js";
 import {
-  COIN_REWARD_AMOUNTS,
   createEmptyLootInventory,
   getRewardCatalog,
   getRewardCatalogItem,
   getRewardInventoryKey,
-  LOOT_RARITY_WEIGHTS,
   LOOT_TYPE_WEIGHTS_BY_RARITY,
-  PROFILE_COSMETIC_DUPLICATE_COIN_AMOUNTS,
   REWARD_TYPE_META,
-  STICKER_DUPLICATE_COIN_AMOUNTS,
 } from "../data/loot.js";
+import {
+  getCoinRewardAmount,
+  getDuplicateConversionAmount,
+  getRewardTypeWeights,
+  getBoxBaseRarityWeights,
+} from "../data/reward-balance.js";
 import { pickWeightedRarity } from "./rarity.js";
 
 function uniqueList(items) {
@@ -77,11 +79,11 @@ function buildCoinsCandidates({ allowAccountInventoryRewards = true } = {}) {
     return [];
   }
 
-  return Object.entries(COIN_REWARD_AMOUNTS).map(([rarity, amount]) => ({
+  return Object.keys(getBoxBaseRarityWeights()).map((rarity) => ({
     type: "coins",
     rarity,
     itemId: `${rarity}-coins`,
-    amount,
+    amount: getCoinRewardAmount(rarity),
   }));
 }
 
@@ -120,7 +122,7 @@ function buildCandidates({ profile, cards, parentSettings, allowAccountInventory
   ];
 }
 
-function createAvailableRarityWeights(candidates, weightSource = LOOT_RARITY_WEIGHTS) {
+function createAvailableRarityWeights(candidates, weightSource = getBoxBaseRarityWeights()) {
   return RARITY_ORDER.reduce((weights, rarity) => {
     if (candidates.some((candidate) => candidate.rarity === rarity)) {
       weights[rarity] = weightSource[rarity] ?? 0;
@@ -131,7 +133,7 @@ function createAvailableRarityWeights(candidates, weightSource = LOOT_RARITY_WEI
 
 function getTypeWeightsForRarity(rarity, candidates) {
   const availableTypes = new Set(candidates.filter((candidate) => candidate.rarity === rarity).map((candidate) => candidate.type));
-  const configuredWeights = LOOT_TYPE_WEIGHTS_BY_RARITY[rarity] ?? {};
+  const configuredWeights = getRewardTypeWeights(rarity);
 
   return Object.entries(configuredWeights).reduce((weights, [type, value]) => {
     if (availableTypes.has(type)) {
@@ -156,7 +158,7 @@ function createGenericReward(candidate) {
 }
 
 function createStickerDuplicateReward(reward, catalogItem) {
-  const amount = STICKER_DUPLICATE_COIN_AMOUNTS[reward.rarity] ?? COIN_REWARD_AMOUNTS.common;
+  const amount = getDuplicateConversionAmount("sticker", reward.rarity);
 
   return {
     type: "sticker-duplicate",
@@ -186,23 +188,7 @@ function createOwnableDuplicateCoinReward(reward, catalogItem, amount) {
 }
 
 function getDuplicateCoinAmount(type, rarity) {
-  if (type === "sticker") {
-    return STICKER_DUPLICATE_COIN_AMOUNTS[rarity] ?? COIN_REWARD_AMOUNTS.common;
-  }
-
-  if (type === "profile-avatar" || type === "profile-background") {
-    return PROFILE_COSMETIC_DUPLICATE_COIN_AMOUNTS[rarity] ?? COIN_REWARD_AMOUNTS.common;
-  }
-
-  if (type === "cursor-skin") {
-    return PROFILE_COSMETIC_DUPLICATE_COIN_AMOUNTS[rarity] ?? COIN_REWARD_AMOUNTS.common;
-  }
-
-  if (type === "ui-theme-pack") {
-    return PROFILE_COSMETIC_DUPLICATE_COIN_AMOUNTS[rarity] ?? COIN_REWARD_AMOUNTS.common;
-  }
-
-  return null;
+  return getDuplicateConversionAmount(type, rarity);
 }
 
 function getAutoEquipFieldForType(type) {
@@ -266,7 +252,7 @@ export function getAvailableLootRarityWeights({
   profile,
   cards,
   parentSettings,
-  weightSource = LOOT_RARITY_WEIGHTS,
+  weightSource = getBoxBaseRarityWeights(),
   allowAccountInventoryRewards = true,
 }) {
   const candidates = buildCandidates({ profile, cards, parentSettings, allowAccountInventoryRewards });

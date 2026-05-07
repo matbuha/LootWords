@@ -19,6 +19,7 @@ LootWords is an evolving MVP with a working core loop. It is no longer a bare pr
 - Centralized loot foundation with strict rarity weighting and reward-type separation
 - Multi-type reward inventory foundation for cards, coins, stickers, cursor skins, UI theme packs, profile backgrounds, and profile avatars
 - Reward Center / Inventory view for account-owned cards and cosmetics, with locked guest state and no shop/equip controls
+- Centralized reward balancing config with simulation-backed rarity tuning and coin/duplicate reward rates
 - Real cursor-skin rewards with persisted ownership and minimal equipped-state support
 - Real UI-theme-pack rewards with persisted ownership, duplicate-to-coins handling, and minimal equipped-state support
 - Real profile-avatar and profile-background rewards with persisted ownership and minimal equipped-state support
