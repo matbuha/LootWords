@@ -1306,6 +1306,17 @@ const actions = {
       },
     }));
 
+    if (
+      currentState.auth.mode === "authenticated" &&
+      currentState.route.challenge === "daily" &&
+      currentState.dailyChallenge?.state?.rewardGrantedAt &&
+      !currentState.dailyChallenge?.state?.rewardOpenedAt
+    ) {
+      void dailyChallenge.markCurrentRewardOpened(currentState.auth, {
+        gameId: currentState.dailyChallenge.definition?.gameId,
+      });
+    }
+
     window.setTimeout(() => {
       feedback.trigger(FEEDBACK_EVENTS.rewardOpen);
     }, 140);

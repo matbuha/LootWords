@@ -29,7 +29,7 @@ LootWords is an evolving MVP with a working core loop. It is no longer a bare pr
 - Card speech for visible/open cards in English
 - Voice selection for English pronunciation when the browser exposes multiple English voices
 - Firebase Authentication with guest fallback, auth modal UI, session bootstrap, and logout flow
-- Firestore-backed Daily Challenge for authenticated users with guest lock state, retryable daily runs, and one daily bonus reward
+- Firestore-backed Daily Challenge for authenticated users with guest lock state, retryable daily runs, and one daily bonus reward, now with explicit earned vs claimed reward state
 - Eight playable mini-games:
   - Memory Match
   - Treasure Match

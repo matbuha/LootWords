@@ -23,6 +23,7 @@ function renderDailyChallengePanel({ dailyChallenge, authState, progress }) {
   const definition = dailyChallenge?.definition;
   const challengeGameLabel = definition?.gameId ? gameText(definition.gameId, "label") : t("play.stillPicking");
   const challengeStatus = dailyChallenge?.state?.status ?? "locked";
+  const challengeClaimState = dailyChallenge?.state?.rewardClaimState ?? "none";
 
   if (authState?.mode !== "authenticated" || !authState.user) {
     return `
@@ -73,14 +74,16 @@ function renderDailyChallengePanel({ dailyChallenge, authState, progress }) {
 
   const statusCopy =
     challengeStatus === "completed"
-      ? t("dailyChallenge.completedBody", { game: challengeGameLabel })
+      ? challengeClaimState === "opened"
+        ? t("dailyChallenge.completedClaimedBody", { game: challengeGameLabel })
+        : t("dailyChallenge.completedPendingBody", { game: challengeGameLabel })
       : challengeStatus === "in_progress"
         ? t("dailyChallenge.inProgressBody", { game: challengeGameLabel })
         : t("dailyChallenge.availableBody", { game: challengeGameLabel });
 
   const actionLabel =
     challengeStatus === "completed"
-      ? progress.rewardBoxes > 0
+      ? challengeClaimState === "earned"
         ? t("dailyChallenge.openRewards")
         : t("dailyChallenge.doneToday")
       : challengeStatus === "in_progress"
@@ -96,6 +99,15 @@ function renderDailyChallengePanel({ dailyChallenge, authState, progress }) {
       </div>
       <div class="button-row button-row--wrap">
         <span class="status-pill"><strong>${challengeGameLabel}</strong><span>${t("dailyChallenge.rewardChip", { count: definition?.reward?.rewardBoxes ?? 1 })}</span></span>
+        ${
+          challengeStatus === "completed"
+            ? `<span class="status-pill status-pill--subtle">${t(
+                challengeClaimState === "earned"
+                  ? "dailyChallenge.rewardPendingLabel"
+                  : "dailyChallenge.rewardClaimedLabel",
+              )}</span>`
+            : ""
+        }
         ${
           challengeStatus === "completed"
             ? `<button class="primary-button" type="button" data-route="reward">${actionLabel}</button>`

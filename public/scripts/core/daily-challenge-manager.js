@@ -13,6 +13,12 @@ const DAILY_CHALLENGE_STATUS = Object.freeze({
   completed: "completed",
 });
 
+const DAILY_CHALLENGE_REWARD_CLAIM_STATE = Object.freeze({
+  none: "none",
+  earned: "earned",
+  opened: "opened",
+});
+
 const GUEST_SNAPSHOT = Object.freeze({
   status: "ready",
   access: "guest",
@@ -71,7 +77,9 @@ function normalizeState(rawState, definition) {
     startedAt: null,
     completedAt: null,
     rewardGrantedAt: null,
+    rewardOpenedAt: null,
     rewardBoxesGranted: 0,
+    rewardClaimState: DAILY_CHALLENGE_REWARD_CLAIM_STATE.none,
     attempts: 0,
     lastAttemptAt: null,
   };
@@ -85,12 +93,26 @@ function normalizeState(rawState, definition) {
   }
 
   const allowedStatuses = new Set(Object.values(DAILY_CHALLENGE_STATUS));
+  const rewardOpenedAt =
+    typeof rawState.rewardOpenedAt === "string" && !Number.isNaN(Date.parse(rawState.rewardOpenedAt))
+      ? rawState.rewardOpenedAt
+      : fallback.rewardOpenedAt;
+  const rewardClaimState =
+    rawState.rewardClaimState === DAILY_CHALLENGE_REWARD_CLAIM_STATE.opened
+      ? DAILY_CHALLENGE_REWARD_CLAIM_STATE.opened
+      : rawState.rewardGrantedAt
+        ? rewardOpenedAt
+          ? DAILY_CHALLENGE_REWARD_CLAIM_STATE.opened
+          : DAILY_CHALLENGE_REWARD_CLAIM_STATE.earned
+        : DAILY_CHALLENGE_REWARD_CLAIM_STATE.none;
   return {
     ...fallback,
     ...rawState,
     status: allowedStatuses.has(rawState.status) ? rawState.status : fallback.status,
     attempts: Math.max(0, Number.parseInt(rawState.attempts, 10) || 0),
     rewardBoxesGranted: Math.max(0, Number.parseInt(rawState.rewardBoxesGranted, 10) || 0),
+    rewardOpenedAt,
+    rewardClaimState,
   };
 }
 
@@ -414,7 +436,11 @@ export function createDailyChallengeManager() {
           attempts: Math.max(1, currentState.attempts),
           completedAt: currentState.completedAt ?? nowIso,
           rewardGrantedAt: currentState.rewardGrantedAt ?? nowIso,
+          rewardOpenedAt: currentState.rewardOpenedAt ?? null,
           rewardBoxesGranted: currentState.rewardBoxesGranted || DAILY_CHALLENGE_REWARD_BOXES,
+          rewardClaimState: currentState.rewardOpenedAt
+            ? DAILY_CHALLENGE_REWARD_CLAIM_STATE.opened
+            : DAILY_CHALLENGE_REWARD_CLAIM_STATE.earned,
           lastAttemptAt: nowIso,
         };
 
@@ -468,6 +494,86 @@ export function createDailyChallengeManager() {
     }
   }
 
+  async function markCurrentRewardOpened(authState, { gameId } = {}) {
+    const definition = buildDefinition();
+    if (authState?.mode !== "authenticated" || !authState.user?.uid || gameId !== definition.gameId) {
+      return {
+        matched: false,
+        updated: false,
+        challengeState: snapshot.state,
+      };
+    }
+
+    try {
+      const firestoreApi = await getFirestoreApi();
+      if (!firestoreApi) {
+        return {
+          matched: true,
+          updated: false,
+          challengeState: snapshot.state,
+          errorKey: "dailyChallenge.errors.unavailable",
+        };
+      }
+
+      const docRef = getProgressRef(firestoreApi, authState.user.uid);
+      const result = await firestoreApi.runTransaction(firestoreApi.db, async (transaction) => {
+        const docSnapshot = await transaction.get(docRef);
+        const data = docSnapshot.exists() ? docSnapshot.data() : {};
+        const currentState = normalizeState(data?.dailyChallenge, definition);
+        const nowIso = getNowIso();
+
+        if (!currentState.rewardGrantedAt || currentState.rewardOpenedAt) {
+          return {
+            updated: false,
+            challengeState: currentState,
+          };
+        }
+
+        const nextState = {
+          ...currentState,
+          rewardOpenedAt: nowIso,
+          rewardClaimState: DAILY_CHALLENGE_REWARD_CLAIM_STATE.opened,
+        };
+
+        transaction.set(
+          docRef,
+          {
+            dailyChallenge: nextState,
+            updatedAt: nowIso,
+          },
+          { merge: true },
+        );
+
+        return {
+          updated: true,
+          challengeState: nextState,
+        };
+      });
+
+      setSnapshot(
+        buildSnapshot({
+          access: "authenticated",
+          backendReady: true,
+          definition,
+          state: result.challengeState,
+        }),
+      );
+
+      return {
+        matched: true,
+        ...result,
+      };
+    } catch (error) {
+      console.warn("LootWords daily challenge reward-open sync failed.", error);
+      return {
+        matched: true,
+        updated: false,
+        challengeState: snapshot.state,
+        errorKey: "dailyChallenge.errors.unavailable",
+      };
+    }
+  }
+
   return {
     getSnapshot() {
       return snapshot;
@@ -488,6 +594,7 @@ export function createDailyChallengeManager() {
     syncAuthState,
     startCurrentChallenge,
     resolveCurrentAttempt,
+    markCurrentRewardOpened,
     async refresh(authState) {
       return syncAuthState(authState);
     },

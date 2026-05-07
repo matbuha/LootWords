@@ -1,0 +1,187 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e1818]:
+      - banner [ref=e1819]:
+        - link "LootWords Loot boxes turn into English word cards." [ref=e1820] [cursor=pointer]:
+          - /url: "#/home"
+          - generic [ref=e1822]:
+            - strong [ref=e1823]: LootWords
+            - generic [ref=e1824]: Loot boxes turn into English word cards.
+        - generic [ref=e1825]:
+          - generic [ref=e1826]:
+            - strong [ref=e1827]: "0"
+            - generic [ref=e1828]: Boxes
+          - generic [ref=e1829]:
+            - strong [ref=e1830]: "0"
+            - generic [ref=e1831]: Cards
+          - link "Parent Mode" [ref=e1832] [cursor=pointer]:
+            - /url: "#/parent?section=content"
+            - generic [ref=e1833]: 🛡
+            - generic [ref=e1834]: Parent Mode
+          - button "Language selector" [ref=e1836]:
+            - generic [ref=e1837]: 🇺🇸
+            - generic [ref=e1838]: English
+            - generic [ref=e1839]: ▾
+          - button "English voice selector" [ref=e1841]:
+            - generic [ref=e1842]: 🗣
+            - generic [ref=e1843]: Microsoft David - English (United States)
+            - generic [ref=e1844]: ▾
+          - button "Account" [ref=e1845]:
+            - generic [ref=e1846]: 👤
+            - generic [ref=e1847]: Account
+          - generic "Audio controls" [ref=e1848]:
+            - button "Sound On" [ref=e1849]: 🔊
+      - main [ref=e1850]:
+        - generic [ref=e1852]:
+          - generic [ref=e1853]:
+            - generic [ref=e1854]:
+              - generic [ref=e1855]: Treasure room online
+              - heading "reward box waiting after every win" [level=1] [ref=e1856]
+              - paragraph [ref=e1857]: Jump into a mini-game, earn a box, and keep growing a collectible English word album that feels earned.
+              - generic [ref=e1858]:
+                - button "Memory Match" [ref=e1859]
+                - button "Loot Pop" [ref=e1860]
+                - button "See reward room" [ref=e1861]
+              - generic [ref=e1862]:
+                - generic [ref=e1863]:
+                  - generic [ref=e1864]: Collection progress
+                  - strong [ref=e1865]: 0/140
+                  - generic [ref=e1866]: "Album complete: 0%"
+                - generic [ref=e1867]:
+                  - generic [ref=e1868]: Reward stash
+                  - strong [ref=e1869]: "0"
+                  - generic [ref=e1870]: Win a mini-game to earn your next box.
+                - generic [ref=e1871]:
+                  - generic [ref=e1872]: Current streak
+                  - strong [ref=e1873]: "0"
+                  - generic [ref=e1874]: Best 0
+            - generic [ref=e1880]:
+              - generic [ref=e1881]:
+                - generic [ref=e1882]: Next milestone
+                - generic [ref=e1883]: Total wins
+              - generic [ref=e1884]: 🏆
+              - generic [ref=e1885]: Find your favorite
+              - generic [ref=e1886]:
+                - generic [ref=e1887]: "Games tried: 0/8"
+                - generic [ref=e1888]: "Wins: 0"
+          - generic [ref=e1893]:
+            - generic [ref=e1894]:
+              - text: Daily Challenge
+              - heading "Log in to unlock the Daily Challenge" [level=2] [ref=e1895]
+              - paragraph [ref=e1896]: Registered players get one special challenge each day, with a bonus reward box after the first successful completion.
+            - generic [ref=e1897]:
+              - button "Create account" [ref=e1898]
+              - button "Sign in" [ref=e1899]
+          - generic [ref=e1900]:
+            - generic [ref=e1901]:
+              - generic [ref=e1902]:
+                - generic [ref=e1903]:
+                  - text: Play next
+                  - heading "Quick picks for this session" [level=2] [ref=e1904]
+                - paragraph [ref=e1905]: The first win in a new game grants an extra reward box.
+              - generic [ref=e1906]:
+                - article [ref=e1907]:
+                  - generic [ref=e1908]:
+                    - generic [ref=e1909]: 🧠
+                    - generic [ref=e1910]: 45 sec
+                  - strong [ref=e1911]: Memory Match
+                  - paragraph [ref=e1912]: Flip treasure tiles and find every matching pair before the timer runs out.
+                  - generic [ref=e1913]:
+                    - generic [ref=e1914]: Calm focus
+                    - generic [ref=e1915]: "Games tried: 0/0"
+                  - button "Play recommended" [ref=e1916]
+                - article [ref=e1917]:
+                  - generic [ref=e1918]:
+                    - generic [ref=e1919]: 💥
+                    - generic [ref=e1920]: 16 sec
+                  - strong [ref=e1921]: Loot Pop
+                  - paragraph [ref=e1922]: Tap the glowing loot sparks fast and keep the combo going before the timer runs out.
+                  - generic [ref=e1923]:
+                    - generic [ref=e1924]: Fast taps
+                    - generic [ref=e1925]: "Games tried: 0/0"
+                  - button "Try random" [ref=e1926]
+            - generic [ref=e1927]:
+              - generic [ref=e1928]:
+                - generic [ref=e1929]:
+                  - text: Latest reveal
+                  - heading "Newest card" [level=2] [ref=e1930]
+                - button "Open album" [ref=e1931]
+              - generic [ref=e1932]:
+                - heading "No loot yet" [level=3] [ref=e1933]
+                - paragraph [ref=e1934]: Win a mini-game to earn your first reward box and start the collection.
+          - generic [ref=e1935]:
+            - generic [ref=e1936]:
+              - generic [ref=e1937]:
+                - text: Progress
+                - heading "Album progress by category" [level=2] [ref=e1938]
+              - generic [ref=e1939]:
+                - button "Play recommended" [ref=e1940]
+                - button "Review words" [ref=e1941]
+            - generic [ref=e1942]:
+              - article [ref=e1943]:
+                - strong [ref=e1944]: Animals
+                - generic [ref=e1945]: 0/10 unlocked
+              - article [ref=e1948]:
+                - strong [ref=e1949]: Food
+                - generic [ref=e1950]: 0/10 unlocked
+              - article [ref=e1953]:
+                - strong [ref=e1954]: Vehicles
+                - generic [ref=e1955]: 0/10 unlocked
+              - article [ref=e1958]:
+                - strong [ref=e1959]: Home
+                - generic [ref=e1960]: 0/10 unlocked
+              - article [ref=e1963]:
+                - strong [ref=e1964]: Clothes
+                - generic [ref=e1965]: 0/10 unlocked
+              - article [ref=e1968]:
+                - strong [ref=e1969]: Nature
+                - generic [ref=e1970]: 0/10 unlocked
+              - article [ref=e1973]:
+                - strong [ref=e1974]: Toys
+                - generic [ref=e1975]: 0/10 unlocked
+              - article [ref=e1978]:
+                - strong [ref=e1979]: School
+                - generic [ref=e1980]: 0/10 unlocked
+              - article [ref=e1983]:
+                - strong [ref=e1984]: Kitchen
+                - generic [ref=e1985]: 0/10 unlocked
+              - article [ref=e1988]:
+                - strong [ref=e1989]: Fantasy
+                - generic [ref=e1990]: 0/10 unlocked
+              - article [ref=e1993]:
+                - strong [ref=e1994]: City
+                - generic [ref=e1995]: 0/10 unlocked
+              - article [ref=e1998]:
+                - strong [ref=e1999]: Bathroom
+                - generic [ref=e2000]: 0/10 unlocked
+              - article [ref=e2003]:
+                - strong [ref=e2004]: People & Jobs
+                - generic [ref=e2005]: 0/10 unlocked
+              - article [ref=e2008]:
+                - strong [ref=e2009]: Sports
+                - generic [ref=e2010]: 0/10 unlocked
+    - navigation "Primary navigation" [ref=e2013]:
+      - link "Home Hub" [ref=e2014] [cursor=pointer]:
+        - /url: "#/home"
+        - strong [ref=e2015]: Home
+        - generic [ref=e2016]: Hub
+      - link "Play Games" [ref=e2017] [cursor=pointer]:
+        - /url: "#/play"
+        - strong [ref=e2018]: Play
+        - generic [ref=e2019]: Games
+      - link "Reward Boxes" [ref=e2020] [cursor=pointer]:
+        - /url: "#/reward"
+        - strong [ref=e2021]: Reward
+        - generic [ref=e2022]: Boxes
+      - link "Collection Cards" [ref=e2023] [cursor=pointer]:
+        - /url: "#/collection"
+        - strong [ref=e2024]: Collection
+        - generic [ref=e2025]: Cards
+      - link "Learn Review" [ref=e2026] [cursor=pointer]:
+        - /url: "#/learn"
+        - strong [ref=e2027]: Learn
+        - generic [ref=e2028]: Review
+  - iframe [ref=e129]:
+    - generic [ref=f1e6]:
+      - text: protected by
+      - strong [ref=f1e7]: reCAPTCHA
