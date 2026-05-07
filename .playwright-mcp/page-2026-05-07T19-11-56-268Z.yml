@@ -1,0 +1,104 @@
+- generic [ref=e2]:
+  - generic [ref=e3]:
+    - banner [ref=e4]:
+      - link "LootWords Loot boxes turn into English word cards." [ref=e5] [cursor=pointer]:
+        - /url: "#/home"
+        - generic [ref=e7]:
+          - strong [ref=e8]: LootWords
+          - generic [ref=e9]: Loot boxes turn into English word cards.
+      - generic [ref=e10]:
+        - generic [ref=e11]:
+          - strong [ref=e12]: "0"
+          - generic [ref=e13]: Boxes
+        - generic [ref=e14]:
+          - strong [ref=e15]: "0"
+          - generic [ref=e16]: Cards
+        - link "Parent Mode" [ref=e17] [cursor=pointer]:
+          - /url: "#/parent?section=content"
+          - generic [ref=e18]: 🛡
+          - generic [ref=e19]: Parent Mode
+        - button "Language selector" [ref=e21]:
+          - generic [ref=e22]: 🇺🇸
+          - generic [ref=e23]: English
+          - generic [ref=e24]: ▾
+        - button "English voice selector" [ref=e26]:
+          - generic [ref=e27]: 🗣
+          - generic [ref=e28]: Microsoft David - English (United States)
+          - generic [ref=e29]: ▾
+        - button "Loading account" [disabled] [ref=e30]:
+          - generic [ref=e31]: ⏳
+          - generic [ref=e32]: Loading account
+        - generic "Audio controls" [ref=e33]:
+          - button "Sound On" [ref=e34]: 🔊
+    - main [ref=e35]:
+      - generic [ref=e37]:
+        - generic [ref=e38]:
+          - generic [ref=e39]:
+            - text: Learn lounge
+            - heading "Review your unlocked cards in a calm loop" [level=2] [ref=e40]
+          - paragraph [ref=e41]: Use recent, strongest, or category review to keep the card collection useful for later quiz modes.
+        - generic [ref=e42]:
+          - article [ref=e43]:
+            - generic [ref=e44]: Review deck
+            - strong [ref=e45]: "0"
+            - generic [ref=e46]: All unlocked cards
+          - article [ref=e47]:
+            - generic [ref=e48]: Fresh pull
+            - strong [ref=e49]: "--"
+            - generic [ref=e50]: Win a new card to fill this slot
+          - article [ref=e51]:
+            - generic [ref=e52]: Highest points
+            - strong [ref=e53]: "--"
+            - generic [ref=e54]: Unlock cards to compare them
+        - generic [ref=e55]:
+          - generic [ref=e56]:
+            - text: Category
+            - combobox "Category" [ref=e57]:
+              - option "All categories" [selected]
+              - option "Animals"
+              - option "Food"
+              - option "Vehicles"
+              - option "Home"
+              - option "Clothes"
+              - option "Nature"
+              - option "Toys"
+              - option "School"
+              - option "Kitchen"
+              - option "Fantasy"
+              - option "City"
+              - option "Bathroom"
+              - option "People & Jobs"
+              - option "Sports"
+          - generic [ref=e58]:
+            - text: Review mode
+            - combobox "Review mode" [ref=e59]:
+              - option "Fresh pulls" [selected]
+              - option "Strongest cards"
+              - option "Lower-point cards"
+              - option "A to Z"
+              - option "Category walk"
+              - option "Easy to hard"
+        - generic [ref=e60]:
+          - heading "No cards to review yet" [level=3] [ref=e61]
+          - paragraph [ref=e62]: Win a mini-game, open a reward box, and your first learning card will appear here.
+  - navigation "Primary navigation" [ref=e63]:
+    - link "Home Hub" [ref=e64] [cursor=pointer]:
+      - /url: "#/home"
+      - strong [ref=e65]: Home
+      - generic [ref=e66]: Hub
+    - link "Play Games" [ref=e67] [cursor=pointer]:
+      - /url: "#/play"
+      - strong [ref=e68]: Play
+      - generic [ref=e69]: Games
+    - link "Reward Boxes" [ref=e70] [cursor=pointer]:
+      - /url: "#/reward"
+      - strong [ref=e71]: Reward
+      - generic [ref=e72]: Boxes
+    - link "Collection Cards" [ref=e73] [cursor=pointer]:
+      - /url: "#/collection"
+      - strong [ref=e74]: Collection
+      - generic [ref=e75]: Cards
+    - link "Learn Review" [ref=e76] [cursor=pointer]:
+      - /url: "#/learn"
+      - strong [ref=e77]: Learn
+      - generic [ref=e78]: Review

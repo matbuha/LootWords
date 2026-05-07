@@ -24,6 +24,7 @@ LootWords is an evolving MVP with a working core loop. It is no longer a bare pr
 - Real cursor-skin rewards with persisted ownership and minimal equipped-state support
 - Real UI-theme-pack rewards with persisted ownership, duplicate-to-coins handling, and minimal equipped-state support
 - Real profile-avatar and profile-background rewards with persisted ownership and minimal equipped-state support
+- Card Evolution MVP for authenticated users, with per-card XP, level thresholds, and basic collection/detail indicators
 - Auth-only coin shop foundation with a centralized catalog, minimal Collection-screen purchase UI, and safe owned/insufficient/locked states
 - Guest loot boxes now stay on guest-safe reward outcomes only; account-owned reward types remain in the authenticated-only reward pool
 - Card speech for visible/open cards in English

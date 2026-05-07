@@ -210,6 +210,7 @@ export function hydrateCards(profile) {
       rarity: card.baseRarity,
       unlocked: unlockedSet.has(card.id),
       discoveredAt: profile.discoveredAtByCardId[card.id] ?? null,
+      evolution: profile.cardEvolutionByCardId?.[card.id] ?? null,
     };
   });
 }

@@ -105,7 +105,7 @@ function createInitialState(cards) {
 
 export function mountTapTheWordGame(
   container,
-  { cards, onWin, onLose, playSound, speakEnglishWord },
+  { cards, onWin, onLose, playSound, speakEnglishWord, onLearningEvent },
 ) {
   let state = createInitialState(cards);
   let loopHandle = 0;
@@ -335,6 +335,15 @@ export function mountTapTheWordGame(
     };
 
     playSound(isCorrect ? "success" : "failure");
+    if (isCorrect) {
+      onLearningEvent?.({
+        source: "tap-the-word.correct",
+        cardId,
+        gameId: "tap-the-word",
+        roundId: `${state.roundIndex}:${cardId}`,
+        occurredAt: new Date().toISOString(),
+      });
+    }
     render();
   }
 

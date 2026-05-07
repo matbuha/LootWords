@@ -424,6 +424,7 @@ export function renderGameScreen(
   const gameHost = container.querySelector("#game-host");
 
   let mountedGame = null;
+  let learningEvents = [];
   let countdownHandle = 0;
   let countdownRemainingMs = result || !hasPlayableCardPool ? 0 : COUNTDOWN_START_MS;
 
@@ -451,16 +452,22 @@ export function renderGameScreen(
     if (mountedGame || result || !hasPlayableCardPool) {
       return;
     }
+    learningEvents = [];
 
     mountedGame = gameMeta.mount(gameHost, {
       cards: playableCards,
       playSound,
       speakEnglishWord,
+      onLearningEvent(event) {
+        if (event) {
+          learningEvents.push(event);
+        }
+      },
       onWin(details) {
-        actions.finishGame({ status: "won", gameId, details });
+        actions.finishGame({ status: "won", gameId, details: { ...details, learningEvents: [...learningEvents] } });
       },
       onLose(details) {
-        actions.finishGame({ status: "lost", gameId, details });
+        actions.finishGame({ status: "lost", gameId, details: { ...details, learningEvents: [...learningEvents] } });
       },
     });
   }

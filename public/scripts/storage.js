@@ -21,6 +21,7 @@ import {
 import { CARD_LIBRARY } from "./data/cards.js";
 import { normalizeGameStatsMap, createEmptyGameStatsMap } from "./core/game-session-manager.js";
 import { createDefaultParentSettings, normalizeParentSettings } from "./core/parent-mode.js";
+import { createEmptyCardEvolutionState, normalizeCardEvolution } from "./core/card-evolution-manager.js";
 import { createRarityBoundPoints, getCardBaseRarity, getRarityPointRange } from "./core/rarity.js";
 import { createDefaultSettings, normalizeSettings } from "./core/settings-manager.js";
 
@@ -124,6 +125,7 @@ export function createInitialProfile() {
     selectedCursorSkinId: null,
     selectedProfileAvatarId: null,
     selectedProfileBackgroundId: null,
+    cardEvolutionByCardId: createEmptyCardEvolutionState(),
     currentStreak: 0,
     bestStreak: 0,
     firstWinGameIds: [],
@@ -198,6 +200,7 @@ export function normalizeProfile(rawProfile) {
     selectedProfileBackgroundId: normalizedInventory.profileBackgrounds.includes(raw.selectedProfileBackgroundId)
       ? raw.selectedProfileBackgroundId
       : null,
+    cardEvolutionByCardId: normalizeCardEvolution(raw.cardEvolutionByCardId, Array.from(new Set(unlockedIds))),
     currentStreak: Math.max(0, Number.parseInt(raw.currentStreak, 10) || 0),
     bestStreak: Math.max(
       0,

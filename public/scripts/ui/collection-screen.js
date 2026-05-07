@@ -911,7 +911,19 @@ export function renderCollectionScreen(container, { cards, filters, progress, ac
                 <li>${modalCard.unlocked ? `${t("common.points")}: ${formatPoints(modalCard.points)}` : t("collection.pointsHidden")}</li>
                 <li>${modalCard.unlocked ? `${t("common.difficulty")}: ${difficultyLabel(modalCard.difficultyLevel)}` : t("collection.difficultyHidden")}</li>
                 <li>${modalCard.unlocked && modalCard.discoveredAt ? `${t("common.discovered")}: ${formatDate(modalCard.discoveredAt)}` : t("collection.playToEarnMore")}</li>
+                ${
+                  modalCard.unlocked && modalCard.evolution
+                    ? `<li>${t("cardEvolution.levelLabel", { level: modalCard.evolution.level })} · ${t("cardEvolution.xpLabel")}: ${modalCard.evolution.xp}/${modalCard.evolution.level >= 5 ? modalCard.evolution.xp : [0, 30, 80, 150, 250][modalCard.evolution.level] ?? modalCard.evolution.xp}</li>`
+                    : ""
+                }
               </ul>
+              ${
+                modalCard.unlocked && modalCard.evolution
+                  ? `<p class="section-note">${t("cardEvolution.keepPracticing")}</p>`
+                  : !modalCard.unlocked
+                    ? `<p class="section-note">${t("cardEvolution.signInPrompt")}</p>`
+                    : ""
+              }
               ${
                 modalCard.unlocked
                   ? `

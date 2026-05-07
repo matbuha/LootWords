@@ -53,7 +53,7 @@ function createInitialState(cards) {
 
 export function mountSequenceMemoryGame(
   container,
-  { cards, onWin, onLose, playSound, speakEnglishWord },
+  { cards, onWin, onLose, playSound, speakEnglishWord, onLearningEvent },
 ) {
   let state = createInitialState(cards);
   let loopHandle = 0;
@@ -350,6 +350,13 @@ export function mountSequenceMemoryGame(
     if (cardId === expectedCard.id) {
       playSound("success");
       const nextInputIndex = state.inputIndex + 1;
+      onLearningEvent?.({
+        source: "sequence-memory.correct",
+        cardId,
+        gameId: "sequence-memory",
+        roundId: `${state.roundIndex}:${state.inputIndex}:${cardId}`,
+        occurredAt: new Date().toISOString(),
+      });
       state = {
         ...state,
         inputIndex: nextInputIndex,

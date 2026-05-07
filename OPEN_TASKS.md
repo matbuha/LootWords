@@ -97,8 +97,8 @@ These are optional contribution ideas. They should not replace the core vocabula
 - Notes: keep guest users playable, preserve one-reward-per-day idempotency, and keep challenge generation deterministic and easy to audit.
 
 ### Card Evolution
-- Status: `Idea only`
-- Why it matters: could deepen attachment to cards and make repeated exposure feel meaningful.
+- Status: `MVP shipped`
+- Why it matters: authenticated users can now grow owned cards through existing learning actions, with simple XP and level progress.
 - Idea: cards gain visual upgrades or milestones based on review/play progress.
 - Suggested area: card metadata model, collection UI, progression systems
 - Notes: should not clutter the main card face.

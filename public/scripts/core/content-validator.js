@@ -15,6 +15,7 @@ const KNOWN_PROFILE_FIELDS = new Set([
   "rewardBoxes",
   "rewardBoxesEarned",
   "rewardBoxesOpened",
+  "cardEvolutionByCardId",
   "totalWins",
   "bonusStars",
   "currentStreak",
@@ -154,6 +155,28 @@ export function validateImportPayload(payload) {
             errors.push(`gameStats.${gameId}.${field} must be a non-negative number.`);
           }
         });
+      });
+    }
+  }
+
+  if (profile.cardEvolutionByCardId !== undefined) {
+    if (!isPlainObject(profile.cardEvolutionByCardId)) {
+      errors.push("cardEvolutionByCardId must be an object.");
+    } else {
+      Object.entries(profile.cardEvolutionByCardId).forEach(([cardId, entry]) => {
+        if (!KNOWN_CARD_IDS.has(cardId)) {
+          errors.push(`cardEvolutionByCardId has an unknown card id: ${cardId}`);
+          return;
+        }
+
+        if (!isPlainObject(entry)) {
+          errors.push(`cardEvolutionByCardId.${cardId} must be an object.`);
+          return;
+        }
+
+        if (entry.xp !== undefined && (!Number.isFinite(Number(entry.xp)) || Number(entry.xp) < 0)) {
+          errors.push(`cardEvolutionByCardId.${cardId}.xp must be a non-negative number.`);
+        }
       });
     }
   }

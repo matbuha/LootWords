@@ -114,7 +114,7 @@ function getHiddenTileSet(round, revealStep) {
 
 export function mountImageRevealGame(
   container,
-  { cards, onWin, onLose, playSound, speakEnglishWord },
+  { cards, onWin, onLose, playSound, speakEnglishWord, onLearningEvent },
 ) {
   let state = createInitialState(cards);
   let loopHandle = 0;
@@ -392,6 +392,15 @@ export function mountImageRevealGame(
     };
 
     playSound(isCorrect ? "success" : "failure");
+    if (isCorrect) {
+      onLearningEvent?.({
+        source: "image-reveal.correct",
+        cardId,
+        gameId: "image-reveal",
+        roundId: `${state.roundIndex}:${cardId}`,
+        occurredAt: new Date().toISOString(),
+      });
+    }
     render();
   }
 

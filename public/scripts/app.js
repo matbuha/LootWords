@@ -23,6 +23,7 @@ import { createFeedbackManager } from "./core/feedback-manager.js";
 import { importProfileFromJson, exportProfileToJson } from "./core/import-export-manager.js";
 import { t } from "./core/i18n.js";
 import { createLanguageManager } from "./core/language-manager.js";
+import { awardCardXp } from "./core/card-evolution-manager.js";
 import {
   advanceBoxOpeningSession,
   createEmptyBoxOpeningState,
@@ -245,6 +246,10 @@ function commitState(updater) {
   persistProfile(nextState.profile);
   renderApp();
   return nextState;
+}
+
+function awardEvolutionEvents(profile, authState, events) {
+  return awardCardXp(profile, authState, events);
 }
 
 function updateSessionOnly(updater) {
@@ -1143,6 +1148,12 @@ const actions = {
         modalCardId: cardId,
       },
     }));
+    commitState((currentState) => ({
+      ...currentState,
+      profile: awardEvolutionEvents(currentState.profile, currentState.auth, [
+        { source: "collection.listen", cardId, eventId: `listen:${cardId}:${Date.now()}` },
+      ]),
+    }));
   },
   closeCardModal() {
     feedback.trigger(FEEDBACK_EVENTS.buttonClick);
@@ -1377,9 +1388,10 @@ const actions = {
     if (result.status === "won") {
       let winSummary = null;
       let nextProfile = null;
+      const learningEvents = Array.isArray(result.details?.learningEvents) ? result.details.learningEvents : [];
 
       const { profile: baseProfile, summary } = recordGameWin(currentState.profile, result.gameId);
-      nextProfile = baseProfile;
+      nextProfile = awardEvolutionEvents(baseProfile, currentState.auth, learningEvents);
       winSummary = summary;
 
       if (isDailyChallengeRun) {

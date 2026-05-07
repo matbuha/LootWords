@@ -40,7 +40,7 @@ function createInitialState(cards) {
 
 export function mountRepeatAfterMeGame(
   container,
-  { cards, onWin, playSound, speakEnglishWord },
+  { cards, onWin, playSound, speakEnglishWord, onLearningEvent },
 ) {
   let state = createInitialState(cards);
   let finalized = false;
@@ -199,6 +199,13 @@ export function mountRepeatAfterMeGame(
     }
 
     playSound("success");
+    onLearningEvent?.({
+      source: "repeat-after-me.round-complete",
+      cardId: currentCard()?.id ?? null,
+      gameId: "repeat-after-me",
+      roundId: `${state.roundIndex}:${currentCard()?.id ?? "none"}`,
+      occurredAt: new Date().toISOString(),
+    });
     state = {
       ...state,
       completedRounds: state.completedRounds + 1,

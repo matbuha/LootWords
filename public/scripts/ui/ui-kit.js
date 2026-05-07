@@ -1,4 +1,5 @@
 import { formatNumber, t } from "../core/i18n.js";
+import { getEvolutionProgress, getEvolutionVisualState } from "../core/card-evolution-manager.js";
 
 export function formatPoints(points) {
   return formatNumber(points);
@@ -13,6 +14,7 @@ export function escapeHtml(value) {
 }
 
 function renderCardShell(card, { locked, compact, spotlight, isNew }) {
+  const evolution = card.evolution ? getEvolutionProgress(card.evolution.xp) : null;
   const cardName = locked ? t("common.mysteryCard") : card.word;
   const speakAttributes = !locked && card.word
     ? ` data-speak-word="${escapeHtml(card.word)}" lang="en" `
@@ -60,6 +62,11 @@ function renderCardShell(card, { locked, compact, spotlight, isNew }) {
         <h3 class="${spotlight ? "detail-card__word" : "loot-card__word"}">${escapeHtml(cardName)}</h3>
         <span class="card-points card-points--compact">${pointsLabel}</span>
       </div>
+      ${
+        !locked && evolution
+          ? `<div class="card-evolution-chip" data-evolution-state="${getEvolutionVisualState(evolution.level)}">${t("cardEvolution.levelLabel", { level: evolution.level })}</div>`
+          : ""
+      }
     </article>
   `;
 }
