@@ -32,6 +32,92 @@
   --ease: 180ms ease;
 }
 
+.collection-mode-switch {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 6px 0 18px;
+}
+
+.reward-center-panel {
+  gap: 18px;
+}
+
+.reward-center-dashboard {
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+}
+
+.reward-center-locked,
+.reward-center-empty {
+  display: grid;
+  gap: 14px;
+  padding: 18px;
+  border-radius: 22px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.03));
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.reward-center-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.reward-center-chip {
+  min-height: 42px;
+  padding: 0 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-main);
+}
+
+.reward-center-chip.is-active {
+  background: linear-gradient(180deg, rgba(255, 214, 91, 0.22), rgba(255, 161, 89, 0.18));
+}
+
+.reward-center-section {
+  display: grid;
+  gap: 16px;
+}
+
+.reward-center-grid {
+  display: grid;
+  gap: 14px;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.reward-center-item-card {
+  display: grid;
+  grid-template-columns: 72px minmax(0, 1fr);
+  gap: 14px;
+  align-items: start;
+  padding: 14px;
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.reward-center-item-card__art {
+  display: grid;
+  place-items: center;
+  min-height: 72px;
+  border-radius: 18px;
+  font-size: 2rem;
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.reward-center-item-card__body {
+  min-width: 0;
+}
+
+.reward-center-item-card__topline {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: start;
+}
+
 *,
 *::before,
 *::after {

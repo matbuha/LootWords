@@ -925,3 +925,44 @@
     min-height: 180px;
   }
 }
+
+@media (max-width: 900px) {
+  .reward-center-grid {
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  }
+}
+
+@media (max-width: 720px) {
+  .collection-mode-switch {
+    flex-direction: column;
+  }
+
+  .reward-center-dashboard {
+    grid-template-columns: 1fr;
+  }
+
+  .reward-center-chips {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    padding-bottom: 4px;
+  }
+
+  .reward-center-chip {
+    flex: 0 0 auto;
+  }
+
+  .reward-center-item-card {
+    grid-template-columns: 60px minmax(0, 1fr);
+    padding: 12px;
+  }
+}
+
+@media (max-width: 420px) {
+  .reward-center-item-card {
+    grid-template-columns: 1fr;
+  }
+
+  .reward-center-item-card__art {
+    min-height: 60px;
+  }
+}

@@ -52,3 +52,18 @@ Mini-games should be:
 ## Contributor Direction
 The project is intended to be understandable for additional contributors.
 Important project changes should also keep contributor-facing docs updated when relevant.
+
+## Development Workflow
+
+For larger features, use a two-step Codex workflow:
+
+1. Planning phase
+   - Creates an execution plan under docs/plans/
+   - Does not change production code
+
+2. Execution phase
+   - Reads the plan file
+   - Implements the task
+   - Updates contributor-facing docs if relevant
+
+This helps keep implementation focused, reduces repeated context, and makes future contributor work easier to understand.

@@ -63,6 +63,7 @@ Use these docs before starting work:
   - selected cursor skin
   - selected profile avatar
   - selected profile background
+- Reward Center / Inventory view for authenticated owned rewards, with locked guest-state visibility and no shop/equip controls
 - Auth-only coin shop foundation:
   - centralized shop catalog with price, availability, owned-state, and purchasable-state metadata
   - minimal Collection-screen shop panel for stickers, cursor skins, avatars, backgrounds, and theme packs

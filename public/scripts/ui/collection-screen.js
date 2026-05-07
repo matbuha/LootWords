@@ -1,6 +1,7 @@
 import { CATEGORY_META, COLLECTION_SORTS, DIFFICULTY_META, PACK_META, RARITY_META } from "../data/config.js";
 import { getRewardCatalog, getRewardCatalogItem, REWARD_TYPE_META } from "../data/loot.js";
 import { categoryLabel, collectionSortLabel, difficultyLabel, formatDate, packLabel, rarityLabel, t } from "../core/i18n.js";
+import { buildRewardCenterViewModel } from "../core/inventory-manager.js";
 import { buildShopViewModel } from "../core/shop-manager.js";
 import { getCollectionSections } from "../core/progression.js";
 import { renderCard, renderDetailCard, renderEmptyState, escapeHtml, formatPoints } from "./ui-kit.js";
@@ -102,7 +103,209 @@ function renderShopItemCard(entry) {
   `;
 }
 
-export function renderCollectionScreen(container, { cards, filters, progress, actions, modalCard, profile, authState }) {
+function renderRewardCategoryChip(categoryId, label, active) {
+  return `
+    <button class="reward-center-chip ${active ? "is-active" : ""}" type="button" data-reward-category="${escapeHtml(categoryId)}">
+      <strong>${escapeHtml(label)}</strong>
+    </button>
+  `;
+}
+
+function renderRewardCenterItemCard(item, categoryLabel) {
+  const badges = [];
+  if (item.included) {
+    badges.push(t("rewardCenter.includedBadge"));
+  }
+  if (item.equipped) {
+    badges.push(t("rewardCenter.equippedBadge"));
+  }
+
+  return `
+    <article class="reward-center-item-card" data-rarity="${escapeHtml(item.rarity)}" data-category="${escapeHtml(item.type)}">
+      <div class="reward-center-item-card__art" aria-hidden="true">${escapeHtml(item.icon)}</div>
+      <div class="reward-center-item-card__body">
+        <div class="reward-center-item-card__topline">
+          <strong>${escapeHtml(item.label)}</strong>
+          <span class="rarity-badge">${rarityLabel(item.rarity)}</span>
+        </div>
+        <p class="section-copy">${escapeHtml(categoryLabel)}</p>
+        <div class="pill-row">
+          ${badges.map((badge) => `<span class="card-category">${badge}</span>`).join("")}
+        </div>
+      </div>
+    </article>
+  `;
+}
+
+function renderRewardCenterSection(container, { cards, profile, authState, actions }) {
+  const rewardCenter = buildRewardCenterViewModel({ profile, cards, authState });
+  const loading = authState?.mode === "loading" || !authState;
+  const initialCategory = "card";
+  const categoryLabels = {
+    card: t("rewardCenter.categoryLabels.card"),
+    coins: t("rewardCenter.categoryLabels.coins"),
+    sticker: t("rewardCenter.categoryLabels.sticker"),
+    "cursor-skin": t("rewardCenter.categoryLabels.cursorSkin"),
+    "ui-theme-pack": t("rewardCenter.categoryLabels.uiThemePack"),
+    "profile-background": t("rewardCenter.categoryLabels.profileBackground"),
+    "profile-avatar": t("rewardCenter.categoryLabels.profileAvatar"),
+  };
+
+  const categoryOrder = rewardCenter.categories;
+
+  if (loading) {
+    container.innerHTML = `
+      <section class="collection-panel reward-center-panel">
+        <div class="screen-header">
+          <div>
+            <span class="small-label">${t("rewardCenter.eyebrow")}</span>
+            <h2 class="section-title">${t("rewardCenter.title")}</h2>
+          </div>
+          <p class="screen-note">${t("rewardCenter.loadingBody")}</p>
+        </div>
+        ${renderEmptyState(t("rewardCenter.loadingTitle"), t("rewardCenter.loadingBody"))}
+      </section>
+    `;
+    return;
+  }
+
+  if (rewardCenter.isLocked) {
+    container.innerHTML = `
+      <section class="collection-panel reward-center-panel">
+        <div class="screen-header">
+          <div>
+            <span class="small-label">${t("rewardCenter.eyebrow")}</span>
+            <h2 class="section-title">${t("rewardCenter.title")}</h2>
+          </div>
+          <p class="screen-note">${t("rewardCenter.lockedBody")}</p>
+        </div>
+        <div class="reward-center-locked">
+          <div>
+            <strong>${t("rewardCenter.lockedTitle")}</strong>
+            <p class="section-copy">${t("rewardCenter.lockedBody")}</p>
+          </div>
+          <div class="button-row button-row--wrap">
+            <button class="primary-button" type="button" data-open-auth="signup">${t("rewardCenter.signupAction")}</button>
+            <button class="ghost-button" type="button" data-open-auth="signin">${t("rewardCenter.signinAction")}</button>
+          </div>
+        </div>
+      </section>
+    `;
+    return;
+  }
+
+  const ownedItems = {
+    card: rewardCenter.cards,
+    coins: [],
+    sticker: rewardCenter.itemsByCategory.sticker ?? [],
+    "cursor-skin": rewardCenter.itemsByCategory["cursor-skin"] ?? [],
+    "ui-theme-pack": rewardCenter.itemsByCategory["ui-theme-pack"] ?? [],
+    "profile-background": rewardCenter.itemsByCategory["profile-background"] ?? [],
+    "profile-avatar": rewardCenter.itemsByCategory["profile-avatar"] ?? [],
+  };
+
+  const categoryKey = container.dataset.rewardCategory ?? initialCategory;
+
+  container.innerHTML = `
+    <section class="collection-panel reward-center-panel">
+      <div class="screen-header">
+        <div>
+          <span class="small-label">${t("rewardCenter.eyebrow")}</span>
+          <h2 class="section-title">${t("rewardCenter.title")}</h2>
+        </div>
+        <p class="screen-note">${t("rewardCenter.note")}</p>
+      </div>
+
+      <div class="collection-dashboard reward-center-dashboard">
+        <article class="stat-card stat-card--glow reward-center-coin-card">
+          <span>${t("rewardCenter.coins")}</span>
+          <strong>${rewardCenter.coins}</strong>
+          <small>${t("rewardCenter.coinsNote")}</small>
+        </article>
+        <article class="stat-card">
+          <span>${t("rewardCenter.cardsOwned")}</span>
+          <strong>${rewardCenter.cards.length}</strong>
+          <small>${t("rewardCenter.cardsNote")}</small>
+        </article>
+        <article class="stat-card">
+          <span>${t("rewardCenter.inventoryCategories")}</span>
+          <strong>${categoryOrder.length}</strong>
+          <small>${t("rewardCenter.inventoryNote")}</small>
+        </article>
+      </div>
+
+      <div class="reward-center-chips">
+        ${categoryOrder.map((id) => renderRewardCategoryChip(id, categoryLabels[id], categoryKey === id)).join("")}
+      </div>
+
+      <div class="reward-center-section">
+        ${
+          categoryKey === "coins"
+            ? `
+              <div class="reward-center-empty reward-center-empty--coins">
+                <strong>${t("rewardCenter.coins")}</strong>
+                <p class="section-copy">${t("rewardCenter.coinsBody", { count: rewardCenter.coins })}</p>
+                <button class="ghost-button" type="button" data-route="reward">${t("rewardCenter.openRewardRoom")}</button>
+              </div>
+            `
+            : ownedItems[categoryKey]?.length
+              ? `
+                <div class="reward-center-grid">
+                  ${
+                    categoryKey === "card"
+                      ? ownedItems[categoryKey]
+                          .map(
+                            (card) => `
+                              <button class="collection-card-button" type="button" data-card-id="${card.id}">
+                                ${renderCard(card, { compact: true })}
+                              </button>
+                            `,
+                          )
+                          .join("")
+                      : ownedItems[categoryKey]
+                          .map((item) => renderRewardCenterItemCard(item, categoryLabels[categoryKey]))
+                          .join("")
+                  }
+                </div>
+              `
+              : renderEmptyState(
+                  t("rewardCenter.emptyTitle", { category: categoryLabels[categoryKey] }),
+                  t("rewardCenter.emptyBody", { category: categoryLabels[categoryKey] }),
+                  `<button class="ghost-button" type="button" data-route="reward">${t("rewardCenter.openRewardRoom")}</button>`,
+                )
+        }
+      </div>
+    </section>
+  `;
+
+  container.querySelectorAll("[data-reward-category]").forEach((button) => {
+    button.addEventListener("click", () => {
+      container.dataset.rewardCategory = button.dataset.rewardCategory;
+      renderRewardCenterSection(container, { cards, profile, authState, actions });
+    });
+  });
+
+  container.querySelectorAll("[data-card-id]").forEach((button) => {
+    button.addEventListener("click", () => {
+      actions.openCardModal(button.dataset.cardId);
+    });
+  });
+}
+
+export function renderCollectionScreen(container, { cards, filters, progress, actions, modalCard, profile, authState, route }) {
+  if (route?.section === "inventory") {
+    renderRewardCenterSection(container, { cards, profile, authState, actions });
+    return {
+      destroy() {},
+      getDebugState() {
+        return {
+          screen: "collection",
+          section: "inventory",
+        };
+      },
+    };
+  }
+
   const collectionSections = getCollectionSections(cards, filters);
   const recentCardIds = new Set(progress.recentCardIds);
   const categoryCountById = new Map(progress.categoryCounts.map((entry) => [entry.id, entry]));
@@ -185,6 +388,11 @@ export function renderCollectionScreen(container, { cards, filters, progress, ac
           <strong data-count-to="${backgroundCount}" data-count-key="collection-backgrounds">${backgroundCount}</strong>
           <small>${t("collection.backgroundInventoryNote")}</small>
         </article>
+      </div>
+
+      <div class="collection-mode-switch">
+        <a class="ghost-button" href="#/collection" data-ui-click="true">${t("collection.cardsMode")}</a>
+        <a class="primary-button" href="#/collection?section=inventory" data-ui-click="true">${t("collection.rewardCenterMode")}</a>
       </div>
 
       <div class="collection-profile-cosmetics">
@@ -421,7 +629,6 @@ export function renderCollectionScreen(container, { cards, filters, progress, ac
                 <button class="primary-button" type="button" data-route="play" data-game="memory-match">${t("common.playForMoreLoot")}</button>
                 <button class="ghost-button" type="button" data-route="reward">${t("common.openRewardRoom")}</button>
               </div>
-            </div>
           </div>
         </div>
       </div>

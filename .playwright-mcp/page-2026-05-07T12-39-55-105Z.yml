@@ -1,0 +1,1229 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e3020]:
+      - banner [ref=e3021]:
+        - link "LootWords Loot boxes turn into English word cards." [ref=e3022] [cursor=pointer]:
+          - /url: "#/home"
+          - generic [ref=e3024]:
+            - strong [ref=e3025]: LootWords
+            - generic [ref=e3026]: Loot boxes turn into English word cards.
+        - generic [ref=e3027]:
+          - generic [ref=e3028]:
+            - strong [ref=e3029]: "0"
+            - generic [ref=e3030]: Boxes
+          - generic [ref=e3031]:
+            - strong [ref=e3032]: "0"
+            - generic [ref=e3033]: Cards
+          - link "Parent Mode" [ref=e3034] [cursor=pointer]:
+            - /url: "#/parent?section=content"
+            - generic [ref=e3035]: 🛡
+            - generic [ref=e3036]: Parent Mode
+          - button "Language selector" [ref=e3038]:
+            - generic [ref=e3039]: 🇺🇸
+            - generic [ref=e3040]: English
+            - generic [ref=e3041]: ▾
+          - button "English voice selector" [ref=e3043]:
+            - generic [ref=e3044]: 🗣
+            - generic [ref=e3045]: Microsoft David - English (United States)
+            - generic [ref=e3046]: ▾
+          - button "Account" [ref=e3047]:
+            - generic [ref=e3048]: 👤
+            - generic [ref=e3049]: Account
+          - generic "Audio controls" [ref=e3050]:
+            - button "Sound On" [ref=e3051]: 🔊
+      - main [ref=e3052]:
+        - generic [ref=e3054]:
+          - generic [ref=e3055]:
+            - generic [ref=e3056]:
+              - text: Collection album
+              - heading "Your word-card inventory" [level=2] [ref=e3057]
+            - paragraph [ref=e3058]: Browse by category, chase themed packs, and keep recent finds easy to revisit.
+          - generic [ref=e3059]:
+            - article [ref=e3060]:
+              - generic [ref=e3061]: Unlocked cards
+              - strong [ref=e3062]: 0/140
+              - generic [ref=e3063]: "Album complete: 0%"
+            - article [ref=e3064]:
+              - generic [ref=e3065]: Fresh finds
+              - strong [ref=e3066]: "0"
+              - generic [ref=e3067]: Newest cards marked with a ribbon
+            - article [ref=e3068]:
+              - generic [ref=e3069]: Total points
+              - strong [ref=e3070]: "0"
+              - generic [ref=e3071]: Memory-value collection score
+            - article [ref=e3072]:
+              - generic [ref=e3073]: Top card
+              - strong [ref=e3074]: "--"
+              - generic [ref=e3075]: Win to reveal more cards
+            - article [ref=e3076]:
+              - generic [ref=e3077]: Coin balance
+              - strong [ref=e3078]: "0"
+              - generic [ref=e3079]: Saved for future shop rewards
+            - article [ref=e3080]:
+              - generic [ref=e3081]: Stickers owned
+              - strong [ref=e3082]: "0"
+              - generic [ref=e3083]: Saved collectible sticker rewards
+            - article [ref=e3084]:
+              - generic [ref=e3085]: Cursor skins owned
+              - strong [ref=e3086]: "0"
+              - generic [ref=e3087]: Saved collectible cursor rewards
+            - article [ref=e3088]:
+              - generic [ref=e3089]: Theme packs owned
+              - strong [ref=e3090]: "0"
+              - generic [ref=e3091]: Saved collectible UI themes
+            - article [ref=e3092]:
+              - generic [ref=e3093]: Avatars owned
+              - strong [ref=e3094]: "0"
+              - generic [ref=e3095]: Saved profile avatar rewards
+            - article [ref=e3096]:
+              - generic [ref=e3097]: Backgrounds owned
+              - strong [ref=e3098]: "0"
+              - generic [ref=e3099]: Saved profile background rewards
+          - generic [ref=e3100]:
+            - link "collection.cardsMode" [ref=e3101] [cursor=pointer]:
+              - /url: "#/collection"
+            - link "collection.rewardCenterMode" [ref=e3102] [cursor=pointer]:
+              - /url: "#/collection?section=inventory"
+          - article [ref=e3104]:
+            - text: Profile cosmetics
+            - heading "Current profile style" [level=3] [ref=e3105]
+            - generic [ref=e3106]:
+              - generic [ref=e3107]:
+                - generic [ref=e3108]: Equipped theme
+                - strong [ref=e3109]: ✨ Default
+              - generic [ref=e3110]:
+                - generic [ref=e3111]: Equipped cursor
+                - strong [ref=e3112]: Nothing equipped yet
+              - generic [ref=e3113]:
+                - generic [ref=e3114]: Equipped avatar
+                - strong [ref=e3115]: Nothing equipped yet
+              - generic [ref=e3116]:
+                - generic [ref=e3117]: Equipped background
+                - strong [ref=e3118]: Nothing equipped yet
+            - paragraph [ref=e3119]: The first unlocked theme, cursor, avatar, or background equips automatically. A full profile customizer can build on this later.
+          - generic [ref=e3120]:
+            - generic [ref=e3121]:
+              - generic [ref=e3122]:
+                - text: Theme packs
+                - heading "Choose your active theme" [level=3] [ref=e3123]
+              - paragraph [ref=e3124]: Preview each theme and equip any theme you already own. The default theme is always ready.
+            - generic [ref=e3125]:
+              - article [ref=e3126]:
+                - generic [ref=e3131]:
+                  - strong [ref=e3132]: ✨ Default
+                  - generic [ref=e3133]: Common
+                - paragraph [ref=e3134]: Glow
+                - generic [ref=e3135]:
+                  - generic [ref=e3136]: Always ready
+                  - button "Equipped" [ref=e3137]
+              - article [ref=e3138]:
+                - generic [ref=e3143]:
+                  - strong [ref=e3144]: 🌿 Jungle
+                  - generic [ref=e3145]: Epic
+                - paragraph [ref=e3146]: Canopy
+                - generic [ref=e3147]:
+                  - generic [ref=e3148]: Locked in boxes
+                  - button "Locked" [disabled] [ref=e3149]
+              - article [ref=e3150]:
+                - generic [ref=e3155]:
+                  - strong [ref=e3156]: 🏜️ Desert
+                  - generic [ref=e3157]: Epic
+                - paragraph [ref=e3158]: Dunes
+                - generic [ref=e3159]:
+                  - generic [ref=e3160]: Locked in boxes
+                  - button "Locked" [disabled] [ref=e3161]
+              - article [ref=e3162]:
+                - generic [ref=e3167]:
+                  - strong [ref=e3168]: 🪨 Cave
+                  - generic [ref=e3169]: Mythic
+                - paragraph [ref=e3170]: Crystal Cave
+                - generic [ref=e3171]:
+                  - generic [ref=e3172]: Locked in boxes
+                  - button "Locked" [disabled] [ref=e3173]
+              - article [ref=e3174]:
+                - generic [ref=e3179]:
+                  - strong [ref=e3180]: 🌋 Volcano
+                  - generic [ref=e3181]: Legend
+                - paragraph [ref=e3182]: Lava Glow
+                - generic [ref=e3183]:
+                  - generic [ref=e3184]: Locked in boxes
+                  - button "Locked" [disabled] [ref=e3185]
+              - article [ref=e3186]:
+                - generic [ref=e3191]:
+                  - strong [ref=e3192]: 🐉 Dragon
+                  - generic [ref=e3193]: Legend
+                - paragraph [ref=e3194]: Royal Flame
+                - generic [ref=e3195]:
+                  - generic [ref=e3196]: Locked in boxes
+                  - button "Locked" [disabled] [ref=e3197]
+          - generic [ref=e3198]:
+            - generic [ref=e3199]:
+              - generic [ref=e3200]:
+                - text: Coin shop
+                - heading "Spend saved coins" [level=3] [ref=e3201]
+              - paragraph [ref=e3202]: Use coins on account-owned rewards. Stickers and cosmetics bought here stay tied to this account.
+            - generic [ref=e3203]:
+              - generic [ref=e3204]:
+                - strong [ref=e3205]: Log in to unlock the shop
+                - paragraph [ref=e3206]: Coin spending and owned rewards are saved only for registered players. Guests can still collect boxes and cards.
+              - button "Log in to shop" [ref=e3207]
+          - generic [ref=e3208]:
+            - article [ref=e3209]:
+              - strong [ref=e3210]: 🏠 Daily Things
+              - text: "Collected: 0/50"
+            - article [ref=e3213]:
+              - strong [ref=e3214]: 🌍 World Explorer
+              - text: "Collected: 0/50"
+            - article [ref=e3217]:
+              - strong [ref=e3218]: 🗝️ Adventure Vault
+              - text: "Collected: 0/40"
+          - generic [ref=e3221]:
+            - article [ref=e3222]:
+              - strong [ref=e3223]: Common
+              - generic [ref=e3224]: "Collected: 0/50"
+            - article [ref=e3225]:
+              - strong [ref=e3226]: Uncommon
+              - generic [ref=e3227]: "Collected: 0/41"
+            - article [ref=e3228]:
+              - strong [ref=e3229]: Rare
+              - generic [ref=e3230]: "Collected: 0/35"
+            - article [ref=e3231]:
+              - strong [ref=e3232]: Mythic
+              - generic [ref=e3233]: "Collected: 0/1"
+            - article [ref=e3234]:
+              - strong [ref=e3235]: Epic
+              - generic [ref=e3236]: "Collected: 0/12"
+            - article [ref=e3237]:
+              - strong [ref=e3238]: Legend
+              - generic [ref=e3239]: "Collected: 0/1"
+          - generic [ref=e3240]:
+            - generic [ref=e3241]:
+              - text: Category
+              - combobox "Category" [ref=e3242]:
+                - option "All categories" [selected]
+                - option "Animals"
+                - option "Food"
+                - option "Vehicles"
+                - option "Home"
+                - option "Clothes"
+                - option "Nature"
+                - option "Toys"
+                - option "School"
+                - option "Kitchen"
+                - option "Fantasy"
+                - option "City"
+                - option "Bathroom"
+                - option "People & Jobs"
+                - option "Sports"
+            - generic [ref=e3243]:
+              - text: Rarity
+              - combobox "Rarity" [ref=e3244]:
+                - option "All rarities" [selected]
+                - option "Common"
+                - option "Uncommon"
+                - option "Rare"
+                - option "Mythic"
+                - option "Epic"
+                - option "Legend"
+            - generic [ref=e3245]:
+              - text: Sort
+              - combobox "Sort" [ref=e3246]:
+                - option "Newest unlocks" [selected]
+                - option "Highest points"
+                - option "Lowest points"
+                - option "A to Z"
+                - option "Rarity first"
+                - option "Category order"
+                - option "Easy to hard"
+          - generic [ref=e3247]:
+            - generic [ref=e3248]:
+              - generic [ref=e3249]:
+                - generic [ref=e3250]:
+                  - text: 🐾 World Explorer
+                  - heading "Animals" [level=3] [ref=e3251]
+                - generic [ref=e3252]:
+                  - generic [ref=e3253]: 0/10 unlocked
+                  - generic [ref=e3254]: "Cards in view: 10"
+              - generic [ref=e3255]:
+                - button [ref=e3256]:
+                  - article [ref=e3257]:
+                    - strong [ref=e3260]: "?"
+                    - generic [ref=e3261]:
+                      - heading "Mystery Card" [level=3] [ref=e3262]
+                      - generic [ref=e3263]: "?"
+                - button [ref=e3264]:
+                  - article [ref=e3265]:
+                    - strong [ref=e3268]: "?"
+                    - generic [ref=e3269]:
+                      - heading "Mystery Card" [level=3] [ref=e3270]
+                      - generic [ref=e3271]: "?"
+                - button [ref=e3272]:
+                  - article [ref=e3273]:
+                    - strong [ref=e3276]: "?"
+                    - generic [ref=e3277]:
+                      - heading "Mystery Card" [level=3] [ref=e3278]
+                      - generic [ref=e3279]: "?"
+                - button [ref=e3280]:
+                  - article [ref=e3281]:
+                    - strong [ref=e3284]: "?"
+                    - generic [ref=e3285]:
+                      - heading "Mystery Card" [level=3] [ref=e3286]
+                      - generic [ref=e3287]: "?"
+                - button [ref=e3288]:
+                  - article [ref=e3289]:
+                    - strong [ref=e3292]: "?"
+                    - generic [ref=e3293]:
+                      - heading "Mystery Card" [level=3] [ref=e3294]
+                      - generic [ref=e3295]: "?"
+                - button [ref=e3296]:
+                  - article [ref=e3297]:
+                    - strong [ref=e3300]: "?"
+                    - generic [ref=e3301]:
+                      - heading "Mystery Card" [level=3] [ref=e3302]
+                      - generic [ref=e3303]: "?"
+                - button [ref=e3304]:
+                  - article [ref=e3305]:
+                    - strong [ref=e3308]: "?"
+                    - generic [ref=e3309]:
+                      - heading "Mystery Card" [level=3] [ref=e3310]
+                      - generic [ref=e3311]: "?"
+                - button [ref=e3312]:
+                  - article [ref=e3313]:
+                    - strong [ref=e3316]: "?"
+                    - generic [ref=e3317]:
+                      - heading "Mystery Card" [level=3] [ref=e3318]
+                      - generic [ref=e3319]: "?"
+                - button [ref=e3320]:
+                  - article [ref=e3321]:
+                    - strong [ref=e3324]: "?"
+                    - generic [ref=e3325]:
+                      - heading "Mystery Card" [level=3] [ref=e3326]
+                      - generic [ref=e3327]: "?"
+                - button [ref=e3328]:
+                  - article [ref=e3329]:
+                    - strong [ref=e3332]: "?"
+                    - generic [ref=e3333]:
+                      - heading "Mystery Card" [level=3] [ref=e3334]
+                      - generic [ref=e3335]: "?"
+            - generic [ref=e3336]:
+              - generic [ref=e3337]:
+                - generic [ref=e3338]:
+                  - text: 🍎 World Explorer
+                  - heading "Food" [level=3] [ref=e3339]
+                - generic [ref=e3340]:
+                  - generic [ref=e3341]: 0/10 unlocked
+                  - generic [ref=e3342]: "Cards in view: 10"
+              - generic [ref=e3343]:
+                - button [ref=e3344]:
+                  - article [ref=e3345]:
+                    - strong [ref=e3348]: "?"
+                    - generic [ref=e3349]:
+                      - heading "Mystery Card" [level=3] [ref=e3350]
+                      - generic [ref=e3351]: "?"
+                - button [ref=e3352]:
+                  - article [ref=e3353]:
+                    - strong [ref=e3356]: "?"
+                    - generic [ref=e3357]:
+                      - heading "Mystery Card" [level=3] [ref=e3358]
+                      - generic [ref=e3359]: "?"
+                - button [ref=e3360]:
+                  - article [ref=e3361]:
+                    - strong [ref=e3364]: "?"
+                    - generic [ref=e3365]:
+                      - heading "Mystery Card" [level=3] [ref=e3366]
+                      - generic [ref=e3367]: "?"
+                - button [ref=e3368]:
+                  - article [ref=e3369]:
+                    - strong [ref=e3372]: "?"
+                    - generic [ref=e3373]:
+                      - heading "Mystery Card" [level=3] [ref=e3374]
+                      - generic [ref=e3375]: "?"
+                - button [ref=e3376]:
+                  - article [ref=e3377]:
+                    - strong [ref=e3380]: "?"
+                    - generic [ref=e3381]:
+                      - heading "Mystery Card" [level=3] [ref=e3382]
+                      - generic [ref=e3383]: "?"
+                - button [ref=e3384]:
+                  - article [ref=e3385]:
+                    - strong [ref=e3388]: "?"
+                    - generic [ref=e3389]:
+                      - heading "Mystery Card" [level=3] [ref=e3390]
+                      - generic [ref=e3391]: "?"
+                - button [ref=e3392]:
+                  - article [ref=e3393]:
+                    - strong [ref=e3396]: "?"
+                    - generic [ref=e3397]:
+                      - heading "Mystery Card" [level=3] [ref=e3398]
+                      - generic [ref=e3399]: "?"
+                - button [ref=e3400]:
+                  - article [ref=e3401]:
+                    - strong [ref=e3404]: "?"
+                    - generic [ref=e3405]:
+                      - heading "Mystery Card" [level=3] [ref=e3406]
+                      - generic [ref=e3407]: "?"
+                - button [ref=e3408]:
+                  - article [ref=e3409]:
+                    - strong [ref=e3412]: "?"
+                    - generic [ref=e3413]:
+                      - heading "Mystery Card" [level=3] [ref=e3414]
+                      - generic [ref=e3415]: "?"
+                - button [ref=e3416]:
+                  - article [ref=e3417]:
+                    - strong [ref=e3420]: "?"
+                    - generic [ref=e3421]:
+                      - heading "Mystery Card" [level=3] [ref=e3422]
+                      - generic [ref=e3423]: "?"
+            - generic [ref=e3424]:
+              - generic [ref=e3425]:
+                - generic [ref=e3426]:
+                  - text: 🚗 Adventure Vault
+                  - heading "Vehicles" [level=3] [ref=e3427]
+                - generic [ref=e3428]:
+                  - generic [ref=e3429]: 0/10 unlocked
+                  - generic [ref=e3430]: "Cards in view: 10"
+              - generic [ref=e3431]:
+                - button [ref=e3432]:
+                  - article [ref=e3433]:
+                    - strong [ref=e3436]: "?"
+                    - generic [ref=e3437]:
+                      - heading "Mystery Card" [level=3] [ref=e3438]
+                      - generic [ref=e3439]: "?"
+                - button [ref=e3440]:
+                  - article [ref=e3441]:
+                    - strong [ref=e3444]: "?"
+                    - generic [ref=e3445]:
+                      - heading "Mystery Card" [level=3] [ref=e3446]
+                      - generic [ref=e3447]: "?"
+                - button [ref=e3448]:
+                  - article [ref=e3449]:
+                    - strong [ref=e3452]: "?"
+                    - generic [ref=e3453]:
+                      - heading "Mystery Card" [level=3] [ref=e3454]
+                      - generic [ref=e3455]: "?"
+                - button [ref=e3456]:
+                  - article [ref=e3457]:
+                    - strong [ref=e3460]: "?"
+                    - generic [ref=e3461]:
+                      - heading "Mystery Card" [level=3] [ref=e3462]
+                      - generic [ref=e3463]: "?"
+                - button [ref=e3464]:
+                  - article [ref=e3465]:
+                    - strong [ref=e3468]: "?"
+                    - generic [ref=e3469]:
+                      - heading "Mystery Card" [level=3] [ref=e3470]
+                      - generic [ref=e3471]: "?"
+                - button [ref=e3472]:
+                  - article [ref=e3473]:
+                    - strong [ref=e3476]: "?"
+                    - generic [ref=e3477]:
+                      - heading "Mystery Card" [level=3] [ref=e3478]
+                      - generic [ref=e3479]: "?"
+                - button [ref=e3480]:
+                  - article [ref=e3481]:
+                    - strong [ref=e3484]: "?"
+                    - generic [ref=e3485]:
+                      - heading "Mystery Card" [level=3] [ref=e3486]
+                      - generic [ref=e3487]: "?"
+                - button [ref=e3488]:
+                  - article [ref=e3489]:
+                    - strong [ref=e3492]: "?"
+                    - generic [ref=e3493]:
+                      - heading "Mystery Card" [level=3] [ref=e3494]
+                      - generic [ref=e3495]: "?"
+                - button [ref=e3496]:
+                  - article [ref=e3497]:
+                    - strong [ref=e3500]: "?"
+                    - generic [ref=e3501]:
+                      - heading "Mystery Card" [level=3] [ref=e3502]
+                      - generic [ref=e3503]: "?"
+                - button [ref=e3504]:
+                  - article [ref=e3505]:
+                    - strong [ref=e3508]: "?"
+                    - generic [ref=e3509]:
+                      - heading "Mystery Card" [level=3] [ref=e3510]
+                      - generic [ref=e3511]: "?"
+            - generic [ref=e3512]:
+              - generic [ref=e3513]:
+                - generic [ref=e3514]:
+                  - text: 🏠 Daily Things
+                  - heading "Home" [level=3] [ref=e3515]
+                - generic [ref=e3516]:
+                  - generic [ref=e3517]: 0/10 unlocked
+                  - generic [ref=e3518]: "Cards in view: 10"
+              - generic [ref=e3519]:
+                - button [ref=e3520]:
+                  - article [ref=e3521]:
+                    - strong [ref=e3524]: "?"
+                    - generic [ref=e3525]:
+                      - heading "Mystery Card" [level=3] [ref=e3526]
+                      - generic [ref=e3527]: "?"
+                - button [ref=e3528]:
+                  - article [ref=e3529]:
+                    - strong [ref=e3532]: "?"
+                    - generic [ref=e3533]:
+                      - heading "Mystery Card" [level=3] [ref=e3534]
+                      - generic [ref=e3535]: "?"
+                - button [ref=e3536]:
+                  - article [ref=e3537]:
+                    - strong [ref=e3540]: "?"
+                    - generic [ref=e3541]:
+                      - heading "Mystery Card" [level=3] [ref=e3542]
+                      - generic [ref=e3543]: "?"
+                - button [ref=e3544]:
+                  - article [ref=e3545]:
+                    - strong [ref=e3548]: "?"
+                    - generic [ref=e3549]:
+                      - heading "Mystery Card" [level=3] [ref=e3550]
+                      - generic [ref=e3551]: "?"
+                - button [ref=e3552]:
+                  - article [ref=e3553]:
+                    - strong [ref=e3556]: "?"
+                    - generic [ref=e3557]:
+                      - heading "Mystery Card" [level=3] [ref=e3558]
+                      - generic [ref=e3559]: "?"
+                - button [ref=e3560]:
+                  - article [ref=e3561]:
+                    - strong [ref=e3564]: "?"
+                    - generic [ref=e3565]:
+                      - heading "Mystery Card" [level=3] [ref=e3566]
+                      - generic [ref=e3567]: "?"
+                - button [ref=e3568]:
+                  - article [ref=e3569]:
+                    - strong [ref=e3572]: "?"
+                    - generic [ref=e3573]:
+                      - heading "Mystery Card" [level=3] [ref=e3574]
+                      - generic [ref=e3575]: "?"
+                - button [ref=e3576]:
+                  - article [ref=e3577]:
+                    - strong [ref=e3580]: "?"
+                    - generic [ref=e3581]:
+                      - heading "Mystery Card" [level=3] [ref=e3582]
+                      - generic [ref=e3583]: "?"
+                - button [ref=e3584]:
+                  - article [ref=e3585]:
+                    - strong [ref=e3588]: "?"
+                    - generic [ref=e3589]:
+                      - heading "Mystery Card" [level=3] [ref=e3590]
+                      - generic [ref=e3591]: "?"
+                - button [ref=e3592]:
+                  - article [ref=e3593]:
+                    - strong [ref=e3596]: "?"
+                    - generic [ref=e3597]:
+                      - heading "Mystery Card" [level=3] [ref=e3598]
+                      - generic [ref=e3599]: "?"
+            - generic [ref=e3600]:
+              - generic [ref=e3601]:
+                - generic [ref=e3602]:
+                  - text: 👕 Daily Things
+                  - heading "Clothes" [level=3] [ref=e3603]
+                - generic [ref=e3604]:
+                  - generic [ref=e3605]: 0/10 unlocked
+                  - generic [ref=e3606]: "Cards in view: 10"
+              - generic [ref=e3607]:
+                - button [ref=e3608]:
+                  - article [ref=e3609]:
+                    - strong [ref=e3612]: "?"
+                    - generic [ref=e3613]:
+                      - heading "Mystery Card" [level=3] [ref=e3614]
+                      - generic [ref=e3615]: "?"
+                - button [ref=e3616]:
+                  - article [ref=e3617]:
+                    - strong [ref=e3620]: "?"
+                    - generic [ref=e3621]:
+                      - heading "Mystery Card" [level=3] [ref=e3622]
+                      - generic [ref=e3623]: "?"
+                - button [ref=e3624]:
+                  - article [ref=e3625]:
+                    - strong [ref=e3628]: "?"
+                    - generic [ref=e3629]:
+                      - heading "Mystery Card" [level=3] [ref=e3630]
+                      - generic [ref=e3631]: "?"
+                - button [ref=e3632]:
+                  - article [ref=e3633]:
+                    - strong [ref=e3636]: "?"
+                    - generic [ref=e3637]:
+                      - heading "Mystery Card" [level=3] [ref=e3638]
+                      - generic [ref=e3639]: "?"
+                - button [ref=e3640]:
+                  - article [ref=e3641]:
+                    - strong [ref=e3644]: "?"
+                    - generic [ref=e3645]:
+                      - heading "Mystery Card" [level=3] [ref=e3646]
+                      - generic [ref=e3647]: "?"
+                - button [ref=e3648]:
+                  - article [ref=e3649]:
+                    - strong [ref=e3652]: "?"
+                    - generic [ref=e3653]:
+                      - heading "Mystery Card" [level=3] [ref=e3654]
+                      - generic [ref=e3655]: "?"
+                - button [ref=e3656]:
+                  - article [ref=e3657]:
+                    - strong [ref=e3660]: "?"
+                    - generic [ref=e3661]:
+                      - heading "Mystery Card" [level=3] [ref=e3662]
+                      - generic [ref=e3663]: "?"
+                - button [ref=e3664]:
+                  - article [ref=e3665]:
+                    - strong [ref=e3668]: "?"
+                    - generic [ref=e3669]:
+                      - heading "Mystery Card" [level=3] [ref=e3670]
+                      - generic [ref=e3671]: "?"
+                - button [ref=e3672]:
+                  - article [ref=e3673]:
+                    - strong [ref=e3676]: "?"
+                    - generic [ref=e3677]:
+                      - heading "Mystery Card" [level=3] [ref=e3678]
+                      - generic [ref=e3679]: "?"
+                - button [ref=e3680]:
+                  - article [ref=e3681]:
+                    - strong [ref=e3684]: "?"
+                    - generic [ref=e3685]:
+                      - heading "Mystery Card" [level=3] [ref=e3686]
+                      - generic [ref=e3687]: "?"
+            - generic [ref=e3688]:
+              - generic [ref=e3689]:
+                - generic [ref=e3690]:
+                  - text: 🌳 World Explorer
+                  - heading "Nature" [level=3] [ref=e3691]
+                - generic [ref=e3692]:
+                  - generic [ref=e3693]: 0/10 unlocked
+                  - generic [ref=e3694]: "Cards in view: 10"
+              - generic [ref=e3695]:
+                - button [ref=e3696]:
+                  - article [ref=e3697]:
+                    - strong [ref=e3700]: "?"
+                    - generic [ref=e3701]:
+                      - heading "Mystery Card" [level=3] [ref=e3702]
+                      - generic [ref=e3703]: "?"
+                - button [ref=e3704]:
+                  - article [ref=e3705]:
+                    - strong [ref=e3708]: "?"
+                    - generic [ref=e3709]:
+                      - heading "Mystery Card" [level=3] [ref=e3710]
+                      - generic [ref=e3711]: "?"
+                - button [ref=e3712]:
+                  - article [ref=e3713]:
+                    - strong [ref=e3716]: "?"
+                    - generic [ref=e3717]:
+                      - heading "Mystery Card" [level=3] [ref=e3718]
+                      - generic [ref=e3719]: "?"
+                - button [ref=e3720]:
+                  - article [ref=e3721]:
+                    - strong [ref=e3724]: "?"
+                    - generic [ref=e3725]:
+                      - heading "Mystery Card" [level=3] [ref=e3726]
+                      - generic [ref=e3727]: "?"
+                - button [ref=e3728]:
+                  - article [ref=e3729]:
+                    - strong [ref=e3732]: "?"
+                    - generic [ref=e3733]:
+                      - heading "Mystery Card" [level=3] [ref=e3734]
+                      - generic [ref=e3735]: "?"
+                - button [ref=e3736]:
+                  - article [ref=e3737]:
+                    - strong [ref=e3740]: "?"
+                    - generic [ref=e3741]:
+                      - heading "Mystery Card" [level=3] [ref=e3742]
+                      - generic [ref=e3743]: "?"
+                - button [ref=e3744]:
+                  - article [ref=e3745]:
+                    - strong [ref=e3748]: "?"
+                    - generic [ref=e3749]:
+                      - heading "Mystery Card" [level=3] [ref=e3750]
+                      - generic [ref=e3751]: "?"
+                - button [ref=e3752]:
+                  - article [ref=e3753]:
+                    - strong [ref=e3756]: "?"
+                    - generic [ref=e3757]:
+                      - heading "Mystery Card" [level=3] [ref=e3758]
+                      - generic [ref=e3759]: "?"
+                - button [ref=e3760]:
+                  - article [ref=e3761]:
+                    - strong [ref=e3764]: "?"
+                    - generic [ref=e3765]:
+                      - heading "Mystery Card" [level=3] [ref=e3766]
+                      - generic [ref=e3767]: "?"
+                - button [ref=e3768]:
+                  - article [ref=e3769]:
+                    - strong [ref=e3772]: "?"
+                    - generic [ref=e3773]:
+                      - heading "Mystery Card" [level=3] [ref=e3774]
+                      - generic [ref=e3775]: "?"
+            - generic [ref=e3776]:
+              - generic [ref=e3777]:
+                - generic [ref=e3778]:
+                  - text: 🧸 Adventure Vault
+                  - heading "Toys" [level=3] [ref=e3779]
+                - generic [ref=e3780]:
+                  - generic [ref=e3781]: 0/10 unlocked
+                  - generic [ref=e3782]: "Cards in view: 10"
+              - generic [ref=e3783]:
+                - button [ref=e3784]:
+                  - article [ref=e3785]:
+                    - strong [ref=e3788]: "?"
+                    - generic [ref=e3789]:
+                      - heading "Mystery Card" [level=3] [ref=e3790]
+                      - generic [ref=e3791]: "?"
+                - button [ref=e3792]:
+                  - article [ref=e3793]:
+                    - strong [ref=e3796]: "?"
+                    - generic [ref=e3797]:
+                      - heading "Mystery Card" [level=3] [ref=e3798]
+                      - generic [ref=e3799]: "?"
+                - button [ref=e3800]:
+                  - article [ref=e3801]:
+                    - strong [ref=e3804]: "?"
+                    - generic [ref=e3805]:
+                      - heading "Mystery Card" [level=3] [ref=e3806]
+                      - generic [ref=e3807]: "?"
+                - button [ref=e3808]:
+                  - article [ref=e3809]:
+                    - strong [ref=e3812]: "?"
+                    - generic [ref=e3813]:
+                      - heading "Mystery Card" [level=3] [ref=e3814]
+                      - generic [ref=e3815]: "?"
+                - button [ref=e3816]:
+                  - article [ref=e3817]:
+                    - strong [ref=e3820]: "?"
+                    - generic [ref=e3821]:
+                      - heading "Mystery Card" [level=3] [ref=e3822]
+                      - generic [ref=e3823]: "?"
+                - button [ref=e3824]:
+                  - article [ref=e3825]:
+                    - strong [ref=e3828]: "?"
+                    - generic [ref=e3829]:
+                      - heading "Mystery Card" [level=3] [ref=e3830]
+                      - generic [ref=e3831]: "?"
+                - button [ref=e3832]:
+                  - article [ref=e3833]:
+                    - strong [ref=e3836]: "?"
+                    - generic [ref=e3837]:
+                      - heading "Mystery Card" [level=3] [ref=e3838]
+                      - generic [ref=e3839]: "?"
+                - button [ref=e3840]:
+                  - article [ref=e3841]:
+                    - strong [ref=e3844]: "?"
+                    - generic [ref=e3845]:
+                      - heading "Mystery Card" [level=3] [ref=e3846]
+                      - generic [ref=e3847]: "?"
+                - button [ref=e3848]:
+                  - article [ref=e3849]:
+                    - strong [ref=e3852]: "?"
+                    - generic [ref=e3853]:
+                      - heading "Mystery Card" [level=3] [ref=e3854]
+                      - generic [ref=e3855]: "?"
+                - button [ref=e3856]:
+                  - article [ref=e3857]:
+                    - strong [ref=e3860]: "?"
+                    - generic [ref=e3861]:
+                      - heading "Mystery Card" [level=3] [ref=e3862]
+                      - generic [ref=e3863]: "?"
+            - generic [ref=e3864]:
+              - generic [ref=e3865]:
+                - generic [ref=e3866]:
+                  - text: ✏️ Daily Things
+                  - heading "School" [level=3] [ref=e3867]
+                - generic [ref=e3868]:
+                  - generic [ref=e3869]: 0/10 unlocked
+                  - generic [ref=e3870]: "Cards in view: 10"
+              - generic [ref=e3871]:
+                - button [ref=e3872]:
+                  - article [ref=e3873]:
+                    - strong [ref=e3876]: "?"
+                    - generic [ref=e3877]:
+                      - heading "Mystery Card" [level=3] [ref=e3878]
+                      - generic [ref=e3879]: "?"
+                - button [ref=e3880]:
+                  - article [ref=e3881]:
+                    - strong [ref=e3884]: "?"
+                    - generic [ref=e3885]:
+                      - heading "Mystery Card" [level=3] [ref=e3886]
+                      - generic [ref=e3887]: "?"
+                - button [ref=e3888]:
+                  - article [ref=e3889]:
+                    - strong [ref=e3892]: "?"
+                    - generic [ref=e3893]:
+                      - heading "Mystery Card" [level=3] [ref=e3894]
+                      - generic [ref=e3895]: "?"
+                - button [ref=e3896]:
+                  - article [ref=e3897]:
+                    - strong [ref=e3900]: "?"
+                    - generic [ref=e3901]:
+                      - heading "Mystery Card" [level=3] [ref=e3902]
+                      - generic [ref=e3903]: "?"
+                - button [ref=e3904]:
+                  - article [ref=e3905]:
+                    - strong [ref=e3908]: "?"
+                    - generic [ref=e3909]:
+                      - heading "Mystery Card" [level=3] [ref=e3910]
+                      - generic [ref=e3911]: "?"
+                - button [ref=e3912]:
+                  - article [ref=e3913]:
+                    - strong [ref=e3916]: "?"
+                    - generic [ref=e3917]:
+                      - heading "Mystery Card" [level=3] [ref=e3918]
+                      - generic [ref=e3919]: "?"
+                - button [ref=e3920]:
+                  - article [ref=e3921]:
+                    - strong [ref=e3924]: "?"
+                    - generic [ref=e3925]:
+                      - heading "Mystery Card" [level=3] [ref=e3926]
+                      - generic [ref=e3927]: "?"
+                - button [ref=e3928]:
+                  - article [ref=e3929]:
+                    - strong [ref=e3932]: "?"
+                    - generic [ref=e3933]:
+                      - heading "Mystery Card" [level=3] [ref=e3934]
+                      - generic [ref=e3935]: "?"
+                - button [ref=e3936]:
+                  - article [ref=e3937]:
+                    - strong [ref=e3940]: "?"
+                    - generic [ref=e3941]:
+                      - heading "Mystery Card" [level=3] [ref=e3942]
+                      - generic [ref=e3943]: "?"
+                - button [ref=e3944]:
+                  - article [ref=e3945]:
+                    - strong [ref=e3948]: "?"
+                    - generic [ref=e3949]:
+                      - heading "Mystery Card" [level=3] [ref=e3950]
+                      - generic [ref=e3951]: "?"
+            - generic [ref=e3952]:
+              - generic [ref=e3953]:
+                - generic [ref=e3954]:
+                  - text: 🥣 Daily Things
+                  - heading "Kitchen" [level=3] [ref=e3955]
+                - generic [ref=e3956]:
+                  - generic [ref=e3957]: 0/10 unlocked
+                  - generic [ref=e3958]: "Cards in view: 10"
+              - generic [ref=e3959]:
+                - button [ref=e3960]:
+                  - article [ref=e3961]:
+                    - strong [ref=e3964]: "?"
+                    - generic [ref=e3965]:
+                      - heading "Mystery Card" [level=3] [ref=e3966]
+                      - generic [ref=e3967]: "?"
+                - button [ref=e3968]:
+                  - article [ref=e3969]:
+                    - strong [ref=e3972]: "?"
+                    - generic [ref=e3973]:
+                      - heading "Mystery Card" [level=3] [ref=e3974]
+                      - generic [ref=e3975]: "?"
+                - button [ref=e3976]:
+                  - article [ref=e3977]:
+                    - strong [ref=e3980]: "?"
+                    - generic [ref=e3981]:
+                      - heading "Mystery Card" [level=3] [ref=e3982]
+                      - generic [ref=e3983]: "?"
+                - button [ref=e3984]:
+                  - article [ref=e3985]:
+                    - strong [ref=e3988]: "?"
+                    - generic [ref=e3989]:
+                      - heading "Mystery Card" [level=3] [ref=e3990]
+                      - generic [ref=e3991]: "?"
+                - button [ref=e3992]:
+                  - article [ref=e3993]:
+                    - strong [ref=e3996]: "?"
+                    - generic [ref=e3997]:
+                      - heading "Mystery Card" [level=3] [ref=e3998]
+                      - generic [ref=e3999]: "?"
+                - button [ref=e4000]:
+                  - article [ref=e4001]:
+                    - strong [ref=e4004]: "?"
+                    - generic [ref=e4005]:
+                      - heading "Mystery Card" [level=3] [ref=e4006]
+                      - generic [ref=e4007]: "?"
+                - button [ref=e4008]:
+                  - article [ref=e4009]:
+                    - strong [ref=e4012]: "?"
+                    - generic [ref=e4013]:
+                      - heading "Mystery Card" [level=3] [ref=e4014]
+                      - generic [ref=e4015]: "?"
+                - button [ref=e4016]:
+                  - article [ref=e4017]:
+                    - strong [ref=e4020]: "?"
+                    - generic [ref=e4021]:
+                      - heading "Mystery Card" [level=3] [ref=e4022]
+                      - generic [ref=e4023]: "?"
+                - button [ref=e4024]:
+                  - article [ref=e4025]:
+                    - strong [ref=e4028]: "?"
+                    - generic [ref=e4029]:
+                      - heading "Mystery Card" [level=3] [ref=e4030]
+                      - generic [ref=e4031]: "?"
+                - button [ref=e4032]:
+                  - article [ref=e4033]:
+                    - strong [ref=e4036]: "?"
+                    - generic [ref=e4037]:
+                      - heading "Mystery Card" [level=3] [ref=e4038]
+                      - generic [ref=e4039]: "?"
+            - generic [ref=e4040]:
+              - generic [ref=e4041]:
+                - generic [ref=e4042]:
+                  - text: 🐉 Adventure Vault
+                  - heading "Fantasy" [level=3] [ref=e4043]
+                - generic [ref=e4044]:
+                  - generic [ref=e4045]: 0/10 unlocked
+                  - generic [ref=e4046]: "Cards in view: 10"
+              - generic [ref=e4047]:
+                - button [ref=e4048]:
+                  - article [ref=e4049]:
+                    - strong [ref=e4052]: "?"
+                    - generic [ref=e4053]:
+                      - heading "Mystery Card" [level=3] [ref=e4054]
+                      - generic [ref=e4055]: "?"
+                - button [ref=e4056]:
+                  - article [ref=e4057]:
+                    - strong [ref=e4060]: "?"
+                    - generic [ref=e4061]:
+                      - heading "Mystery Card" [level=3] [ref=e4062]
+                      - generic [ref=e4063]: "?"
+                - button [ref=e4064]:
+                  - article [ref=e4065]:
+                    - strong [ref=e4068]: "?"
+                    - generic [ref=e4069]:
+                      - heading "Mystery Card" [level=3] [ref=e4070]
+                      - generic [ref=e4071]: "?"
+                - button [ref=e4072]:
+                  - article [ref=e4073]:
+                    - strong [ref=e4076]: "?"
+                    - generic [ref=e4077]:
+                      - heading "Mystery Card" [level=3] [ref=e4078]
+                      - generic [ref=e4079]: "?"
+                - button [ref=e4080]:
+                  - article [ref=e4081]:
+                    - strong [ref=e4084]: "?"
+                    - generic [ref=e4085]:
+                      - heading "Mystery Card" [level=3] [ref=e4086]
+                      - generic [ref=e4087]: "?"
+                - button [ref=e4088]:
+                  - article [ref=e4089]:
+                    - strong [ref=e4092]: "?"
+                    - generic [ref=e4093]:
+                      - heading "Mystery Card" [level=3] [ref=e4094]
+                      - generic [ref=e4095]: "?"
+                - button [ref=e4096]:
+                  - article [ref=e4097]:
+                    - strong [ref=e4100]: "?"
+                    - generic [ref=e4101]:
+                      - heading "Mystery Card" [level=3] [ref=e4102]
+                      - generic [ref=e4103]: "?"
+                - button [ref=e4104]:
+                  - article [ref=e4105]:
+                    - strong [ref=e4108]: "?"
+                    - generic [ref=e4109]:
+                      - heading "Mystery Card" [level=3] [ref=e4110]
+                      - generic [ref=e4111]: "?"
+                - button [ref=e4112]:
+                  - article [ref=e4113]:
+                    - strong [ref=e4116]: "?"
+                    - generic [ref=e4117]:
+                      - heading "Mystery Card" [level=3] [ref=e4118]
+                      - generic [ref=e4119]: "?"
+                - button [ref=e4120]:
+                  - article [ref=e4121]:
+                    - strong [ref=e4124]: "?"
+                    - generic [ref=e4125]:
+                      - heading "Mystery Card" [level=3] [ref=e4126]
+                      - generic [ref=e4127]: "?"
+            - generic [ref=e4128]:
+              - generic [ref=e4129]:
+                - generic [ref=e4130]:
+                  - text: 🌆 World Explorer
+                  - heading "City" [level=3] [ref=e4131]
+                - generic [ref=e4132]:
+                  - generic [ref=e4133]: 0/10 unlocked
+                  - generic [ref=e4134]: "Cards in view: 10"
+              - generic [ref=e4135]:
+                - button [ref=e4136]:
+                  - article [ref=e4137]:
+                    - strong [ref=e4140]: "?"
+                    - generic [ref=e4141]:
+                      - heading "Mystery Card" [level=3] [ref=e4142]
+                      - generic [ref=e4143]: "?"
+                - button [ref=e4144]:
+                  - article [ref=e4145]:
+                    - strong [ref=e4148]: "?"
+                    - generic [ref=e4149]:
+                      - heading "Mystery Card" [level=3] [ref=e4150]
+                      - generic [ref=e4151]: "?"
+                - button [ref=e4152]:
+                  - article [ref=e4153]:
+                    - strong [ref=e4156]: "?"
+                    - generic [ref=e4157]:
+                      - heading "Mystery Card" [level=3] [ref=e4158]
+                      - generic [ref=e4159]: "?"
+                - button [ref=e4160]:
+                  - article [ref=e4161]:
+                    - strong [ref=e4164]: "?"
+                    - generic [ref=e4165]:
+                      - heading "Mystery Card" [level=3] [ref=e4166]
+                      - generic [ref=e4167]: "?"
+                - button [ref=e4168]:
+                  - article [ref=e4169]:
+                    - strong [ref=e4172]: "?"
+                    - generic [ref=e4173]:
+                      - heading "Mystery Card" [level=3] [ref=e4174]
+                      - generic [ref=e4175]: "?"
+                - button [ref=e4176]:
+                  - article [ref=e4177]:
+                    - strong [ref=e4180]: "?"
+                    - generic [ref=e4181]:
+                      - heading "Mystery Card" [level=3] [ref=e4182]
+                      - generic [ref=e4183]: "?"
+                - button [ref=e4184]:
+                  - article [ref=e4185]:
+                    - strong [ref=e4188]: "?"
+                    - generic [ref=e4189]:
+                      - heading "Mystery Card" [level=3] [ref=e4190]
+                      - generic [ref=e4191]: "?"
+                - button [ref=e4192]:
+                  - article [ref=e4193]:
+                    - strong [ref=e4196]: "?"
+                    - generic [ref=e4197]:
+                      - heading "Mystery Card" [level=3] [ref=e4198]
+                      - generic [ref=e4199]: "?"
+                - button [ref=e4200]:
+                  - article [ref=e4201]:
+                    - strong [ref=e4204]: "?"
+                    - generic [ref=e4205]:
+                      - heading "Mystery Card" [level=3] [ref=e4206]
+                      - generic [ref=e4207]: "?"
+                - button [ref=e4208]:
+                  - article [ref=e4209]:
+                    - strong [ref=e4212]: "?"
+                    - generic [ref=e4213]:
+                      - heading "Mystery Card" [level=3] [ref=e4214]
+                      - generic [ref=e4215]: "?"
+            - generic [ref=e4216]:
+              - generic [ref=e4217]:
+                - generic [ref=e4218]:
+                  - text: 🪥 Daily Things
+                  - heading "Bathroom" [level=3] [ref=e4219]
+                - generic [ref=e4220]:
+                  - generic [ref=e4221]: 0/10 unlocked
+                  - generic [ref=e4222]: "Cards in view: 10"
+              - generic [ref=e4223]:
+                - button [ref=e4224]:
+                  - article [ref=e4225]:
+                    - strong [ref=e4228]: "?"
+                    - generic [ref=e4229]:
+                      - heading "Mystery Card" [level=3] [ref=e4230]
+                      - generic [ref=e4231]: "?"
+                - button [ref=e4232]:
+                  - article [ref=e4233]:
+                    - strong [ref=e4236]: "?"
+                    - generic [ref=e4237]:
+                      - heading "Mystery Card" [level=3] [ref=e4238]
+                      - generic [ref=e4239]: "?"
+                - button [ref=e4240]:
+                  - article [ref=e4241]:
+                    - strong [ref=e4244]: "?"
+                    - generic [ref=e4245]:
+                      - heading "Mystery Card" [level=3] [ref=e4246]
+                      - generic [ref=e4247]: "?"
+                - button [ref=e4248]:
+                  - article [ref=e4249]:
+                    - strong [ref=e4252]: "?"
+                    - generic [ref=e4253]:
+                      - heading "Mystery Card" [level=3] [ref=e4254]
+                      - generic [ref=e4255]: "?"
+                - button [ref=e4256]:
+                  - article [ref=e4257]:
+                    - strong [ref=e4260]: "?"
+                    - generic [ref=e4261]:
+                      - heading "Mystery Card" [level=3] [ref=e4262]
+                      - generic [ref=e4263]: "?"
+                - button [ref=e4264]:
+                  - article [ref=e4265]:
+                    - strong [ref=e4268]: "?"
+                    - generic [ref=e4269]:
+                      - heading "Mystery Card" [level=3] [ref=e4270]
+                      - generic [ref=e4271]: "?"
+                - button [ref=e4272]:
+                  - article [ref=e4273]:
+                    - strong [ref=e4276]: "?"
+                    - generic [ref=e4277]:
+                      - heading "Mystery Card" [level=3] [ref=e4278]
+                      - generic [ref=e4279]: "?"
+                - button [ref=e4280]:
+                  - article [ref=e4281]:
+                    - strong [ref=e4284]: "?"
+                    - generic [ref=e4285]:
+                      - heading "Mystery Card" [level=3] [ref=e4286]
+                      - generic [ref=e4287]: "?"
+                - button [ref=e4288]:
+                  - article [ref=e4289]:
+                    - strong [ref=e4292]: "?"
+                    - generic [ref=e4293]:
+                      - heading "Mystery Card" [level=3] [ref=e4294]
+                      - generic [ref=e4295]: "?"
+                - button [ref=e4296]:
+                  - article [ref=e4297]:
+                    - strong [ref=e4300]: "?"
+                    - generic [ref=e4301]:
+                      - heading "Mystery Card" [level=3] [ref=e4302]
+                      - generic [ref=e4303]: "?"
+            - generic [ref=e4304]:
+              - generic [ref=e4305]:
+                - generic [ref=e4306]:
+                  - text: 🧑 World Explorer
+                  - heading "People & Jobs" [level=3] [ref=e4307]
+                - generic [ref=e4308]:
+                  - generic [ref=e4309]: 0/10 unlocked
+                  - generic [ref=e4310]: "Cards in view: 10"
+              - generic [ref=e4311]:
+                - button [ref=e4312]:
+                  - article [ref=e4313]:
+                    - strong [ref=e4316]: "?"
+                    - generic [ref=e4317]:
+                      - heading "Mystery Card" [level=3] [ref=e4318]
+                      - generic [ref=e4319]: "?"
+                - button [ref=e4320]:
+                  - article [ref=e4321]:
+                    - strong [ref=e4324]: "?"
+                    - generic [ref=e4325]:
+                      - heading "Mystery Card" [level=3] [ref=e4326]
+                      - generic [ref=e4327]: "?"
+                - button [ref=e4328]:
+                  - article [ref=e4329]:
+                    - strong [ref=e4332]: "?"
+                    - generic [ref=e4333]:
+                      - heading "Mystery Card" [level=3] [ref=e4334]
+                      - generic [ref=e4335]: "?"
+                - button [ref=e4336]:
+                  - article [ref=e4337]:
+                    - strong [ref=e4340]: "?"
+                    - generic [ref=e4341]:
+                      - heading "Mystery Card" [level=3] [ref=e4342]
+                      - generic [ref=e4343]: "?"
+                - button [ref=e4344]:
+                  - article [ref=e4345]:
+                    - strong [ref=e4348]: "?"
+                    - generic [ref=e4349]:
+                      - heading "Mystery Card" [level=3] [ref=e4350]
+                      - generic [ref=e4351]: "?"
+                - button [ref=e4352]:
+                  - article [ref=e4353]:
+                    - strong [ref=e4356]: "?"
+                    - generic [ref=e4357]:
+                      - heading "Mystery Card" [level=3] [ref=e4358]
+                      - generic [ref=e4359]: "?"
+                - button [ref=e4360]:
+                  - article [ref=e4361]:
+                    - strong [ref=e4364]: "?"
+                    - generic [ref=e4365]:
+                      - heading "Mystery Card" [level=3] [ref=e4366]
+                      - generic [ref=e4367]: "?"
+                - button [ref=e4368]:
+                  - article [ref=e4369]:
+                    - strong [ref=e4372]: "?"
+                    - generic [ref=e4373]:
+                      - heading "Mystery Card" [level=3] [ref=e4374]
+                      - generic [ref=e4375]: "?"
+                - button [ref=e4376]:
+                  - article [ref=e4377]:
+                    - strong [ref=e4380]: "?"
+                    - generic [ref=e4381]:
+                      - heading "Mystery Card" [level=3] [ref=e4382]
+                      - generic [ref=e4383]: "?"
+                - button [ref=e4384]:
+                  - article [ref=e4385]:
+                    - strong [ref=e4388]: "?"
+                    - generic [ref=e4389]:
+                      - heading "Mystery Card" [level=3] [ref=e4390]
+                      - generic [ref=e4391]: "?"
+            - generic [ref=e4392]:
+              - generic [ref=e4393]:
+                - generic [ref=e4394]:
+                  - text: 🏆 Adventure Vault
+                  - heading "Sports" [level=3] [ref=e4395]
+                - generic [ref=e4396]:
+                  - generic [ref=e4397]: 0/10 unlocked
+                  - generic [ref=e4398]: "Cards in view: 10"
+              - generic [ref=e4399]:
+                - button [ref=e4400]:
+                  - article [ref=e4401]:
+                    - strong [ref=e4404]: "?"
+                    - generic [ref=e4405]:
+                      - heading "Mystery Card" [level=3] [ref=e4406]
+                      - generic [ref=e4407]: "?"
+                - button [ref=e4408]:
+                  - article [ref=e4409]:
+                    - strong [ref=e4412]: "?"
+                    - generic [ref=e4413]:
+                      - heading "Mystery Card" [level=3] [ref=e4414]
+                      - generic [ref=e4415]: "?"
+                - button [ref=e4416]:
+                  - article [ref=e4417]:
+                    - strong [ref=e4420]: "?"
+                    - generic [ref=e4421]:
+                      - heading "Mystery Card" [level=3] [ref=e4422]
+                      - generic [ref=e4423]: "?"
+                - button [ref=e4424]:
+                  - article [ref=e4425]:
+                    - strong [ref=e4428]: "?"
+                    - generic [ref=e4429]:
+                      - heading "Mystery Card" [level=3] [ref=e4430]
+                      - generic [ref=e4431]: "?"
+                - button [ref=e4432]:
+                  - article [ref=e4433]:
+                    - strong [ref=e4436]: "?"
+                    - generic [ref=e4437]:
+                      - heading "Mystery Card" [level=3] [ref=e4438]
+                      - generic [ref=e4439]: "?"
+                - button [ref=e4440]:
+                  - article [ref=e4441]:
+                    - strong [ref=e4444]: "?"
+                    - generic [ref=e4445]:
+                      - heading "Mystery Card" [level=3] [ref=e4446]
+                      - generic [ref=e4447]: "?"
+                - button [ref=e4448]:
+                  - article [ref=e4449]:
+                    - strong [ref=e4452]: "?"
+                    - generic [ref=e4453]:
+                      - heading "Mystery Card" [level=3] [ref=e4454]
+                      - generic [ref=e4455]: "?"
+                - button [ref=e4456]:
+                  - article [ref=e4457]:
+                    - strong [ref=e4460]: "?"
+                    - generic [ref=e4461]:
+                      - heading "Mystery Card" [level=3] [ref=e4462]
+                      - generic [ref=e4463]: "?"
+                - button [ref=e4464]:
+                  - article [ref=e4465]:
+                    - strong [ref=e4468]: "?"
+                    - generic [ref=e4469]:
+                      - heading "Mystery Card" [level=3] [ref=e4470]
+                      - generic [ref=e4471]: "?"
+                - button [ref=e4472]:
+                  - article [ref=e4473]:
+                    - strong [ref=e4476]: "?"
+                    - generic [ref=e4477]:
+                      - heading "Mystery Card" [level=3] [ref=e4478]
+                      - generic [ref=e4479]: "?"
+    - navigation "Primary navigation" [ref=e4480]:
+      - link "Home Hub" [ref=e4481] [cursor=pointer]:
+        - /url: "#/home"
+        - strong [ref=e4482]: Home
+        - generic [ref=e4483]: Hub
+      - link "Play Games" [ref=e4484] [cursor=pointer]:
+        - /url: "#/play"
+        - strong [ref=e4485]: Play
+        - generic [ref=e4486]: Games
+      - link "Reward Boxes" [ref=e4487] [cursor=pointer]:
+        - /url: "#/reward"
+        - strong [ref=e4488]: Reward
+        - generic [ref=e4489]: Boxes
+      - link "Collection Cards" [ref=e4490] [cursor=pointer]:
+        - /url: "#/collection"
+        - strong [ref=e4491]: Collection
+        - generic [ref=e4492]: Cards
+      - link "Learn Review" [ref=e4493] [cursor=pointer]:
+        - /url: "#/learn"
+        - strong [ref=e4494]: Learn
+        - generic [ref=e4495]: Review
+  - iframe [ref=e2957]:
+    - generic [ref=f1e6]:
+      - text: protected by
+      - strong [ref=f1e7]: reCAPTCHA

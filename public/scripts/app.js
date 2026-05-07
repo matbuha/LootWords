@@ -50,6 +50,7 @@ import { recordGameLoss, recordGameWin } from "./core/rewards.js";
 import { createRecaptchaManager } from "./core/recaptcha-manager.js";
 import { createSpeechManager } from "./core/speech-manager.js";
 import { createStore } from "./core/state.js";
+import { buildRewardCenterViewModel } from "./core/inventory-manager.js";
 import { applyUiTheme } from "./core/theme-manager.js";
 import { createUiEffects } from "./core/ui-effects.js";
 import { updateAudioSettings, updateLanguageSettings, updateSpeechSettings } from "./core/settings-manager.js";
@@ -1729,7 +1730,7 @@ router = createRouter((route) => {
       ...route,
       game: nextGame,
       challenge: nextChallenge,
-      section: route.path === ROUTES.parent ? nextSection : null,
+      section: route.path === ROUTES.parent ? nextSection : route.section ?? null,
     },
     session: {
       ...currentState.session,
@@ -1791,6 +1792,11 @@ languageManager.apply();
 
 window.render_game_to_text = () => {
   const { state, allCards, cards, parentSummary, progress } = deriveState();
+  const rewardCenter = buildRewardCenterViewModel({
+    profile: state.profile,
+    cards,
+    authState: state.auth,
+  });
   return JSON.stringify({
     language: state.profile.settings.language,
     direction: languageManager.getDirection(),
@@ -1835,6 +1841,12 @@ window.render_game_to_text = () => {
       upgradeCount: state.session.reward.opening?.upgradeHistory?.length ?? 0,
       phase: state.session.reward.phase,
       reveal: state.session.reward.reveal,
+    },
+    rewardCenter: {
+      locked: rewardCenter.isLocked,
+      coins: rewardCenter.coins,
+      cards: rewardCenter.cards.length,
+      categories: rewardCenter.categories,
     },
     playSummary: {
       totalPlays: progress.playSummary.totalPlays,

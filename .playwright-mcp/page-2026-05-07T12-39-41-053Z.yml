@@ -1,0 +1,72 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e2958]:
+      - banner [ref=e2959]:
+        - link "LootWords Loot boxes turn into English word cards." [ref=e2960] [cursor=pointer]:
+          - /url: "#/home"
+          - generic [ref=e2962]:
+            - strong [ref=e2963]: LootWords
+            - generic [ref=e2964]: Loot boxes turn into English word cards.
+        - generic [ref=e2965]:
+          - generic [ref=e2966]:
+            - strong [ref=e2967]: "0"
+            - generic [ref=e2968]: Boxes
+          - generic [ref=e2969]:
+            - strong [ref=e2970]: "0"
+            - generic [ref=e2971]: Cards
+          - link "Parent Mode" [ref=e2972] [cursor=pointer]:
+            - /url: "#/parent?section=content"
+            - generic [ref=e2973]: 🛡
+            - generic [ref=e2974]: Parent Mode
+          - button "Language selector" [ref=e2976]:
+            - generic [ref=e2977]: 🇺🇸
+            - generic [ref=e2978]: English
+            - generic [ref=e2979]: ▾
+          - button "English voice selector" [ref=e2981]:
+            - generic [ref=e2982]: 🗣
+            - generic [ref=e2983]: Microsoft David - English (United States)
+            - generic [ref=e2984]: ▾
+          - button "Account" [ref=e2985]:
+            - generic [ref=e2986]: 👤
+            - generic [ref=e2987]: Account
+          - generic "Audio controls" [ref=e2988]:
+            - button "Sound On" [ref=e2989]: 🔊
+      - main [ref=e2990]:
+        - generic [ref=e2992]:
+          - generic [ref=e2993]:
+            - generic [ref=e2994]:
+              - text: Reward Center
+              - heading "Your saved rewards" [level=2] [ref=e2995]
+            - paragraph [ref=e2996]: Log in or sign up to see your owned rewards and saved cosmetics.
+          - generic [ref=e2997]:
+            - generic [ref=e2998]:
+              - strong [ref=e2999]: Sign in to view account rewards
+              - paragraph [ref=e3000]: Log in or sign up to see your owned rewards and saved cosmetics.
+            - generic [ref=e3001]:
+              - button "Sign up" [ref=e3002]
+              - button "Sign in" [ref=e3003]
+    - navigation "Primary navigation" [ref=e3004]:
+      - link "Home Hub" [ref=e3005] [cursor=pointer]:
+        - /url: "#/home"
+        - strong [ref=e3006]: Home
+        - generic [ref=e3007]: Hub
+      - link "Play Games" [ref=e3008] [cursor=pointer]:
+        - /url: "#/play"
+        - strong [ref=e3009]: Play
+        - generic [ref=e3010]: Games
+      - link "Reward Boxes" [ref=e3011] [cursor=pointer]:
+        - /url: "#/reward"
+        - strong [ref=e3012]: Reward
+        - generic [ref=e3013]: Boxes
+      - link "Collection Cards" [ref=e3014] [cursor=pointer]:
+        - /url: "#/collection"
+        - strong [ref=e3015]: Collection
+        - generic [ref=e3016]: Cards
+      - link "Learn Review" [ref=e3017] [cursor=pointer]:
+        - /url: "#/learn"
+        - strong [ref=e3018]: Learn
+        - generic [ref=e3019]: Review
+  - iframe [ref=e2957]:
+    - generic [ref=f1e6]:
+      - text: protected by
+      - strong [ref=f1e7]: reCAPTCHA
