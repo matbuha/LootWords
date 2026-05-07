@@ -315,6 +315,109 @@ function renderCustomizeSection(container, { profile, authState, actions }) {
   });
 }
 
+function renderShopSection(container, { profile, authState, actions }) {
+  const shopEntries = buildShopViewModel(profile, authState);
+  const shopIsLocked = authState?.mode !== "authenticated";
+  const coinBalance = Math.max(0, Number.parseInt(profile?.coins, 10) || 0);
+  const categories = [
+    { id: "all", label: t("collection.shopAll") },
+    { id: "sticker", label: t("rewardCenter.categoryLabels.sticker") },
+    { id: "cursor-skin", label: t("rewardCenter.categoryLabels.cursorSkin") },
+    { id: "profile-avatar", label: t("rewardCenter.categoryLabels.profileAvatar") },
+    { id: "profile-background", label: t("rewardCenter.categoryLabels.profileBackground") },
+    { id: "ui-theme-pack", label: t("rewardCenter.categoryLabels.uiThemePack") },
+  ];
+  const activeCategory = container.dataset.shopCategory ?? "all";
+  const filteredEntries = activeCategory === "all"
+    ? shopEntries
+    : shopEntries.filter((entry) => entry.rewardType === activeCategory);
+
+  if (shopIsLocked) {
+    container.innerHTML = `
+      <section class="collection-panel reward-center-panel">
+        <div class="screen-header">
+          <div>
+            <span class="small-label">${t("collection.shopEyebrow")}</span>
+            <h2 class="section-title">${t("collection.shopTitle")}</h2>
+          </div>
+          <p class="screen-note">${t("collection.shopBody")}</p>
+        </div>
+        <div class="reward-center-locked">
+          <div>
+            <strong>${t("collection.shopLockedTitle")}</strong>
+            <p class="section-copy">${t("collection.shopLockedBody")}</p>
+          </div>
+          <div class="button-row button-row--wrap">
+            <button class="primary-button" type="button" data-open-auth="signup">${t("collection.shopSignup")}</button>
+            <button class="ghost-button" type="button" data-open-auth="signin">${t("collection.shopSignin")}</button>
+          </div>
+        </div>
+      </section>
+    `;
+    return;
+  }
+
+  container.innerHTML = `
+    <section class="collection-panel reward-center-panel">
+      <div class="screen-header">
+        <div>
+          <span class="small-label">${t("collection.shopEyebrow")}</span>
+          <h2 class="section-title">${t("collection.shopTitle")}</h2>
+        </div>
+        <p class="screen-note">${t("collection.shopBody")}</p>
+      </div>
+
+      <div class="collection-mode-switch">
+        <a class="ghost-button" href="#/collection" data-ui-click="true">${t("collection.cardsMode")}</a>
+        <a class="ghost-button" href="#/collection?section=inventory" data-ui-click="true">${t("collection.rewardCenterMode")}</a>
+        <a class="ghost-button" href="#/collection?section=inventory&mode=customize" data-ui-click="true">${t("rewardCenter.customizeMode")}</a>
+        <a class="primary-button" href="#/collection?section=shop" data-ui-click="true">${t("collection.shopMode")}</a>
+      </div>
+
+      <div class="collection-dashboard reward-center-dashboard">
+        <article class="stat-card stat-card--glow reward-center-coin-card">
+          <span>${t("collection.coinBalance")}</span>
+          <strong>${coinBalance}</strong>
+          <small>${t("collection.coinBalanceNote")}</small>
+        </article>
+        <article class="stat-card">
+          <span>${t("collection.shopItems")}</span>
+          <strong>${filteredEntries.length}</strong>
+          <small>${t("collection.shopItemsNote")}</small>
+        </article>
+      </div>
+
+      <div class="reward-center-chips">
+        ${categories.map((entry) => renderRewardCategoryChip(entry.id, entry.label, activeCategory === entry.id)).join("")}
+      </div>
+
+      <div class="reward-center-section">
+        <div class="section-copy">${t("collection.shopBrowseNote")}</div>
+        ${
+          filteredEntries.length
+            ? `<div class="shop-grid">${filteredEntries.map((entry) => renderShopItemCard(entry)).join("")}</div>`
+            : renderEmptyState(t("collection.shopEmptyTitle"), t("collection.shopEmptyBody"))
+        }
+      </div>
+    </section>
+  `;
+
+  container.querySelectorAll("[data-reward-category]").forEach((button) => {
+    button.addEventListener("click", () => {
+      container.dataset.shopCategory = button.dataset.rewardCategory;
+      renderShopSection(container, { profile, authState, actions });
+    });
+  });
+
+  container.querySelectorAll("[data-shop-item-id]").forEach((button) => {
+    button.addEventListener("click", () => {
+      if (!button.disabled) {
+        actions.purchaseShopItem(button.dataset.shopItemId);
+      }
+    });
+  });
+}
+
 function renderRewardCenterSection(container, { cards, profile, authState, actions, mode = "inventory" }) {
   const rewardCenter = buildRewardCenterViewModel({ profile, cards, authState });
   const loading = authState?.mode === "loading" || !authState;
@@ -494,6 +597,20 @@ export function renderCollectionScreen(container, { cards, filters, progress, ac
     };
   }
 
+  if (route?.section === "shop") {
+    renderShopSection(container, { profile, authState, actions });
+    return {
+      destroy() {},
+      getDebugState() {
+        return {
+          screen: "collection",
+          section: "shop",
+          shopItems: buildShopViewModel(profile, authState).length,
+        };
+      },
+    };
+  }
+
   const collectionSections = getCollectionSections(cards, filters);
   const recentCardIds = new Set(progress.recentCardIds);
   const categoryCountById = new Map(progress.categoryCounts.map((entry) => [entry.id, entry]));
@@ -581,6 +698,7 @@ export function renderCollectionScreen(container, { cards, filters, progress, ac
       <div class="collection-mode-switch">
         <a class="ghost-button" href="#/collection" data-ui-click="true">${t("collection.cardsMode")}</a>
         <a class="primary-button" href="#/collection?section=inventory" data-ui-click="true">${t("collection.rewardCenterMode")}</a>
+        <a class="ghost-button" href="#/collection?section=shop" data-ui-click="true">${t("collection.shopMode")}</a>
       </div>
 
       <div class="collection-profile-cosmetics">
@@ -636,23 +754,13 @@ export function renderCollectionScreen(container, { cards, filters, progress, ac
           </div>
           <p class="screen-note">${t("collection.shopBody")}</p>
         </div>
-        ${
-          shopIsLocked
-            ? `
-              <div class="shop-locked-state">
-                <div>
-                  <strong>${t("collection.shopLockedTitle")}</strong>
-                  <p class="section-copy">${t("collection.shopLockedBody")}</p>
-                </div>
-                <button class="primary-button" type="button" data-open-auth="signin">${t("collection.shopOpenAuth")}</button>
-              </div>
-            `
-            : `
-              <div class="shop-grid">
-                ${shopEntries.map((entry) => renderShopItemCard(entry)).join("")}
-              </div>
-            `
-        }
+        <div class="shop-locked-state">
+          <div>
+            <strong>${t("collection.shopPreviewTitle")}</strong>
+            <p class="section-copy">${t("collection.shopPreviewBody")}</p>
+          </div>
+          <a class="primary-button" href="#/collection?section=shop" data-ui-click="true">${t("collection.shopOpen")}</a>
+        </div>
       </section>
 
       <div class="pack-rack">

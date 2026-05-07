@@ -69,6 +69,7 @@ Use these docs before starting work:
   - centralized shop catalog with price, availability, owned-state, and purchasable-state metadata
   - minimal Collection-screen shop panel for stickers, cursor skins, avatars, backgrounds, and theme packs
   - purchases deduct coins safely, block guests, block insufficient balances, and block duplicate unique ownership
+  - dedicated Collection `#/collection?section=shop` shop screen for browsing and buying supported cosmetics
 - Guest reward openings now resolve only to guest-safe outcomes:
   - account-owned reward types stay in the authenticated-only reward pool
   - guest loot boxes can still award cards and guest-safe fallback outcomes without leaking account inventory behavior
