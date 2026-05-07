@@ -101,3 +101,115 @@ export function buildRewardCenterViewModel({ profile, cards, authState }) {
 
   return viewModel;
 }
+
+function buildDefaultCustomizationItem(type) {
+  const defaults = {
+    "ui-theme-pack": {
+      id: "default",
+      type: "ui-theme-pack",
+      label: "Default",
+      icon: "✨",
+      rarity: "common",
+      defaultOwned: true,
+      defaultSelection: true,
+    },
+    "cursor-skin": {
+      id: "default",
+      type: "cursor-skin",
+      label: "Default",
+      icon: "🖱️",
+      rarity: "common",
+      defaultOwned: true,
+      defaultSelection: true,
+    },
+    "profile-avatar": {
+      id: "default",
+      type: "profile-avatar",
+      label: "Default",
+      icon: "🙂",
+      rarity: "common",
+      defaultOwned: true,
+      defaultSelection: true,
+    },
+    "profile-background": {
+      id: "default",
+      type: "profile-background",
+      label: "Default",
+      icon: "🖼️",
+      rarity: "common",
+      defaultOwned: true,
+      defaultSelection: true,
+    },
+  };
+
+  return defaults[type] ?? null;
+}
+
+function buildOwnedCustomizationItems(type, ownedIds, equippedId) {
+  return getRewardCatalog(type)
+    .filter((item) => !item.defaultOwned && ownedIds.has(item.id))
+    .map((item) => ({
+      id: item.id,
+      type,
+      label: item.label ?? item.name ?? item.id,
+      icon: item.icon ?? "✨",
+      rarity: item.rarity ?? "common",
+      equipped: equippedId === item.id,
+      defaultOwned: Boolean(item.defaultOwned),
+    }));
+}
+
+export function buildCustomizationViewModel({ profile, authState }) {
+  const isAuthenticated = authState?.mode === "authenticated" && Boolean(authState.user?.uid);
+  const inventory = profile?.inventory ?? {};
+
+  const categories = [
+    "ui-theme-pack",
+    "cursor-skin",
+    "profile-avatar",
+    "profile-background",
+  ];
+
+  const equippedByType = {
+    "ui-theme-pack": isAuthenticated ? profile?.selectedUiThemePackId ?? "default" : "default",
+    "cursor-skin": isAuthenticated ? profile?.selectedCursorSkinId ?? null : null,
+    "profile-avatar": isAuthenticated ? profile?.selectedProfileAvatarId ?? null : null,
+    "profile-background": isAuthenticated ? profile?.selectedProfileBackgroundId ?? null : null,
+  };
+
+  const itemsByCategory = {};
+  const preview = {
+    uiThemePack: buildDefaultCustomizationItem("ui-theme-pack"),
+    cursorSkin: buildDefaultCustomizationItem("cursor-skin"),
+    profileAvatar: buildDefaultCustomizationItem("profile-avatar"),
+    profileBackground: buildDefaultCustomizationItem("profile-background"),
+  };
+
+  if (!isAuthenticated) {
+    return {
+      isLocked: true,
+      isLoading: false,
+      categories,
+      equippedByType,
+      itemsByCategory,
+      preview,
+    };
+  }
+
+  categories.forEach((type) => {
+    const inventoryKey = getRewardTypeMeta(type)?.inventoryKey;
+    const ownedIds = new Set(Array.isArray(inventory?.[inventoryKey]) ? inventory[inventoryKey] : []);
+    const defaultItem = buildDefaultCustomizationItem(type);
+    const ownedItems = buildOwnedCustomizationItems(type, ownedIds, equippedByType[type]);
+    itemsByCategory[type] = defaultItem ? [defaultItem, ...ownedItems] : ownedItems;
+  });
+
+  return {
+    isLocked: false,
+    isLoading: false,
+    categories,
+    equippedByType,
+    itemsByCategory,
+    preview,
+  };
+}

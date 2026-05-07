@@ -15,6 +15,7 @@ export function parseRoute(hashValue = window.location.hash) {
     game: params.get("game") ?? null,
     challenge: params.get("challenge") ?? null,
     section: params.get("section") ?? null,
+    mode: params.get("mode") ?? null,
   };
 }
 

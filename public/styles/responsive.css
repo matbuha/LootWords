@@ -955,6 +955,15 @@
     grid-template-columns: 60px minmax(0, 1fr);
     padding: 12px;
   }
+
+  .customize-preview__panel {
+    grid-template-columns: 1fr;
+  }
+
+  .customize-preview__avatar {
+    width: 100%;
+    min-height: 92px;
+  }
 }
 
 @media (max-width: 420px) {

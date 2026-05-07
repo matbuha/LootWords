@@ -50,7 +50,7 @@ import { recordGameLoss, recordGameWin } from "./core/rewards.js";
 import { createRecaptchaManager } from "./core/recaptcha-manager.js";
 import { createSpeechManager } from "./core/speech-manager.js";
 import { createStore } from "./core/state.js";
-import { buildRewardCenterViewModel } from "./core/inventory-manager.js";
+import { buildRewardCenterViewModel, buildCustomizationViewModel } from "./core/inventory-manager.js";
 import { applyUiTheme } from "./core/theme-manager.js";
 import { createUiEffects } from "./core/ui-effects.js";
 import { updateAudioSettings, updateLanguageSettings, updateSpeechSettings } from "./core/settings-manager.js";
@@ -1022,6 +1022,9 @@ const actions = {
   equipUiThemePack(themePackId) {
     feedback.trigger(FEEDBACK_EVENTS.buttonClick);
     commitState((currentState) => {
+      if (currentState.auth.mode !== "authenticated" || !currentState.auth.user?.uid) {
+        return currentState;
+      }
       const canEquip =
         themePackId === "default"
         || currentState.profile.inventory?.uiThemePacks?.includes(themePackId);
@@ -1040,6 +1043,63 @@ const actions = {
           ...currentState.profile,
           selectedUiThemePackId: themePackId,
         },
+      };
+    });
+  },
+  equipCosmetic(type, itemId) {
+    feedback.trigger(FEEDBACK_EVENTS.buttonClick);
+    commitState((currentState) => {
+      if (currentState.auth.mode !== "authenticated" || !currentState.auth.user?.uid) {
+        return currentState;
+      }
+
+      const allowedTypes = new Set(["profile-avatar", "profile-background", "cursor-skin", "ui-theme-pack"]);
+      if (!allowedTypes.has(type)) {
+        return currentState;
+      }
+
+      const isDefault = itemId === "default";
+      const inventoryKeyByType = {
+        "profile-avatar": "profileAvatars",
+        "profile-background": "profileBackgrounds",
+        "cursor-skin": "cursorSkins",
+        "ui-theme-pack": "uiThemePacks",
+      };
+      const inventoryKey = inventoryKeyByType[type];
+      const ownsItem =
+        isDefault || currentState.profile.inventory?.[inventoryKey]?.includes(itemId) || false;
+
+      if (!ownsItem) {
+        return currentState;
+      }
+
+      if (!isDefault && !getRewardCatalogItem(type, itemId)) {
+        return currentState;
+      }
+
+      const nextProfile = {
+        ...currentState.profile,
+        selectedUiThemePackId:
+          type === "ui-theme-pack"
+            ? itemId
+            : currentState.profile.selectedUiThemePackId,
+        selectedCursorSkinId:
+          type === "cursor-skin"
+            ? (isDefault ? null : itemId)
+            : currentState.profile.selectedCursorSkinId,
+        selectedProfileAvatarId:
+          type === "profile-avatar"
+            ? (isDefault ? null : itemId)
+            : currentState.profile.selectedProfileAvatarId,
+        selectedProfileBackgroundId:
+          type === "profile-background"
+            ? (isDefault ? null : itemId)
+            : currentState.profile.selectedProfileBackgroundId,
+      };
+
+      return {
+        ...currentState,
+        profile: nextProfile,
       };
     });
   },
@@ -1666,6 +1726,7 @@ function renderApp() {
         context: {
           language: state.profile.settings.language,
           route: state.route,
+          mode: state.route.mode,
         allCards,
         cards,
         parentSummary,
@@ -1731,6 +1792,7 @@ router = createRouter((route) => {
       game: nextGame,
       challenge: nextChallenge,
       section: route.path === ROUTES.parent ? nextSection : route.section ?? null,
+      mode: route.path === ROUTES.collection ? route.mode ?? null : null,
     },
     session: {
       ...currentState.session,
@@ -1804,6 +1866,7 @@ window.render_game_to_text = () => {
     routeGame: state.route.game,
     routeChallenge: state.route.challenge,
     routeSection: state.route.section,
+    routeMode: state.route.mode,
     rewardBoxes: state.profile.rewardBoxes,
     rewardBoxesEarned: state.profile.rewardBoxesEarned,
     rewardBoxesOpened: state.profile.rewardBoxesOpened,
@@ -1848,6 +1911,10 @@ window.render_game_to_text = () => {
       cards: rewardCenter.cards.length,
       categories: rewardCenter.categories,
     },
+    customization: buildCustomizationViewModel({
+      profile: state.profile,
+      authState: state.auth,
+    }),
     playSummary: {
       totalPlays: progress.playSummary.totalPlays,
       gamesTried: progress.playSummary.gamesTried,

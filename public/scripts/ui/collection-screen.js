@@ -1,7 +1,7 @@
 import { CATEGORY_META, COLLECTION_SORTS, DIFFICULTY_META, PACK_META, RARITY_META } from "../data/config.js";
 import { getRewardCatalog, getRewardCatalogItem, REWARD_TYPE_META } from "../data/loot.js";
 import { categoryLabel, collectionSortLabel, difficultyLabel, formatDate, packLabel, rarityLabel, t } from "../core/i18n.js";
-import { buildRewardCenterViewModel } from "../core/inventory-manager.js";
+import { buildCustomizationViewModel, buildRewardCenterViewModel } from "../core/inventory-manager.js";
 import { buildShopViewModel } from "../core/shop-manager.js";
 import { getCollectionSections } from "../core/progression.js";
 import { renderCard, renderDetailCard, renderEmptyState, escapeHtml, formatPoints } from "./ui-kit.js";
@@ -137,7 +137,185 @@ function renderRewardCenterItemCard(item, categoryLabel) {
   `;
 }
 
-function renderRewardCenterSection(container, { cards, profile, authState, actions }) {
+function renderCustomizationItemCard(item, { categoryLabel, equipped, isDefault, actions }) {
+  const displayLabel = isDefault
+    ? ({
+        "ui-theme-pack": t("customize.defaultTheme"),
+        "cursor-skin": t("customize.defaultCursor"),
+        "profile-avatar": t("customize.defaultAvatar"),
+        "profile-background": t("customize.defaultBackground"),
+      }[item.type] ?? item.label)
+    : item.label;
+  const actionLabel = isDefault
+    ? t("customize.useDefault")
+    : equipped
+      ? t("customize.equipped")
+      : t("customize.equip");
+
+  return `
+    <article class="reward-center-item-card reward-center-item-card--customize ${equipped ? "is-equipped" : ""}" data-rarity="${escapeHtml(item.rarity)}" data-category="${escapeHtml(item.type)}">
+      <div class="reward-center-item-card__art" aria-hidden="true">${escapeHtml(item.icon)}</div>
+      <div class="reward-center-item-card__body">
+        <div class="reward-center-item-card__topline">
+          <strong>${escapeHtml(displayLabel)}</strong>
+          <span class="rarity-badge">${rarityLabel(item.rarity)}</span>
+        </div>
+        <p class="section-copy">${escapeHtml(categoryLabel)}</p>
+        <div class="pill-row">
+          ${isDefault ? `<span class="card-category">${t("customize.alwaysAvailable")}</span>` : `<span class="card-category">${t("customize.owned")}</span>`}
+          ${equipped ? `<span class="card-category">${t("customize.equipped")}</span>` : ""}
+        </div>
+        <div class="button-row button-row--wrap reward-center-item-card__actions">
+          <button class="${equipped ? "secondary-button" : "primary-button"}" type="button" data-equip-cosmetic="${escapeHtml(item.type)}:${escapeHtml(item.id)}" ${equipped ? "disabled" : ""}>
+            ${actionLabel}
+          </button>
+        </div>
+      </div>
+    </article>
+  `;
+}
+
+function renderCustomizationPreview(profile, customization) {
+  const themePack = customization.preview.uiThemePack;
+  const themeStyle = buildThemePreviewStyle({
+    ...themePack,
+    themeTokens: themePack.type === "ui-theme-pack" && themePack.id === "default" ? {} : (themePack.themeTokens ?? {}),
+  });
+  const avatarLabel = customization.preview.profileAvatar.id === "default" ? t("customize.defaultAvatar") : customization.preview.profileAvatar.label;
+  const backgroundLabel = customization.preview.profileBackground.id === "default" ? t("customize.defaultBackground") : customization.preview.profileBackground.label;
+  const cursorLabel = customization.preview.cursorSkin.id === "default" ? t("customize.defaultCursor") : customization.preview.cursorSkin.label;
+  const themeLabel = customization.preview.uiThemePack.id === "default" ? t("customize.defaultTheme") : customization.preview.uiThemePack.label;
+  return `
+    <section class="customize-preview celebration-card" style="${themeStyle}">
+      <div class="customize-preview__header">
+        <div>
+          <span class="small-label">${t("customize.profilePreview")}</span>
+          <h3 class="section-title">${t("customize.previewTitle")}</h3>
+        </div>
+      </div>
+      <div class="customize-preview__panel">
+        <div class="customize-preview__avatar">${escapeHtml(customization.preview.profileAvatar.icon)}</div>
+        <div class="customize-preview__copy">
+          <strong>${escapeHtml(avatarLabel)}</strong>
+          <span>${escapeHtml(backgroundLabel)}</span>
+          <span>${escapeHtml(cursorLabel)}</span>
+          <span>${escapeHtml(themeLabel)}</span>
+        </div>
+      </div>
+    </section>
+  `;
+}
+
+function renderCustomizeSection(container, { profile, authState, actions }) {
+  const customization = buildCustomizationViewModel({ profile, authState });
+  const locked = customization.isLocked;
+  const loading = customization.isLoading || authState?.mode === "loading" || !authState;
+  const categoryMeta = {
+    "ui-theme-pack": { label: t("customize.uiTheme"), helper: t("customize.themeHelp") },
+    "cursor-skin": { label: t("customize.cursor"), helper: t("customize.cursorHelp") },
+    "profile-avatar": { label: t("customize.avatar"), helper: t("customize.avatarHelp") },
+    "profile-background": { label: t("customize.profileBackground"), helper: t("customize.backgroundHelp") },
+  };
+
+  if (loading) {
+    container.innerHTML = `
+      <section class="collection-panel reward-center-panel">
+        <div class="screen-header">
+          <div>
+            <span class="small-label">${t("customize.eyebrow")}</span>
+            <h2 class="section-title">${t("customize.title")}</h2>
+          </div>
+          <p class="screen-note">${t("customize.loadingBody")}</p>
+        </div>
+        ${renderEmptyState(t("customize.loadingTitle"), t("customize.loadingBody"))}
+      </section>
+    `;
+    return;
+  }
+
+  if (locked) {
+    container.innerHTML = `
+      <section class="collection-panel reward-center-panel">
+        <div class="screen-header">
+          <div>
+            <span class="small-label">${t("customize.eyebrow")}</span>
+            <h2 class="section-title">${t("customize.title")}</h2>
+          </div>
+          <p class="screen-note">${t("customize.lockedBody")}</p>
+        </div>
+        <div class="reward-center-locked">
+          <div>
+            <strong>${t("customize.lockedTitle")}</strong>
+            <p class="section-copy">${t("customize.lockedBody")}</p>
+          </div>
+          <div class="button-row button-row--wrap">
+            <button class="primary-button" type="button" data-open-auth="signup">${t("customize.signupAction")}</button>
+            <button class="ghost-button" type="button" data-open-auth="signin">${t("customize.signinAction")}</button>
+          </div>
+        </div>
+      </section>
+    `;
+    return;
+  }
+
+  const activeCategory = container.dataset.customizeCategory ?? customization.categories[0];
+  const activeItems = customization.itemsByCategory[activeCategory] ?? [];
+
+  container.innerHTML = `
+    <section class="collection-panel reward-center-panel">
+      <div class="screen-header">
+        <div>
+          <span class="small-label">${t("customize.eyebrow")}</span>
+          <h2 class="section-title">${t("customize.title")}</h2>
+        </div>
+        <p class="screen-note">${t("customize.note")}</p>
+      </div>
+
+      <div class="collection-mode-switch">
+        <a class="ghost-button" href="#/collection?section=inventory" data-ui-click="true">${t("rewardCenter.inventoryMode")}</a>
+        <a class="primary-button" href="#/collection?section=inventory&mode=customize" data-ui-click="true">${t("rewardCenter.customizeMode")}</a>
+      </div>
+
+      ${renderCustomizationPreview(profile, customization)}
+
+      <div class="reward-center-chips">
+        ${customization.categories.map((categoryId) => `
+          <button class="reward-center-chip ${activeCategory === categoryId ? "is-active" : ""}" type="button" data-customize-category="${escapeHtml(categoryId)}">
+            <strong>${escapeHtml(categoryMeta[categoryId].label)}</strong>
+          </button>
+        `).join("")}
+      </div>
+
+      <div class="reward-center-section">
+        <div class="section-copy">${categoryMeta[activeCategory].helper}</div>
+        <div class="reward-center-grid">
+          ${activeItems.map((item) => renderCustomizationItemCard(item, {
+            categoryLabel: categoryMeta[activeCategory].label,
+            equipped: Boolean(item.equipped),
+            isDefault: Boolean(item.defaultSelection),
+            actions,
+          })).join("")}
+        </div>
+      </div>
+    </section>
+  `;
+
+  container.querySelectorAll("[data-customize-category]").forEach((button) => {
+    button.addEventListener("click", () => {
+      container.dataset.customizeCategory = button.dataset.customizeCategory;
+      renderCustomizeSection(container, { profile, authState, actions });
+    });
+  });
+
+  container.querySelectorAll("[data-equip-cosmetic]").forEach((button) => {
+    button.addEventListener("click", () => {
+      const [type, itemId] = button.dataset.equipCosmetic.split(":");
+      actions.equipCosmetic(type, itemId);
+    });
+  });
+}
+
+function renderRewardCenterSection(container, { cards, profile, authState, actions, mode = "inventory" }) {
   const rewardCenter = buildRewardCenterViewModel({ profile, cards, authState });
   const loading = authState?.mode === "loading" || !authState;
   const initialCategory = "card";
@@ -214,6 +392,11 @@ function renderRewardCenterSection(container, { cards, profile, authState, actio
           <h2 class="section-title">${t("rewardCenter.title")}</h2>
         </div>
         <p class="screen-note">${t("rewardCenter.note")}</p>
+      </div>
+
+      <div class="collection-mode-switch">
+        <a class="${mode === "inventory" ? "primary-button" : "ghost-button"}" href="#/collection?section=inventory" data-ui-click="true">${t("rewardCenter.inventoryMode")}</a>
+        <a class="${mode === "customize" ? "primary-button" : "ghost-button"}" href="#/collection?section=inventory&mode=customize" data-ui-click="true">${t("rewardCenter.customizeMode")}</a>
       </div>
 
       <div class="collection-dashboard reward-center-dashboard">
@@ -294,13 +477,18 @@ function renderRewardCenterSection(container, { cards, profile, authState, actio
 
 export function renderCollectionScreen(container, { cards, filters, progress, actions, modalCard, profile, authState, route }) {
   if (route?.section === "inventory") {
-    renderRewardCenterSection(container, { cards, profile, authState, actions });
+    if (route?.mode === "customize") {
+      renderCustomizeSection(container, { profile, authState, actions });
+    } else {
+      renderRewardCenterSection(container, { cards, profile, authState, actions, mode: route?.mode ?? "inventory" });
+    }
     return {
       destroy() {},
       getDebugState() {
         return {
           screen: "collection",
           section: "inventory",
+          mode: route?.mode ?? "inventory",
         };
       },
     };
