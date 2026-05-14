@@ -340,7 +340,6 @@ body::after {
   animation: badgePop 280ms cubic-bezier(0.2, 0.95, 0.25, 1);
 }
 
-.card-sheen::after,
 .showcase-card::after,
 .hero-panel--home::before {
   animation: shimmerSweep 5.2s ease-in-out infinite;

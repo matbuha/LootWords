@@ -25,12 +25,47 @@ function formatVictoryLabel(key) {
   return mapping[key] ?? key;
 }
 
+function formatVictoryScalar(value) {
+  if (value == null) {
+    return "";
+  }
+
+  if (typeof value === "string" || typeof value === "number" || typeof value === "bigint") {
+    return String(value);
+  }
+
+  if (typeof value === "boolean") {
+    return value ? t("common.unlockedYes") : t("common.unlockedNo");
+  }
+
+  if (Array.isArray(value)) {
+    return value
+      .map((item) => formatVictoryScalar(item))
+      .filter(Boolean)
+      .join(", ");
+  }
+
+  if (typeof value === "object") {
+    if ("label" in value && typeof value.label === "string") {
+      return value.label;
+    }
+
+    if ("name" in value && typeof value.name === "string") {
+      return value.name;
+    }
+
+    return "";
+  }
+
+  return String(value);
+}
+
 function formatVictoryValue(key, value) {
   if (key.endsWith("Ms") && typeof value === "number") {
     return t("play.statTime", { value: Math.max(0, Math.round(value / 1000)) }).replace(/^[^:：]*[:：]\s*/, "");
   }
 
-  return String(value);
+  return formatVictoryScalar(value);
 }
 
 function renderVictoryStats(result) {
@@ -38,7 +73,9 @@ function renderVictoryStats(result) {
     return "";
   }
 
+  const hiddenKeys = new Set(["learningEvents"]);
   const detailRows = Object.entries(result.details)
+    .filter(([key, value]) => !hiddenKeys.has(key) && formatVictoryScalar(value) !== "")
     .map(
       ([key, value]) => `
         <div class="victory-chip">

@@ -14,8 +14,6 @@ const PRESSABLE_SELECTOR = [
 ].join(", ");
 
 const TILTABLE_SELECTOR = [
-  ".collection-card-button",
-  ".learn-list button",
   ".game-choice--rich",
   ".game-pick-card",
   ".reward-box-button",

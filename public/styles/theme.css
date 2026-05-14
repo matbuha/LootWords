@@ -218,24 +218,12 @@ body::after {
 .primary-button:hover,
 .secondary-button:hover,
 .ghost-button:hover,
-.mute-toggle:hover,
-.parent-entry-button:hover,
-.parent-nav__button:hover,
-.pack-chip:hover,
-.game-choice:hover,
-.game-pick-card:hover,
-.collection-card-button:hover,
-.learn-list button:hover,
-.showcase-card:hover,
-.stat-card:hover,
 .primary-button.is-tilting,
 .secondary-button.is-tilting,
 .ghost-button.is-tilting,
 .pack-chip.is-tilting,
 .game-choice.is-tilting,
 .game-pick-card.is-tilting,
-.collection-card-button.is-tilting,
-.learn-list button.is-tilting,
 .showcase-card.is-tilting,
 .stat-card.is-tilting {
   transform:
@@ -246,6 +234,26 @@ body::after {
     scale(var(--tilt-scale));
   border-color: var(--outline-strong);
   box-shadow: var(--shadow-glow);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .mute-toggle:hover,
+  .parent-entry-button:hover,
+  .parent-nav__button:hover,
+  .pack-chip:hover,
+  .game-choice:hover,
+  .game-pick-card:hover,
+  .showcase-card:hover,
+  .stat-card:hover {
+    transform:
+      perspective(1000px)
+      rotateX(var(--tilt-rotate-x))
+      rotateY(var(--tilt-rotate-y))
+      translateY(var(--tilt-shift-y))
+      scale(var(--tilt-scale));
+    border-color: var(--outline-strong);
+    box-shadow: var(--shadow-glow);
+  }
 }
 
 .primary-button.is-pressing,
@@ -354,13 +362,22 @@ body::after {
   mix-blend-mode: screen;
 }
 
-.collection-card-button:hover .loot-card,
-.collection-card-button.is-tilting .loot-card,
-.learn-list button:hover .loot-card,
-.learn-list button.is-tilting .loot-card {
+.collection-card-button:focus-visible .loot-card,
+.collection-card-button:active .loot-card,
+.learn-list button:focus-visible .loot-card,
+.learn-list button:active .loot-card {
   box-shadow:
     0 24px 48px rgba(6, 13, 42, 0.42),
     0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .collection-card-button:hover .loot-card,
+  .learn-list button:hover .loot-card {
+    box-shadow:
+      0 24px 48px rgba(6, 13, 42, 0.42),
+      0 0 0 1px rgba(255, 255, 255, 0.08);
+  }
 }
 
 .card-halo,

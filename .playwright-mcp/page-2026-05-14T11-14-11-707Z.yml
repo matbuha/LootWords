@@ -1,0 +1,175 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e471]:
+      - banner [ref=e472]:
+        - link "LootWords Loot boxes turn into English word cards." [ref=e473] [cursor=pointer]:
+          - /url: "#/home"
+          - generic [ref=e475]:
+            - strong [ref=e476]: LootWords
+            - generic [ref=e477]: Loot boxes turn into English word cards.
+        - generic [ref=e478]:
+          - generic [ref=e479]:
+            - strong [ref=e480]: "0"
+            - generic [ref=e481]: Boxes
+          - generic [ref=e482]:
+            - strong [ref=e483]: "0"
+            - generic [ref=e484]: Cards
+          - link "Parent Mode" [ref=e485] [cursor=pointer]:
+            - /url: "#/parent?section=content"
+            - generic [ref=e486]: 🛡
+            - generic [ref=e487]: Parent Mode
+          - button "Language selector" [ref=e489]:
+            - generic [ref=e490]: 🇺🇸
+            - generic [ref=e491]: English
+            - generic [ref=e492]: ▾
+          - button "English voice selector" [ref=e494]:
+            - generic [ref=e495]: 🗣
+            - generic [ref=e496]: Microsoft David - English (United States)
+            - generic [ref=e497]: ▾
+          - button "Account" [ref=e498]:
+            - generic [ref=e499]: 👤
+            - generic [ref=e500]: Account
+          - generic "Audio controls" [ref=e501]:
+            - button "Sound On" [ref=e502]: 🔊
+      - main [ref=e503]:
+        - generic [ref=e506]:
+          - generic [ref=e507]:
+            - generic [ref=e508]:
+              - text: Pick a fast loot run and chase the next reveal
+              - heading "Still picking a favorite" [level=2] [ref=e509]
+              - paragraph [ref=e510]: Pick one game, get ready, and jump into a focused round.
+            - generic [ref=e511]:
+              - 'button "Recommended: Memory" [ref=e512]'
+              - 'button "Random: Repeat" [ref=e513]'
+              - button "Reward room" [ref=e514]
+          - generic [ref=e515]:
+            - article [ref=e516]:
+              - generic [ref=e517]: Current streak
+              - strong [ref=e518]: "0"
+              - generic [ref=e519]: Best 0
+            - article [ref=e520]:
+              - generic [ref=e521]: Next milestone
+              - strong [ref=e522]: "5"
+              - generic [ref=e523]: "Wins to go: 5"
+          - generic [ref=e524]:
+            - button "45 sec Memory Match Flip treasure tiles and find every matching pair before the timer runs out. Calm focus 0/0 Win one reward box First win bonus ready" [ref=e525]:
+              - generic [ref=e526]:
+                - generic [ref=e527]: 🧠
+                - generic [ref=e528]: 45 sec
+              - strong [ref=e529]: Memory Match
+              - generic [ref=e530]: Flip treasure tiles and find every matching pair before the timer runs out.
+              - generic [ref=e531]:
+                - generic [ref=e532]: Calm focus
+                - generic [ref=e533]: 0/0
+              - generic [ref=e534]:
+                - generic [ref=e535]: Win one reward box
+                - generic [ref=e536]: First win bonus ready
+            - button "35 sec Treasure Match Spot the target card from the choices before you run out of hearts. Fast picks 0/0 Win one reward box First win bonus ready" [ref=e537]:
+              - generic [ref=e538]:
+                - generic [ref=e539]: 🎯
+                - generic [ref=e540]: 35 sec
+              - strong [ref=e541]: Treasure Match
+              - generic [ref=e542]: Spot the target card from the choices before you run out of hearts.
+              - generic [ref=e543]:
+                - generic [ref=e544]: Fast picks
+                - generic [ref=e545]: 0/0
+              - generic [ref=e546]:
+                - generic [ref=e547]: Win one reward box
+                - generic [ref=e548]: First win bonus ready
+            - button "30 sec Flash Find Watch the target card, then tap the same loot card before the preview fades from memory. Quick memory 0/0 Win one reward box First win bonus ready" [ref=e549]:
+              - generic [ref=e550]:
+                - generic [ref=e551]: ⚡
+                - generic [ref=e552]: 30 sec
+              - strong [ref=e553]: Flash Find
+              - generic [ref=e554]: Watch the target card, then tap the same loot card before the preview fades from memory.
+              - generic [ref=e555]:
+                - generic [ref=e556]: Quick memory
+                - generic [ref=e557]: 0/0
+              - generic [ref=e558]:
+                - generic [ref=e559]: Win one reward box
+                - generic [ref=e560]: First win bonus ready
+            - button "40 sec Tap the Word Hear the word, then tap the matching picture card before the round moves on. Sound + image 0/0 Win one reward box First win bonus ready" [ref=e561]:
+              - generic [ref=e562]:
+                - generic [ref=e563]: 🔊
+                - generic [ref=e564]: 40 sec
+              - strong [ref=e565]: Tap the Word
+              - generic [ref=e566]: Hear the word, then tap the matching picture card before the round moves on.
+              - generic [ref=e567]:
+                - generic [ref=e568]: Sound + image
+                - generic [ref=e569]: 0/0
+              - generic [ref=e570]:
+                - generic [ref=e571]: Win one reward box
+                - generic [ref=e572]: First win bonus ready
+            - button "Calm 5 rounds Repeat After Me Hear the English word, say it aloud, and move calmly through five picture cards. Listen + speak 0/0 Finish the run for one reward box First win bonus ready" [ref=e573]:
+              - generic [ref=e574]:
+                - generic [ref=e575]: 🗣️
+                - generic [ref=e576]: Calm 5 rounds
+              - strong [ref=e577]: Repeat After Me
+              - generic [ref=e578]: Hear the English word, say it aloud, and move calmly through five picture cards.
+              - generic [ref=e579]:
+                - generic [ref=e580]: Listen + speak
+                - generic [ref=e581]: 0/0
+              - generic [ref=e582]:
+                - generic [ref=e583]: Finish the run for one reward box
+                - generic [ref=e584]: First win bonus ready
+            - button "3 rounds Sequence Memory Watch the order, then tap the same cards back from memory. Memory order 0/0 Clear all rounds for one reward box First win bonus ready" [ref=e585]:
+              - generic [ref=e586]:
+                - generic [ref=e587]: 🔁
+                - generic [ref=e588]: 3 rounds
+              - strong [ref=e589]: Sequence Memory
+              - generic [ref=e590]: Watch the order, then tap the same cards back from memory.
+              - generic [ref=e591]:
+                - generic [ref=e592]: Memory order
+                - generic [ref=e593]: 0/0
+              - generic [ref=e594]:
+                - generic [ref=e595]: Clear all rounds for one reward box
+                - generic [ref=e596]: First win bonus ready
+            - button "5 rounds Image Reveal Watch the hidden picture appear step by step, then guess the right card. Visual clues 0/0 Win the run for one reward box First win bonus ready" [ref=e597]:
+              - generic [ref=e598]:
+                - generic [ref=e599]: 🖼️
+                - generic [ref=e600]: 5 rounds
+              - strong [ref=e601]: Image Reveal
+              - generic [ref=e602]: Watch the hidden picture appear step by step, then guess the right card.
+              - generic [ref=e603]:
+                - generic [ref=e604]: Visual clues
+                - generic [ref=e605]: 0/0
+              - generic [ref=e606]:
+                - generic [ref=e607]: Win the run for one reward box
+                - generic [ref=e608]: First win bonus ready
+            - button "16 sec Loot Pop Tap the glowing loot sparks fast and keep the combo going before the timer runs out. Fast taps 0/0 Win one reward box First win bonus ready" [ref=e609]:
+              - generic [ref=e610]:
+                - generic [ref=e611]: 💥
+                - generic [ref=e612]: 16 sec
+              - strong [ref=e613]: Loot Pop
+              - generic [ref=e614]: Tap the glowing loot sparks fast and keep the combo going before the timer runs out.
+              - generic [ref=e615]:
+                - generic [ref=e616]: Fast taps
+                - generic [ref=e617]: 0/0
+              - generic [ref=e618]:
+                - generic [ref=e619]: Win one reward box
+                - generic [ref=e620]: First win bonus ready
+    - navigation "Primary navigation" [ref=e621]:
+      - link "Home Hub" [ref=e622] [cursor=pointer]:
+        - /url: "#/home"
+        - strong [ref=e623]: Home
+        - generic [ref=e624]: Hub
+      - link "Play Games" [ref=e625] [cursor=pointer]:
+        - /url: "#/play"
+        - strong [ref=e626]: Play
+        - generic [ref=e627]: Games
+      - link "Reward Boxes" [ref=e628] [cursor=pointer]:
+        - /url: "#/reward"
+        - strong [ref=e629]: Reward
+        - generic [ref=e630]: Boxes
+      - link "Collection Cards" [ref=e631] [cursor=pointer]:
+        - /url: "#/collection"
+        - strong [ref=e632]: Collection
+        - generic [ref=e633]: Cards
+      - link "Learn Review" [ref=e634] [cursor=pointer]:
+        - /url: "#/learn"
+        - strong [ref=e635]: Learn
+        - generic [ref=e636]: Review
+  - iframe [ref=e470]:
+    - generic [ref=f1e6]:
+      - text: protected by
+      - strong [ref=f1e7]: reCAPTCHA

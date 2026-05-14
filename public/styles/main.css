@@ -785,11 +785,24 @@ body.has-custom-cursor textarea {
   transition: transform 220ms ease, box-shadow 220ms ease;
 }
 
-.loot-card:hover,
-.detail-card:hover,
-.collection-card-button:hover .loot-card,
-.learn-list button:hover .loot-card {
+.loot-card:focus-visible,
+.detail-card:focus-visible,
+.collection-card-button:focus-visible .loot-card,
+.learn-list button:focus-visible .loot-card,
+.loot-card:active,
+.detail-card:active,
+.collection-card-button:active .loot-card,
+.learn-list button:active .loot-card {
   transform: translateY(-4px) rotateX(4deg);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .loot-card:hover,
+  .detail-card:hover,
+  .collection-card-button:hover .loot-card,
+  .learn-list button:hover .loot-card {
+    transform: translateY(-4px) rotateX(4deg);
+  }
 }
 
 [data-speak-word] {
@@ -929,10 +942,15 @@ body.has-custom-cursor textarea {
 .filter-select:hover,
 .game-choice:hover,
 .tile-button:hover,
-.collection-card-button:hover,
-.learn-list button:hover,
 .reward-box-button.is-clickable:hover {
   transform: translateY(-2px);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .collection-card-button:hover,
+  .learn-list button:hover {
+    transform: translateY(-2px);
+  }
 }
 
 .collection-card-button,
@@ -1819,9 +1837,7 @@ body.is-feedback-legendary .route-glow::after {
 .mute-toggle,
 .filter-select,
 .game-choice,
-.tile-button,
-.collection-card-button,
-.learn-list button {
+.tile-button {
   will-change: transform;
 }
 
@@ -2349,19 +2365,32 @@ body.is-feedback-legendary .route-glow::after {
   --rarity-badge-bg: linear-gradient(135deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0.08));
 }
 
-.loot-card:hover,
-.detail-card:hover,
-.collection-card-button:hover .loot-card,
-.learn-list button:hover .loot-card {
+.collection-card-button:focus-visible .loot-card,
+.collection-card-button:active .loot-card,
+.learn-list button:focus-visible .loot-card,
+.learn-list button:active .loot-card {
+  --tilt-shift-y: -4px;
+  --tilt-scale: 1.008;
+  --tilt-glow-opacity: 0.7;
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.2),
     0 32px 44px rgba(8, 7, 21, 0.34),
     0 0 0 1px var(--rarity-shadow);
 }
 
-.loot-card.is-new,
-.detail-card.is-new {
-  animation: newCardDrift 3.8s ease-in-out infinite;
+@media (hover: hover) and (pointer: fine) {
+  .loot-card:hover,
+  .detail-card:hover,
+  .collection-card-button:hover .loot-card,
+  .learn-list button:hover .loot-card {
+    --tilt-shift-y: -6px;
+    --tilt-scale: 1.012;
+    --tilt-glow-opacity: 1;
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.2),
+      0 32px 44px rgba(8, 7, 21, 0.34),
+      0 0 0 1px var(--rarity-shadow);
+  }
 }
 
 .card-halo,
@@ -2396,7 +2425,7 @@ body.is-feedback-legendary .route-glow::after {
   border-radius: 50%;
   background: var(--rarity-core);
   box-shadow: 0 0 16px var(--rarity-shadow);
-  animation: haloSpark 3.4s linear infinite;
+  opacity: 0.78;
 }
 
 .card-halo__spark--1 {
@@ -2491,7 +2520,6 @@ body.is-feedback-legendary .route-glow::after {
   position: relative;
   z-index: 1;
   text-shadow: 0 10px 24px rgba(0, 0, 0, 0.24);
-  animation: iconBob 3.6s ease-in-out infinite;
   font-size: clamp(4rem, 7vw, 6rem);
 }
 

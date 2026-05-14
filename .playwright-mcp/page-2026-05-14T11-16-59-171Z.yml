@@ -1,0 +1,76 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e844]:
+      - banner [ref=e845]:
+        - link "LootWords Loot boxes turn into English word cards." [ref=e846] [cursor=pointer]:
+          - /url: "#/home"
+          - generic [ref=e848]:
+            - strong [ref=e849]: LootWords
+            - generic [ref=e850]: Loot boxes turn into English word cards.
+        - generic [ref=e851]:
+          - generic [ref=e852]:
+            - strong [ref=e853]: "1"
+            - generic [ref=e854]: Boxes
+          - generic [ref=e855]:
+            - strong [ref=e856]: "1"
+            - generic [ref=e857]: Cards
+          - link "Parent Mode" [ref=e858] [cursor=pointer]:
+            - /url: "#/parent?section=content"
+            - generic [ref=e859]: 🛡
+            - generic [ref=e860]: Parent Mode
+          - button "Language selector" [ref=e862]:
+            - generic [ref=e863]: 🇺🇸
+            - generic [ref=e864]: English
+            - generic [ref=e865]: ▾
+          - button "English voice selector" [ref=e867]:
+            - generic [ref=e868]: 🗣
+            - generic [ref=e869]: Microsoft David - English (United States)
+            - generic [ref=e870]: ▾
+          - button "Account" [ref=e871]:
+            - generic [ref=e872]: 👤
+            - generic [ref=e873]: Account
+          - generic "Audio controls" [ref=e874]:
+            - button "Sound On" [ref=e875]: 🔊
+      - main [ref=e876]:
+        - generic [ref=e879]:
+          - generic [ref=e880]:
+            - button "Back to games" [ref=e881]
+            - 'button "Open boxes: 1" [ref=e882]'
+          - generic [ref=e883]:
+            - generic [ref=e884]:
+              - generic [ref=e885]: Play lab
+              - heading "Flash Find" [level=3] [ref=e886]
+              - paragraph [ref=e887]: Watch the target card, then tap the same loot card before the preview fades from memory.
+            - generic [ref=e888]:
+              - generic [ref=e889]: ⚡ Quick memory
+              - generic [ref=e890]: 30 sec
+              - generic [ref=e891]: 1/1
+          - generic [ref=e893]:
+            - generic [ref=e895]: Get ready
+            - strong [ref=e896]: "3"
+            - generic [ref=e897]: The round starts after the countdown.
+    - navigation "Primary navigation" [ref=e898]:
+      - link "Home Hub" [ref=e899] [cursor=pointer]:
+        - /url: "#/home"
+        - strong [ref=e900]: Home
+        - generic [ref=e901]: Hub
+      - link "Play Games" [ref=e902] [cursor=pointer]:
+        - /url: "#/play"
+        - strong [ref=e903]: Play
+        - generic [ref=e904]: Games
+      - link "Reward Boxes" [ref=e905] [cursor=pointer]:
+        - /url: "#/reward"
+        - strong [ref=e906]: Reward
+        - generic [ref=e907]: Boxes
+      - link "Collection Cards" [ref=e908] [cursor=pointer]:
+        - /url: "#/collection"
+        - strong [ref=e909]: Collection
+        - generic [ref=e910]: Cards
+      - link "Learn Review" [ref=e911] [cursor=pointer]:
+        - /url: "#/learn"
+        - strong [ref=e912]: Learn
+        - generic [ref=e913]: Review
+  - iframe [ref=e470]:
+    - generic [ref=f1e6]:
+      - text: protected by
+      - strong [ref=f1e7]: reCAPTCHA
