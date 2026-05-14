@@ -1,5 +1,5 @@
 import { renderCard, renderEmptyState } from "./ui-kit.js";
-import { categoryLabel, gameText, t } from "../core/i18n.js";
+import { gameText, t } from "../core/i18n.js";
 
 function renderGamePickup(game, actionsLabel, disabled = false) {
   return `
@@ -230,33 +230,6 @@ export function renderHomeScreen(container, { progress, actions, newestCard, aut
         </div>
       </section>
 
-      <section class="section-panel section-panel--compact">
-        <div class="screen-header">
-          <div>
-            <span class="small-label">${t("home.progress")}</span>
-            <h2 class="section-title">${t("home.albumProgressByCategory")}</h2>
-          </div>
-          <div class="button-row">
-            <button class="ghost-button" type="button" data-route="play" data-game="${recommendedGame?.id ?? playSummary.gameProgress[0]?.id ?? "memory-match"}" ${noActiveContent ? "disabled" : ""}>${t("home.playRecommended")}</button>
-            <button class="ghost-button" type="button" data-route="learn">${t("common.reviewWords")}</button>
-          </div>
-        </div>
-        <div class="category-progress">
-          ${progress.categoryCounts
-            .map(
-              (entry) => `
-                <article class="progress-chip">
-                  <strong>${categoryLabel(entry.id)}</strong>
-                  <span>${t("home.activeInView", { unlocked: entry.unlocked, total: entry.total })}</span>
-                  <div class="progress-bar">
-                    <div class="progress-bar__fill" data-progress-fill="${(entry.percent / 100).toFixed(3)}" style="--progress-target:${(entry.percent / 100).toFixed(3)}"></div>
-                  </div>
-                </article>
-              `,
-            )
-            .join("")}
-        </div>
-      </section>
     </div>
   `;
 
