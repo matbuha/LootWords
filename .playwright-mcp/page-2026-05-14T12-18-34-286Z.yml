@@ -1,0 +1,86 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e109]:
+      - banner [ref=e110]:
+        - link "LootWords Loot boxes turn into English word cards." [ref=e111] [cursor=pointer]:
+          - /url: "#/home"
+          - generic [ref=e113]:
+            - strong [ref=e114]: LootWords
+            - generic [ref=e115]: Loot boxes turn into English word cards.
+        - generic [ref=e116]:
+          - generic [ref=e117]:
+            - strong [ref=e118]: "1"
+            - generic [ref=e119]: Boxes
+          - generic [ref=e120]:
+            - strong [ref=e121]: "1"
+            - generic [ref=e122]: Cards
+          - link "Parent Mode" [ref=e123] [cursor=pointer]:
+            - /url: "#/parent?section=content"
+            - generic [ref=e124]: 🛡
+            - generic [ref=e125]: Parent Mode
+          - button "Language selector" [ref=e127]:
+            - generic [ref=e128]: 🇺🇸
+            - generic [ref=e129]: English
+            - generic [ref=e130]: ▾
+          - button "English voice selector" [ref=e132]:
+            - generic [ref=e133]: 🗣
+            - generic [ref=e134]: Microsoft David - English (United States)
+            - generic [ref=e135]: ▾
+          - button "Account" [ref=e136]:
+            - generic [ref=e137]: 👤
+            - generic [ref=e138]: Account
+          - generic "Audio controls" [ref=e139]:
+            - button "Sound On" [ref=e140]: 🔊
+      - main [ref=e141]:
+        - generic [ref=e144]:
+          - generic [ref=e145]:
+            - generic:
+              - generic:
+                - text: "Current stage: Common"
+                - heading "The box is waking up" [level=2]
+              - generic:
+                - generic:
+                  - generic: Boxes ready
+                  - strong: "1"
+                  - generic: Your stash is waiting
+            - generic [ref=e146]:
+              - generic [ref=e147]: "Current stage: Common"
+              - strong [ref=e148]: Common
+              - generic [ref=e149]: Base rarity track
+            - button "Reward box" [ref=e158]
+            - paragraph [ref=e181]: Common is active. 4 more taps to test the next jump.
+            - generic:
+              - button "Earn more boxes"
+              - button "Open album"
+          - generic:
+            - generic:
+              - generic: Loot spotlight
+              - heading "Make the reward feel special" [level=3]
+            - generic:
+              - heading "Waiting for the reveal" [level=3]
+              - paragraph: Tap the box to build suspense, then watch the card burst onto the screen.
+    - navigation "Primary navigation" [ref=e182]:
+      - link "Home Hub" [ref=e183] [cursor=pointer]:
+        - /url: "#/home"
+        - strong [ref=e184]: Home
+        - generic [ref=e185]: Hub
+      - link "Play Games" [ref=e186] [cursor=pointer]:
+        - /url: "#/play"
+        - strong [ref=e187]: Play
+        - generic [ref=e188]: Games
+      - link "Reward Boxes" [ref=e189] [cursor=pointer]:
+        - /url: "#/reward"
+        - strong [ref=e190]: Reward
+        - generic [ref=e191]: Boxes
+      - link "Collection Cards" [ref=e192] [cursor=pointer]:
+        - /url: "#/collection"
+        - strong [ref=e193]: Collection
+        - generic [ref=e194]: Cards
+      - link "Learn Review" [ref=e195] [cursor=pointer]:
+        - /url: "#/learn"
+        - strong [ref=e196]: Learn
+        - generic [ref=e197]: Review
+  - iframe [ref=e108]:
+    - generic [ref=f5e6]:
+      - text: protected by
+      - strong [ref=f5e7]: reCAPTCHA

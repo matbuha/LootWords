@@ -1,0 +1,76 @@
+- generic [ref=e2]:
+  - generic [ref=e3]:
+    - banner [ref=e4]:
+      - link "LootWords Loot boxes turn into English word cards." [ref=e5] [cursor=pointer]:
+        - /url: "#/home"
+        - generic [ref=e7]:
+          - strong [ref=e8]: LootWords
+          - generic [ref=e9]: Loot boxes turn into English word cards.
+      - generic [ref=e10]:
+        - generic [ref=e11]:
+          - strong [ref=e12]: "0"
+          - generic [ref=e13]: Boxes
+        - generic [ref=e14]:
+          - strong [ref=e15]: "0"
+          - generic [ref=e16]: Cards
+        - link "Parent Mode" [ref=e17] [cursor=pointer]:
+          - /url: "#/parent?section=content"
+          - generic [ref=e18]: 🛡
+          - generic [ref=e19]: Parent Mode
+        - button "Language selector" [ref=e21]:
+          - generic [ref=e22]: 🇺🇸
+          - generic [ref=e23]: English
+          - generic [ref=e24]: ▾
+        - button "English voice selector" [ref=e26]:
+          - generic [ref=e27]: 🗣
+          - generic [ref=e28]: Microsoft David - English (United States)
+          - generic [ref=e29]: ▾
+        - button "Loading account" [disabled] [ref=e30]:
+          - generic [ref=e31]: ⏳
+          - generic [ref=e32]: Loading account
+        - generic "Audio controls" [ref=e33]:
+          - button "Sound On" [ref=e34]: 🔊
+    - main [ref=e35]:
+      - generic [ref=e38]:
+        - generic [ref=e39]:
+          - generic [ref=e40]:
+            - generic [ref=e41]:
+              - text: No box ready
+              - heading "Win a mini-game to refill the reward room" [level=2] [ref=e42]
+            - generic [ref=e44]:
+              - generic [ref=e45]: Boxes ready
+              - strong [ref=e46]: "0"
+              - generic [ref=e47]: Clear a game to refill it
+          - button "Reward box" [disabled] [ref=e56]
+          - paragraph [ref=e79]: No reward boxes are waiting. A victory instantly adds a new one to the stash.
+          - generic [ref=e80]:
+            - button "Earn more boxes" [ref=e81]
+            - button "Open album" [ref=e82]
+        - generic [ref=e83]:
+          - generic [ref=e84]:
+            - generic [ref=e85]: Loot spotlight
+            - heading "Make the reward feel special" [level=3] [ref=e86]
+          - generic [ref=e87]:
+            - heading "Waiting for the reveal" [level=3] [ref=e88]
+            - paragraph [ref=e89]: Tap the box to build suspense, then watch the card burst onto the screen.
+  - navigation "Primary navigation" [ref=e90]:
+    - link "Home Hub" [ref=e91] [cursor=pointer]:
+      - /url: "#/home"
+      - strong [ref=e92]: Home
+      - generic [ref=e93]: Hub
+    - link "Play Games" [ref=e94] [cursor=pointer]:
+      - /url: "#/play"
+      - strong [ref=e95]: Play
+      - generic [ref=e96]: Games
+    - link "Reward Boxes" [ref=e97] [cursor=pointer]:
+      - /url: "#/reward"
+      - strong [ref=e98]: Reward
+      - generic [ref=e99]: Boxes
+    - link "Collection Cards" [ref=e100] [cursor=pointer]:
+      - /url: "#/collection"
+      - strong [ref=e101]: Collection
+      - generic [ref=e102]: Cards
+    - link "Learn Review" [ref=e103] [cursor=pointer]:
+      - /url: "#/learn"
+      - strong [ref=e104]: Learn
+      - generic [ref=e105]: Review

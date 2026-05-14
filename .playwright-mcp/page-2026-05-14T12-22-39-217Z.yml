@@ -1,0 +1,86 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e376]:
+      - banner [ref=e377]:
+        - link "LootWords Loot boxes turn into English word cards." [ref=e378] [cursor=pointer]:
+          - /url: "#/home"
+          - generic [ref=e380]:
+            - strong [ref=e381]: LootWords
+            - generic [ref=e382]: Loot boxes turn into English word cards.
+        - generic [ref=e383]:
+          - generic [ref=e384]:
+            - strong [ref=e385]: "1"
+            - generic [ref=e386]: Boxes
+          - generic [ref=e387]:
+            - strong [ref=e388]: "1"
+            - generic [ref=e389]: Cards
+          - link "Parent Mode" [ref=e390] [cursor=pointer]:
+            - /url: "#/parent?section=content"
+            - generic [ref=e391]: 🛡
+            - generic [ref=e392]: Parent Mode
+          - button "Language selector" [ref=e394]:
+            - generic [ref=e395]: 🇺🇸
+            - generic [ref=e396]: English
+            - generic [ref=e397]: ▾
+          - button "English voice selector" [ref=e399]:
+            - generic [ref=e400]: 🗣
+            - generic [ref=e401]: Microsoft David - English (United States)
+            - generic [ref=e402]: ▾
+          - button "Account" [ref=e403]:
+            - generic [ref=e404]: 👤
+            - generic [ref=e405]: Account
+          - generic "Audio controls" [ref=e406]:
+            - button "Sound On" [ref=e407]: 🔊
+      - main [ref=e408]:
+        - generic [ref=e411]:
+          - generic [ref=e412]:
+            - generic:
+              - generic:
+                - text: Almost open
+                - heading "One last tap for the jump and spin" [level=2]
+              - generic:
+                - generic:
+                  - generic: Boxes ready
+                  - strong: "1"
+                  - generic: Your stash is waiting
+            - generic [ref=e413]:
+              - generic [ref=e414]: "Current stage: Common"
+              - strong [ref=e415]: Common
+              - generic [ref=e416]: Base rarity track
+            - button "Reward box" [ref=e425]
+            - paragraph [ref=e448]: Common is fully charged. The last tap can still upgrade it or lock the reward in.
+            - generic:
+              - button "Earn more boxes"
+              - button "Open album"
+          - generic:
+            - generic:
+              - generic: Loot spotlight
+              - heading "Make the reward feel special" [level=3]
+            - generic:
+              - heading "Waiting for the reveal" [level=3]
+              - paragraph: Tap the box to build suspense, then watch the card burst onto the screen.
+    - navigation "Primary navigation" [ref=e449]:
+      - link "Home Hub" [ref=e450] [cursor=pointer]:
+        - /url: "#/home"
+        - strong [ref=e451]: Home
+        - generic [ref=e452]: Hub
+      - link "Play Games" [ref=e453] [cursor=pointer]:
+        - /url: "#/play"
+        - strong [ref=e454]: Play
+        - generic [ref=e455]: Games
+      - link "Reward Boxes" [ref=e456] [cursor=pointer]:
+        - /url: "#/reward"
+        - strong [ref=e457]: Reward
+        - generic [ref=e458]: Boxes
+      - link "Collection Cards" [ref=e459] [cursor=pointer]:
+        - /url: "#/collection"
+        - strong [ref=e460]: Collection
+        - generic [ref=e461]: Cards
+      - link "Learn Review" [ref=e462] [cursor=pointer]:
+        - /url: "#/learn"
+        - strong [ref=e463]: Learn
+        - generic [ref=e464]: Review
+  - iframe [ref=e108]:
+    - generic [ref=f5e6]:
+      - text: protected by
+      - strong [ref=f5e7]: reCAPTCHA

@@ -1,0 +1,88 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e465]:
+      - banner [ref=e466]:
+        - link "LootWords Loot boxes turn into English word cards." [ref=e467] [cursor=pointer]:
+          - /url: "#/home"
+          - generic [ref=e469]:
+            - strong [ref=e470]: LootWords
+            - generic [ref=e471]: Loot boxes turn into English word cards.
+        - generic [ref=e472]:
+          - generic [ref=e473]:
+            - strong [ref=e474]: "0"
+            - generic [ref=e475]: Boxes
+          - generic [ref=e476]:
+            - strong [ref=e477]: "2"
+            - generic [ref=e478]: Cards
+          - link "Parent Mode" [ref=e479] [cursor=pointer]:
+            - /url: "#/parent?section=content"
+            - generic [ref=e480]: 🛡
+            - generic [ref=e481]: Parent Mode
+          - button "Language selector" [ref=e483]:
+            - generic [ref=e484]: 🇺🇸
+            - generic [ref=e485]: English
+            - generic [ref=e486]: ▾
+          - button "English voice selector" [ref=e488]:
+            - generic [ref=e489]: 🗣
+            - generic [ref=e490]: Microsoft David - English (United States)
+            - generic [ref=e491]: ▾
+          - button "Account" [ref=e492]:
+            - generic [ref=e493]: 👤
+            - generic [ref=e494]: Account
+          - generic "Audio controls" [ref=e495]:
+            - button "Sound On" [ref=e496]: 🔊
+      - main [ref=e497]:
+        - generic [ref=e500]:
+          - generic [ref=e501]:
+            - generic:
+              - generic:
+                - text: Magic burst
+                - heading "The box is cracking open" [level=2]
+              - generic:
+                - generic:
+                  - generic: Boxes ready
+                  - strong: "0"
+                  - generic: Clear a game to refill it
+            - generic [ref=e502]:
+              - generic [ref=e503]: "Current stage: Common"
+              - strong [ref=e504]: Common
+              - generic [ref=e505]: Base rarity track
+            - button "Reward box" [disabled] [ref=e514]
+            - paragraph [ref=e538]: Hold for the reveal. This pause is the payoff tension before the card arrives.
+            - generic:
+              - button "Earn more boxes"
+              - button "Open album"
+          - generic:
+            - generic:
+              - generic: Loot spotlight
+              - heading "Make the reward feel special" [level=3]
+            - generic:
+              - generic:
+                - generic: Opening...
+                - heading "The card is about to burst out" [level=3]
+                - paragraph: A short pause makes the reward feel earned. The reveal is being staged right now.
+    - navigation "Primary navigation" [ref=e539]:
+      - link "Home Hub" [ref=e540] [cursor=pointer]:
+        - /url: "#/home"
+        - strong [ref=e541]: Home
+        - generic [ref=e542]: Hub
+      - link "Play Games" [ref=e543] [cursor=pointer]:
+        - /url: "#/play"
+        - strong [ref=e544]: Play
+        - generic [ref=e545]: Games
+      - link "Reward Boxes" [ref=e546] [cursor=pointer]:
+        - /url: "#/reward"
+        - strong [ref=e547]: Reward
+        - generic [ref=e548]: Boxes
+      - link "Collection Cards" [ref=e549] [cursor=pointer]:
+        - /url: "#/collection"
+        - strong [ref=e550]: Collection
+        - generic [ref=e551]: Cards
+      - link "Learn Review" [ref=e552] [cursor=pointer]:
+        - /url: "#/learn"
+        - strong [ref=e553]: Learn
+        - generic [ref=e554]: Review
+  - iframe [ref=e108]:
+    - generic [ref=f5e6]:
+      - text: protected by
+      - strong [ref=f5e7]: reCAPTCHA

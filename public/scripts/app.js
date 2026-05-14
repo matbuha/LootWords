@@ -162,6 +162,8 @@ const uiEffects = createUiEffects();
 let activeScreen = null;
 let router = null;
 let rewardRevealTimeout = 0;
+let rewardRevealBackupTimeout = 0;
+let rewardRevealToken = 0;
 let cleanupLanguageSelector = () => {};
 let cleanupVoiceSelector = () => {};
 let profileLoadToken = 0;
@@ -190,6 +192,58 @@ function clearRewardRevealTimeout() {
   if (rewardRevealTimeout) {
     window.clearTimeout(rewardRevealTimeout);
     rewardRevealTimeout = 0;
+  }
+  if (rewardRevealBackupTimeout) {
+    window.clearTimeout(rewardRevealBackupTimeout);
+    rewardRevealBackupTimeout = 0;
+  }
+}
+
+function finalizeRewardReveal(token, extras) {
+  if (token !== rewardRevealToken) {
+    return;
+  }
+
+  const { revealedCard, rewardResult, reachedAlbumMilestone } = extras;
+  rewardRevealToken = 0;
+  clearRewardRevealTimeout();
+
+  commitState((currentState) => {
+    if (currentState.session.reward.phase !== "opening" && currentState.session.reward.phase !== "upgraded") {
+      return currentState;
+    }
+
+    return {
+      ...currentState,
+      session: {
+        ...currentState.session,
+        reward: {
+          ...currentState.session.reward,
+          reveal: currentState.session.reward.pendingReveal,
+          pendingReveal: null,
+          phase: "revealed",
+        },
+      },
+    };
+  });
+
+  feedback.trigger(FEEDBACK_EVENTS.cardReveal, {
+    rarity: revealedCard?.rarity,
+    audio: rewardResult.reward.type === "card" || rewardResult.reward.type === "duplicate",
+  });
+
+  if (rewardResult.reward.type === "card" && revealedCard) {
+    feedback.trigger(FEEDBACK_EVENTS.newCardUnlocked, {
+      rarity: revealedCard.rarity,
+      audio: revealedCard.rarity !== "legend",
+      audioOptions: { delayMs: 120 },
+    });
+  }
+
+  if (reachedAlbumMilestone) {
+    feedback.trigger(FEEDBACK_EVENTS.progressMilestone, {
+      audioOptions: { delayMs: 240 },
+    });
   }
 }
 
@@ -1289,6 +1343,8 @@ const actions = {
 
     feedback.trigger(FEEDBACK_EVENTS.rewardTap3);
     clearRewardRevealTimeout();
+    rewardRevealToken += 1;
+    const revealToken = rewardRevealToken;
 
     const rewardResult = openingResult;
     const nextCards = hydrateCards(rewardResult.profile);
@@ -1302,6 +1358,7 @@ const actions = {
       rewardResult.reward.type === "card" &&
       nextProgress.totalUnlocked > 0 &&
       nextProgress.totalUnlocked % 10 === 0;
+    const currentState = store.getState();
 
     commitState((currentState) => ({
       ...currentState,
@@ -1334,42 +1391,21 @@ const actions = {
 
     rewardRevealTimeout = window.setTimeout(() => {
       rewardRevealTimeout = 0;
-      commitState((currentState) => ({
-        ...currentState,
-        session: {
-          ...currentState.session,
-          reward: {
-            ...currentState.session.reward,
-            reveal: currentState.session.reward.pendingReveal,
-            pendingReveal: null,
-            phase: "revealed",
-          },
-        },
-      }));
-
-      feedback.trigger(FEEDBACK_EVENTS.cardReveal, {
-        rarity: revealedCard?.rarity,
-        audio: rewardResult.reward.type === "card" || rewardResult.reward.type === "duplicate",
-      });
-
-      if (rewardResult.reward.type === "card" && revealedCard) {
-        feedback.trigger(FEEDBACK_EVENTS.newCardUnlocked, {
-          rarity: revealedCard.rarity,
-          audio: revealedCard.rarity !== "legend",
-          audioOptions: { delayMs: 120 },
-        });
-      }
-
-      if (reachedAlbumMilestone) {
-        feedback.trigger(FEEDBACK_EVENTS.progressMilestone, {
-          audioOptions: { delayMs: 240 },
-        });
-      }
+      finalizeRewardReveal(revealToken, { revealedCard, rewardResult, reachedAlbumMilestone });
     }, REWARD_REVEAL_DELAY_MS);
+
+    rewardRevealBackupTimeout = window.setTimeout(() => {
+      if (rewardRevealTimeout || rewardRevealToken !== revealToken) {
+        return;
+      }
+
+      finalizeRewardReveal(revealToken, { revealedCard, rewardResult, reachedAlbumMilestone });
+    }, REWARD_REVEAL_DELAY_MS + 600);
   },
   resetRewardReveal() {
-    clearRewardRevealTimeout();
-    feedback.trigger(FEEDBACK_EVENTS.buttonClick);
+  clearRewardRevealTimeout();
+  rewardRevealToken += 1;
+  feedback.trigger(FEEDBACK_EVENTS.buttonClick);
     commitState((currentState) => ({
       ...currentState,
       session: {
